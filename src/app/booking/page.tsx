@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { supabase, getWhatsAppBookingLink } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { Inquiry, Car } from '@/types';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export default function BookingPage() {
   const searchParams = useSearchParams();
   const carId = searchParams.get('car');
+  const { settings, getWhatsAppLink } = useSiteSettings();
   
   const [cars, setCars] = useState<Car[]>([]);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
@@ -75,11 +77,22 @@ export default function BookingPage() {
 
       setSubmitted(true);
       
-      const whatsappUrl = getWhatsAppBookingLink(
-        formData.carName || '',
-        formData.pickupDate || '',
-        formData.returnDate || ''
-      );
+      const whatsappMessage = `Hello ${settings.businessName},
+
+I have submitted a booking inquiry:
+
+Car: ${formData.carName || 'Not selected'}
+Name: ${formData.customerName}
+WhatsApp: ${formData.whatsappNumber}
+Email: ${formData.email || 'Not provided'}
+Pickup Date: ${formData.pickupDate}
+Return Date: ${formData.returnDate}
+Pickup Location: ${formData.pickupLocation}
+Notes: ${formData.notes || 'None'}
+
+Please confirm my booking. Thank you!`;
+
+      const whatsappUrl = getWhatsAppLink(whatsappMessage);
 
       setTimeout(() => {
         window.open(whatsappUrl, '_blank');
@@ -102,6 +115,8 @@ export default function BookingPage() {
   };
 
   if (submitted) {
+    const successWhatsAppLink = getWhatsAppLink(`Hello ${settings.businessName}, I just submitted a booking inquiry. Please confirm my booking. Thank you!`);
+    
     return (
       <div className="pt-20 min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="container-custom">
@@ -113,7 +128,7 @@ export default function BookingPage() {
               contact you shortly via WhatsApp.
             </p>
             <a
-              href="https://wa.me/60123456789?text=Hello%20Mok%20Car%20Rental,%20I%20just%20submitted%20a%20booking%20inquiry."
+              href={successWhatsAppLink}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-whatsapp text-lg"

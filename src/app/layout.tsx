@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+// Deployment trigger: Updated git author configuration
+import ClientLayout from "@/components/ClientLayout";
 
 export const metadata: Metadata = {
   title: {
@@ -50,10 +49,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <WhatsAppFloat />
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

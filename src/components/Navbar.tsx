@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { FiMenu, FiX } from 'react-icons/fi';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -14,6 +15,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { settings } = useSiteSettings();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
@@ -21,7 +23,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-2">
             <div className="text-2xl font-display font-bold text-gray-900">
-              Mok <span className="text-gradient">Car Rental</span>
+              <span>{settings.businessName.split(' ')[0]}</span> <span className="text-gradient">{settings.businessName.split(' ').slice(1).join(' ')}</span>
             </div>
           </Link>
 

@@ -10,8 +10,8 @@ export interface Car {
   fuel_type: 'petrol' | 'diesel' | 'hybrid';
   image: string;
   images?: string[];
-  features: string[];
-  description: string;
+  features?: string[];
+  description?: string;
   available: boolean;
   featured: boolean;
   created_at?: string;
@@ -20,13 +20,20 @@ export interface Car {
 
 export interface Inquiry {
   id?: string;
+  car_id?: string;
+  car_name?: string;
   carId: string;
   carName: string;
+  customer_name?: string;
   customerName: string;
+  whatsapp_number?: string;
   whatsappNumber: string;
   email?: string;
+  pickup_date?: string;
+  return_date?: string;
   pickupDate: string;
   returnDate: string;
+  pickup_location?: string;
   pickupLocation: string;
   notes?: string;
   status: 'pending' | 'confirmed' | 'cancelled';

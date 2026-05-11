@@ -1,40 +1,27 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiSave, FiBell, FiLock, FiGlobe, FiPhone, FiMail } from 'react-icons/fi';
-import { supabase } from '@/lib/supabase';
+import { FiSave, FiBell, FiLock, FiGlobe, FiPhone, FiMail, FiCheck } from 'react-icons/fi';
+import { useSiteSettings, SiteSettings } from '@/hooks/useSiteSettings';
 
 export default function SettingsManager() {
-  const [settings, setSettings] = useState({
-    businessName: 'Mok Car Rental',
-    whatsappNumber: '+60123456789',
-    email: 'info@mokcarrental.com',
-    address: 'Taman Molek, Johor Bahru, Malaysia',
-    workingHours: '24/7',
-    currency: 'MYR',
-    timezone: 'Asia/Kuala_Lumpur',
-    emailNotifications: true,
-    whatsappNotifications: true,
-    autoConfirm: false,
-  });
+  const { settings: contextSettings, updateSettings } = useSiteSettings();
+  const [settings, setSettings] = useState<SiteSettings>(contextSettings);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    const saved = localStorage.getItem('siteSettings');
-    if (saved) {
-      setSettings(JSON.parse(saved));
-    }
-  }, []);
+    setSettings(contextSettings);
+  }, [contextSettings]);
 
   const handleSave = () => {
     setSaving(true);
-    localStorage.setItem('siteSettings', JSON.stringify(settings));
+    updateSettings(settings);
     setTimeout(() => {
       setMessage('Settings saved successfully!');
       setSaving(false);
       setTimeout(() => setMessage(''), 3000);
-    }, 1000);
+    }, 500);
   };
 
   return (
@@ -48,7 +35,7 @@ export default function SettingsManager() {
 
       {message && (
         <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg flex items-center gap-2">
-          <FiBell /> {message}
+          <FiCheck /> {message}
         </div>
       )}
 

@@ -284,7 +284,7 @@ function CarModal({
               </label>
               <select
                 value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value as 'economy' | 'sedan' | 'suv' | 'mpv' | 'luxury' })}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
               >
                 <option value="economy">Economy</option>
@@ -327,7 +327,7 @@ function CarModal({
               </label>
               <select
                 value={formData.transmission}
-                onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, transmission: e.target.value as 'automatic' | 'manual' })}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
               >
                 <option value="automatic">Automatic</option>
@@ -340,7 +340,7 @@ function CarModal({
               </label>
               <select
                 value={formData.fuel_type}
-                onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value as 'petrol' | 'diesel' | 'hybrid' })}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
               >
                 <option value="petrol">Petrol</option>

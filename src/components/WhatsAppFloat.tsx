@@ -1,9 +1,11 @@
 'use client';
 
-import { getWhatsAppLink } from '@/lib/supabase';
 import { FaWhatsapp } from 'react-icons/fa';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export default function WhatsAppFloat() {
+  const { getWhatsAppLink } = useSiteSettings();
+  
   return (
     <a
       href={getWhatsAppLink()}

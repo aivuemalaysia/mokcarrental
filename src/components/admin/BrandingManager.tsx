@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiUpload, FiImage, FiPalette, FiSave } from 'react-icons/fi';
-import { supabase } from '@/lib/supabase';
+import { FiUpload, FiImage, FiLayout, FiCheck, FiSave } from 'react-icons/fi';
 
 export default function BrandingManager() {
   const [branding, setBranding] = useState({
@@ -58,7 +57,7 @@ export default function BrandingManager() {
 
       {message && (
         <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg flex items-center gap-2">
-          <FiSave /> {message}
+          <FiCheck /> {message}
         </div>
       )}
 
@@ -111,7 +110,7 @@ export default function BrandingManager() {
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <FiPalette /> Color Scheme
+            <FiLayout /> Color Scheme
           </h3>
           <div className="space-y-4">
             <div>

@@ -1,14 +1,19 @@
+'use client';
+
 import Link from 'next/link';
 import { FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export default function Footer() {
+  const { settings } = useSiteSettings();
+  
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container-custom py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div>
             <div className="text-2xl font-display font-bold mb-4">
-              Mok <span className="text-gradient">Car Rental</span>
+              {settings.businessName}
             </div>
             <p className="text-gray-400 mb-6">
               Your trusted partner for premium car rentals in Johor Bahru,
@@ -72,24 +77,24 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <FiMapPin className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
                 <span className="text-gray-400">
-                  Taman Molek, Johor Bahru, Malaysia
+                  {settings.address}
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <FiPhone className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                <a href="tel:+60123456789" className="text-gray-400 hover:text-gold-500 transition-colors">
-                  +60 12-345 6789
+                <a href={`tel:${settings.whatsappNumber}`} className="text-gray-400 hover:text-gold-500 transition-colors">
+                  {settings.whatsappNumber}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <FiMail className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                <a href="mailto:info@mokcarrental.com" className="text-gray-400 hover:text-gold-500 transition-colors">
-                  info@mokcarrental.com
+                <a href={`mailto:${settings.email}`} className="text-gray-400 hover:text-gold-500 transition-colors">
+                  {settings.email}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <FiClock className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                <span className="text-gray-400">24/7 Support</span>
+                <span className="text-gray-400">{settings.workingHours} Support</span>
               </li>
             </ul>
           </div>
@@ -98,7 +103,7 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} Mok Car Rental. All rights reserved.
+              © {new Date().getFullYear()} {settings.businessName}. All rights reserved.
             </p>
             <div className="flex gap-6">
               <Link href="/terms" className="text-gray-400 hover:text-gold-500 text-sm transition-colors">

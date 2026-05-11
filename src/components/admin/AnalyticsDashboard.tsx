@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiTrendingUp, FiTrendingDown, FiCar, FiMessageCircle, FiDollarSign, FiUsers } from 'react-icons/fi';
+import { FiTrendingUp, FiTrendingDown, FiTruck, FiMessageCircle, FiDollarSign, FiUsers } from 'react-icons/fi';
 import { supabase } from '@/lib/supabase';
 import { Inquiry, Car } from '@/types';
-import AuditLogViewer from './AuditLogViewer';
+import { AuditLogViewer } from '@/components/admin/AuditLogViewer';
 
 export default function AnalyticsDashboard() {
   const [stats, setStats] = useState({
@@ -53,7 +53,7 @@ export default function AnalyticsDashboard() {
     {
       title: 'Total Cars',
       value: stats.totalCars,
-      icon: FiCar,
+      icon: FiTruck,
       trend: '+12%',
       trendUp: true,
       color: 'bg-blue-500',
@@ -61,7 +61,7 @@ export default function AnalyticsDashboard() {
     {
       title: 'Available Now',
       value: stats.availableCars,
-      icon: FiCar,
+      icon: FiTruck,
       trend: '100%',
       trendUp: true,
       color: 'bg-green-500',
@@ -111,30 +111,33 @@ export default function AnalyticsDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {statCards.map((stat, index) => (
-          <div
-            key={index}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center justify-between">
-              <div className={`${stat.color} p-3 rounded-lg text-white`}>
-                <stat.icon size={24} />
+        {statCards.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <div
+              key={index}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-lg transition-shadow"
+            >
+              <div className="flex items-center justify-between">
+                <div className={`${stat.color} p-3 rounded-lg text-white`}>
+                  <Icon size={24} />
+                </div>
+                <div
+                  className={`flex items-center gap-1 text-sm ${
+                    stat.trendUp ? 'text-green-600' : 'text-red-600'
+                  }`}
+                >
+                  {stat.trendUp ? <FiTrendingUp size={16} /> : <FiTrendingDown size={16} />}
+                  <span>{stat.trend}</span>
+                </div>
               </div>
-              <div
-                className={`flex items-center gap-1 text-sm ${
-                  stat.trendUp ? 'text-green-600' : 'text-red-600'
-                }`}
-              >
-                {stat.trendUp ? <FiTrendingUp size={16} /> : <FiTrendingDown size={16} />}
-                <span>{stat.trend}</span>
+              <div className="mt-4">
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{stat.title}</p>
               </div>
             </div>
-            <div className="mt-4">
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{stat.title}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

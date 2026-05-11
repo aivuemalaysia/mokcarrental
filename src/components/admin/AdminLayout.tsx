@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, createContext, useContext, useEffect } from 'react';
-import { FiMenu, FiX, FiSun, FiMoon } from 'react-icons/fi';
+import { useRouter, usePathname } from 'next/navigation';
+import { FiMenu, FiX, FiSun, FiMoon, FiLogOut } from 'react-icons/fi';
 
 interface SidebarContextType {
   isCollapsed: boolean;
@@ -26,8 +27,16 @@ export default function AdminLayout({
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
+    // Check auth
+    const token = localStorage.getItem('adminToken');
+    if (!token && pathname !== '/admin/login') {
+      router.push('/admin/login');
+    }
+
     const savedTheme = localStorage.getItem('adminTheme') as 'light' | 'dark';
     if (savedTheme) {
       setTheme(savedTheme);
@@ -126,6 +135,7 @@ function AdminSidebar() {
 function AdminHeader() {
   const { isCollapsed, theme, toggleTheme } = useSidebar();
   const [adminUser, setAdminUser] = useState({ name: 'Admin', email: 'admin@mokcarrental.com' });
+  const router = useRouter();
 
   useEffect(() => {
     const userStr = localStorage.getItem('adminUser');
@@ -133,6 +143,12 @@ function AdminHeader() {
       setAdminUser(JSON.parse(userStr));
     }
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    router.push('/admin/login');
+  };
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
@@ -148,6 +164,13 @@ function AdminHeader() {
             title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
           >
             {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
+          </button>
+          <button
+            onClick={handleLogout}
+            className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 rounded-lg transition-colors"
+            title="Logout"
+          >
+            <FiLogOut size={20} />
           </button>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold">
