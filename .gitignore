@@ -1,9 +1,9 @@
 # Dependencies
-node_modules/
+node_modules
 .pnpm-store/
 
 # Next.js build output
-.next/
+.next
 out/
 build/
 
