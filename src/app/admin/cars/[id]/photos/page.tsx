@@ -1,0 +1,17 @@
+import AdminLayout from '@/components/admin/AdminLayout';
+import CarImageUploader from '@/components/admin/CarImageUploader';
+
+export default function CarPhotosPage({ params }: { params: { id: string } }) {
+  return (
+    <AdminLayout>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Car Photos</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Upload, view, and delete photos for this car.</p>
+        </div>
+        <CarImageUploader carId={params.id} minImages={5} />
+      </div>
+    </AdminLayout>
+  );
+}
+
