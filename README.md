@@ -36,6 +36,18 @@ A premium, modern car rental website built with Next.js, React, TypeScript, and 
 - **Backend**: Supabase (PostgreSQL)
 - **Deployment**: Vercel-ready
 
+## 🚢 Deployment Troubleshooting: “Deployment Not Found” (Vercel 404 NOT_FOUND)
+
+### Most common causes (this repo)
+- **Wrong Root Directory** in Vercel Project Settings: this repo’s Next.js app lives in `mok-car-rental/`. If Vercel builds from the repository root, it can deploy an empty/non-app output that serves Vercel’s `404: NOT_FOUND`.
+- **Domain not assigned to the project**: the production domain (including `*.vercel.app`) must be assigned to the correct Vercel project/team; otherwise Vercel returns `NOT_FOUND`.
+- **No production alias**: successful deployments can exist, but the “Production” alias may not point to the latest “Ready” deployment.
+
+### What to verify in Vercel
+- **Project → Settings → General → Root Directory**: set to `mok-car-rental`.
+- **Project → Deployments**: confirm at least one deployment is “Ready” and marked “Production”.
+- **Project → Domains**: confirm the failing domain is listed and shows “Valid Configuration”.
+
 ## 📁 Project Structure
 
 ```
@@ -128,6 +140,28 @@ Default credentials:
 - **Password**: admin123
 
 ⚠️ Change these credentials in production!
+
+## 🧯 Root Cause Analysis: Admin `net::ERR_ABORTED` / Chunk Fallback Loads
+
+### Symptoms
+- Browser console shows `net::ERR_ABORTED` when navigating to admin routes like `/admin/cars`.
+- Some sessions also show fallback chunk requests and JSON parse errors (HTML returned where JSON was expected).
+
+### Root Cause
+- Admin navigation previously used hard reloads and client-only auth redirects (localStorage-based). When a redirect or full page reload happened mid-navigation, the browser aborted in-flight requests (page + Next.js chunks), surfacing as `net::ERR_ABORTED`.
+- `/api/admin/audit-logs` was requested by the UI but did not exist, so Next.js returned an HTML 404 page and the client attempted `res.json()`, producing `Unexpected token '<'` errors.
+
+### Permanent Fix
+- Moved admin auth to a server-validated, cookie-based flow (login/logout/session endpoints + middleware redirects) to avoid mid-flight client redirects.
+- Switched admin sidebar navigation to Next.js client routing (no full reloads).
+- Added `/api/admin/audit-logs` endpoint and hardened the client fetch to safely handle non-JSON responses.
+
+### Monitoring
+- Server: middleware emits a structured `ADMIN_AUTH_REDIRECT` log when redirecting unauthenticated admin access.
+- Client: `CLIENT_ERROR` logs are emitted via `/api/monitoring/client-error` for chunk/static load issues.
+
+### Tests
+- Unit + integration tests for admin routing, login cookie setting, and middleware redirects are in `__tests__/`.
 
 ## 💬 WhatsApp Integration
 

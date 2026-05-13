@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -11,10 +12,12 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-      router.push('/admin/dashboard');
-    }
+    fetch('/api/admin/session')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.authenticated) router.replace('/admin/dashboard');
+      })
+      .catch(() => {});
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,15 +25,24 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
 
-    const adminEmail = 'admin@mokcarrental.com';
-    const adminPassword = 'admin123';
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (email === adminEmail && password === adminPassword) {
-      localStorage.setItem('adminToken', 'admin-token-' + Date.now());
-      localStorage.setItem('adminUser', JSON.stringify({ email, name: 'Admin' }));
-      router.push('/admin/dashboard');
-    } else {
-      setError('Invalid email or password');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data?.error || 'Invalid email or password');
+        setLoading(false);
+        return;
+      }
+
+      localStorage.setItem('adminUser', JSON.stringify(data?.user || { email, name: 'Admin' }));
+      router.replace('/admin/dashboard');
+    } catch {
+      setError('Something went wrong. Please try again.');
       setLoading(false);
     }
   };
@@ -91,9 +103,9 @@ export default function AdminLoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <a href="/" className="text-sm text-gold-500 hover:text-gold-600">
+            <Link href="/" className="text-sm text-gold-500 hover:text-gold-600">
               Back to Website
-            </a>
+            </Link>
           </div>
         </div>
 

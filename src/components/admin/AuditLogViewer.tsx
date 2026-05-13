@@ -25,12 +25,19 @@ export function AuditLogViewer() {
 
   const fetchAuditLogs = async () => {
     try {
-      const { data, error } = await fetch('/api/admin/audit-logs', {
+      const response = await fetch('/api/admin/audit-logs', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-      }).then(res => res.json());
+      });
+
+      const contentType = response.headers.get('content-type') || '';
+      const payload =
+        contentType.includes('application/json') ? await response.json().catch(() => null) : null;
+
+      const data = payload?.data;
+      const error = payload?.error || (response.ok ? null : 'request_failed');
 
       if (error) {
         console.error('Error fetching audit logs:', error);
@@ -79,8 +86,8 @@ export function AuditLogViewer() {
   };
 
   const filteredLogs = filterAction === 'all' 
-    ? logs.slice(0, 7) 
-    : logs.filter(log => log.action.toLowerCase() === filterAction.toLowerCase()).slice(0, 7);
+    ? logs.slice(0, 3) 
+    : logs.filter(log => log.action.toLowerCase() === filterAction.toLowerCase()).slice(0, 3);
 
   if (loading) {
     return (
@@ -91,7 +98,7 @@ export function AuditLogViewer() {
           </h3>
         </div>
         <div className="space-y-3 animate-pulse">
-          {[...Array(7)].map((_, i) => (
+          {[...Array(3)].map((_, i) => (
             <div key={i} className="h-16 bg-gray-100 dark:bg-gray-700 rounded-lg" />
           ))}
         </div>
@@ -169,7 +176,7 @@ export function AuditLogViewer() {
         </div>
       )}
 
-      {logs.length > 7 && filterAction === 'all' && (
+      {logs.length > 3 && filterAction === 'all' && (
         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <button className="w-full px-4 py-2 text-sm text-gold-500 hover:text-gold-600 font-medium">
             View All Activity →

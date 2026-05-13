@@ -1,22 +1,30 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { ADMIN_TOKEN_COOKIE } from '@/lib/adminAuth';
+import { getAdminRedirect } from '@/lib/adminRouting';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const hasToken = Boolean(request.cookies.get(ADMIN_TOKEN_COOKIE)?.value);
+  const redirectTo = getAdminRedirect(pathname, hasToken);
 
-  // Protect all /admin/* routes except /admin/login
-  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
-    // Check for admin token in cookies or headers
-    // Since we use localStorage for auth (client-side), we can't easily check in middleware
-    // but we can at least ensure we're not blocking public routes.
-    
-    // For now, we'll let the client-side AdminLayout handle the redirect
-    // as we don't have server-side session management yet.
-    return NextResponse.next();
+  if (!redirectTo) return NextResponse.next();
+
+  if (redirectTo === '/admin/login' && pathname !== '/admin/login') {
+    console.warn(
+      'ADMIN_AUTH_REDIRECT',
+      JSON.stringify({ pathname, ua: request.headers.get('user-agent') })
+    );
   }
 
-  // Explicitly allow public access to all other routes
-  return NextResponse.next();
+  const anyNextUrl = request.nextUrl as any;
+  const url =
+    typeof anyNextUrl?.clone === 'function'
+      ? anyNextUrl.clone()
+      : new URL(request.nextUrl.toString());
+
+  url.pathname = redirectTo;
+  return NextResponse.redirect(url);
 }
 
 export const config = {

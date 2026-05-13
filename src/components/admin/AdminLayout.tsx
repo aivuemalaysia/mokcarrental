@@ -2,6 +2,7 @@
 
 import { useState, createContext, useContext, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { FiMenu, FiX, FiSun, FiMoon, FiLogOut } from 'react-icons/fi';
 
 interface SidebarContextType {
@@ -31,12 +32,6 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    // Check auth
-    const token = localStorage.getItem('adminToken');
-    if (!token && pathname !== '/admin/login') {
-      router.push('/admin/login');
-    }
-
     const savedTheme = localStorage.getItem('adminTheme') as 'light' | 'dark';
     if (savedTheme) {
       setTheme(savedTheme);
@@ -45,6 +40,17 @@ export default function AdminLayout({
       }
     }
   }, []);
+
+  useEffect(() => {
+    fetch('/api/admin/session')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data?.authenticated && pathname !== '/admin/login') {
+          router.replace('/admin/login');
+        }
+      })
+      .catch(() => {});
+  }, [pathname, router]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -72,16 +78,16 @@ export default function AdminLayout({
 
 function AdminSidebar() {
   const { isCollapsed, setIsCollapsed } = useSidebar();
-  const [activeItem, setActiveItem] = useState('dashboard');
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-
-  useEffect(() => {
-    if (pathname.includes('/admin/dashboard')) setActiveItem('dashboard');
-    else if (pathname.includes('/admin/cars')) setActiveItem('cars');
-    else if (pathname.includes('/admin/inquiries')) setActiveItem('inquiries');
-    else if (pathname.includes('/admin/branding')) setActiveItem('branding');
-    else if (pathname.includes('/admin/settings')) setActiveItem('settings');
-  }, [pathname]);
+  const pathname = usePathname();
+  const activeItem = pathname.includes('/admin/cars')
+    ? 'cars'
+    : pathname.includes('/admin/inquiries')
+      ? 'inquiries'
+      : pathname.includes('/admin/branding')
+        ? 'branding'
+        : pathname.includes('/admin/settings')
+          ? 'settings'
+          : 'dashboard';
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
@@ -112,10 +118,9 @@ function AdminSidebar() {
 
         <nav className="p-4 space-y-2">
           {menuItems.map((item) => (
-            <a
+            <Link
               key={item.id}
               href={item.href}
-              onClick={() => setActiveItem(item.id)}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 activeItem === item.id
                   ? 'bg-gold-500 text-white shadow-lg'
@@ -124,7 +129,7 @@ function AdminSidebar() {
             >
               <span className="text-xl">{item.icon}</span>
               {!isCollapsed && <span className="font-medium">{item.label}</span>}
-            </a>
+            </Link>
           ))}
         </nav>
       </aside>
@@ -133,7 +138,7 @@ function AdminSidebar() {
 }
 
 function AdminHeader() {
-  const { isCollapsed, theme, toggleTheme } = useSidebar();
+  const { theme, toggleTheme } = useSidebar();
   const [adminUser, setAdminUser] = useState({ name: 'Admin', email: 'admin@mokcarrental.com' });
   const router = useRouter();
 
@@ -144,10 +149,10 @@ function AdminHeader() {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
+  const handleLogout = async () => {
+    await fetch('/api/admin/logout', { method: 'POST' }).catch(() => {});
     localStorage.removeItem('adminUser');
-    router.push('/admin/login');
+    router.replace('/admin/login');
   };
 
   return (
