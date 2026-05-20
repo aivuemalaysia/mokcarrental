@@ -1,5 +1,6 @@
 import FAQ from '@/components/FAQ';
 import CTASection from '@/components/CTASection';
+import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 
 export const metadata = {
   title: 'FAQ',
@@ -29,14 +30,10 @@ export default function FAQPage() {
             <p className="text-gray-600 mb-8">
               Can't find the answer you're looking for? Feel free to reach out to us directly.
             </p>
-            <a
-              href="https://wa.me/60123456789?text=Hello%20Mok%20Car%20Rental,%20I%20have%20a%20question."
-              target="_blank"
-              rel="noopener noreferrer"
+            <WhatsAppInquiryButton
+              label="Chat with Us on WhatsApp"
               className="btn-whatsapp inline-flex text-lg"
-            >
-              Chat with Us on WhatsApp
-            </a>
+            />
           </div>
         </div>
       </section>

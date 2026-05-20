@@ -22,6 +22,7 @@ export default function FeaturedCars() {
         .eq('featured', true)
         .eq('available', true)
         .limit(6)
+        .order('updated_at', { ascending: false })
         .order('price', { ascending: true });
 
       if (error) {
@@ -39,7 +40,7 @@ export default function FeaturedCars() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-12 md:py-20 bg-gray-50">
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="section-title">Featured Rental Cars</h2>
@@ -51,7 +52,7 @@ export default function FeaturedCars() {
   }
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-12 md:py-20 bg-gray-50">
       <div className="container-custom">
         <div className="text-center mb-12">
           <h2 className="section-title">Featured Rental Cars</h2>

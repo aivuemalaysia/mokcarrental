@@ -10,19 +10,27 @@ export interface SiteSettings {
   workingHours: string;
   currency: string;
   timezone: string;
+  facebookUrl: string;
+  instagramUrl: string;
+  mapsEmbedUrl: string;
+  siteUrl: string;
   emailNotifications: boolean;
   whatsappNotifications: boolean;
   autoConfirm: boolean;
 }
 
 const defaultSettings: SiteSettings = {
-  businessName: 'Mok Car Rental',
-  whatsappNumber: '+60123456789',
-  email: 'info@mokcarrental.com',
-  address: 'Taman Molek, Johor Bahru, Malaysia',
-  workingHours: '24/7',
+  businessName: 'Car Rental',
+  whatsappNumber: '',
+  email: '',
+  address: '',
+  workingHours: '',
   currency: 'MYR',
   timezone: 'Asia/Kuala_Lumpur',
+  facebookUrl: '',
+  instagramUrl: '',
+  mapsEmbedUrl: '',
+  siteUrl: '',
   emailNotifications: true,
   whatsappNotifications: true,
   autoConfirm: false,
@@ -48,28 +56,69 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('siteSettings');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setSettings({ ...defaultSettings, ...parsed });
-      } catch (e) {
-        console.error('Error parsing settings:', e);
-      }
+  const readFromStorage = (): SiteSettings => {
+    try {
+      const saved = localStorage.getItem('siteSettings');
+      if (!saved) return defaultSettings;
+      const parsed = JSON.parse(saved);
+      return { ...defaultSettings, ...parsed };
+    } catch (e) {
+      console.error('Error reading settings:', e);
+      return defaultSettings;
     }
-    setLoading(false);
+  };
+
+  useEffect(() => {
+    const boot = async () => {
+      setSettings(readFromStorage());
+      try {
+        const res = await fetch('/api/content/site-settings', { cache: 'no-store' });
+        const json = await res.json().catch(() => null);
+        const items = json?.data?.items;
+        if (items && typeof items === 'object') {
+          const merged = { ...defaultSettings, ...items } as SiteSettings;
+          setSettings(merged);
+          localStorage.setItem('siteSettings', JSON.stringify(merged));
+          window.dispatchEvent(new Event('settings-updated'));
+        }
+      } catch {}
+      setLoading(false);
+    };
+    void boot();
+  }, []);
+
+  useEffect(() => {
+    const apply = () => setSettings(readFromStorage());
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== 'siteSettings') return;
+      apply();
+    };
+
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('settings-updated', apply);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('settings-updated', apply);
+    };
   }, []);
 
   const updateSettings = (newSettings: Partial<SiteSettings>) => {
     const updated = { ...settings, ...newSettings };
     setSettings(updated);
-    localStorage.setItem('siteSettings', JSON.stringify(updated));
-    window.dispatchEvent(new Event('settings-updated'));
+    try {
+      localStorage.setItem('siteSettings', JSON.stringify(updated));
+      window.dispatchEvent(new Event('settings-updated'));
+      console.info('IK: siteSettings updated');
+    } catch (e) {
+      console.error('IK: Error saving settings:', e);
+      throw e;
+    }
   };
 
   const getWhatsAppLink = (message?: string): string => {
     const number = settings.whatsappNumber.replace(/[^0-9]/g, '');
+    if (!number) return '#';
     const defaultMessage = `Hello ${settings.businessName}, I would like to inquire about car rental.`;
     const encodedMessage = encodeURIComponent(message || defaultMessage);
     return `https://wa.me/${number}?text=${encodedMessage}`;
@@ -80,24 +129,4 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       {children}
     </SettingsContext.Provider>
   );
-}
-
-export function getWhatsAppBookingLink(
-  carName: string,
-  pickupDate: string,
-  returnDate: string,
-  whatsappNumber?: string
-): string {
-  const number = (whatsappNumber || defaultSettings.whatsappNumber).replace(/[^0-9]/g, '');
-  const message = `Hello Mok Car Rental,
-
-I would like to inquire about car rental.
-
-Car: ${carName}
-Rental Date: ${pickupDate}
-Return Date: ${returnDate}
-
-Thank you!`;
-  const encodedMessage = encodeURIComponent(message);
-  return `https://wa.me/${number}?text=${encodedMessage}`;
 }

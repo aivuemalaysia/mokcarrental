@@ -1,4 +1,7 @@
+'use client';
+
 import { FiSearch, FiMessageCircle, FiCheck, FiTruck } from 'react-icons/fi';
+import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
 
 const steps = [
   {
@@ -28,6 +31,8 @@ const steps = [
 ];
 
 export default function RentalProcess() {
+  const { openInquiry } = useWhatsAppInquiry();
+
   return (
     <section className="py-20 bg-gray-900 text-white">
       <div className="container-custom">
@@ -64,14 +69,13 @@ export default function RentalProcess() {
         </div>
 
         <div className="text-center mt-12">
-          <a
-            href="https://wa.me/60123456789?text=Hello%20Mok%20Car%20Rental,%20I%20would%20like%20to%20rent%20a%20car."
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => openInquiry()}
             className="btn-whatsapp text-lg px-8 py-4 inline-flex"
           >
             Start Your Booking
-          </a>
+          </button>
         </div>
       </div>
     </section>

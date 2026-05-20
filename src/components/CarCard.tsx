@@ -1,25 +1,34 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Car } from '@/types';
-import { FiUsers, FiSettings, FiZap } from 'react-icons/fi';
-import { getWhatsAppBookingLink } from '@/lib/supabase';
+import { FiUsers, FiSettings, FiZap, FiImage } from 'react-icons/fi';
+import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
 
 interface CarCardProps {
   car: Car;
 }
 
 export default function CarCard({ car }: CarCardProps) {
-  const whatsappLink = getWhatsAppBookingLink(car.name, '', '');
+  const { openInquiry } = useWhatsAppInquiry();
+  const imageSrc = typeof car.image === 'string' ? car.image.trim() : '';
 
   return (
     <div className="card group">
       <div className="relative h-56 overflow-hidden">
-        <Image
-          src={car.image}
-          alt={car.name}
-          fill
-          className="object-cover group-hover:scale-110 transition-transform duration-500"
-        />
+        {imageSrc ? (
+          <Image
+            src={imageSrc}
+            alt={car.name}
+            fill
+            className="object-cover group-hover:scale-110 transition-transform duration-500"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+            <FiImage className="h-10 w-10" />
+          </div>
+        )}
         <div className="absolute top-4 right-4 bg-gold-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
           RM{car.price}/day
         </div>
@@ -57,14 +66,13 @@ export default function CarCard({ car }: CarCardProps) {
           >
             View Details
           </Link>
-          <a
-            href={whatsappLink}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => openInquiry({ id: car.id, name: car.name })}
             className="flex-1 btn-whatsapp text-center text-sm"
           >
             Book
-          </a>
+          </button>
         </div>
       </div>
     </div>

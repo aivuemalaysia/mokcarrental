@@ -4,13 +4,17 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { FiUsers, FiSettings, FiZap, FiCheck, FiArrowLeft } from 'react-icons/fi';
-import { supabase, getWhatsAppBookingLink } from '@/lib/supabase';
+import { FiUsers, FiSettings, FiZap, FiCheck, FiArrowLeft, FiImage } from 'react-icons/fi';
+import { supabase } from '@/lib/supabase';
 import { Car } from '@/types';
 import CarCard from '@/components/CarCard';
+import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export default function CarDetailPage() {
   const params = useParams();
+  const { openInquiry } = useWhatsAppInquiry();
+  const { settings } = useSiteSettings();
   const [car, setCar] = useState<Car | null>(null);
   const [relatedCars, setRelatedCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +81,10 @@ export default function CarDetailPage() {
     );
   }
 
-  const whatsappLink = getWhatsAppBookingLink(car.name, '', '');
+  const mainImageSrc = typeof car.image === 'string' ? car.image.trim() : '';
+  const galleryImages = Array.isArray(car.images)
+    ? car.images.filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+    : [];
 
   return (
     <div className="pt-20">
@@ -96,17 +103,23 @@ export default function CarDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden mb-6">
-                <Image
-                  src={car.image || 'https://via.placeholder.com/800x600'}
-                  alt={car.name}
-                  fill
-                  className="object-cover"
-                />
+                {mainImageSrc ? (
+                  <Image
+                    src={mainImageSrc}
+                    alt={car.name}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+                    <FiImage className="h-12 w-12" />
+                  </div>
+                )}
               </div>
 
-              {car.images && car.images.length > 1 && (
+              {galleryImages.length > 1 && (
                 <div className="grid grid-cols-3 gap-4 mb-8">
-                  {car.images.map((image, index) => (
+                  {galleryImages.map((image, index) => (
                     <div key={index} className="relative h-32 rounded-lg overflow-hidden">
                       <Image
                         src={image}
@@ -200,14 +213,13 @@ export default function CarDetailPage() {
                 </div>
 
                 <div className="space-y-4 mb-8">
-                  <a
-                    href={whatsappLink}
+                  <button
+                    type="button"
+                    onClick={() => openInquiry({ id: car.id, name: car.name })}
                     className="btn-whatsapp w-full justify-center text-lg"
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     Book via WhatsApp
-                  </a>
+                  </button>
                   <Link
                     href={`/booking?car=${car.id}`}
                     className="btn-primary w-full justify-center text-lg"
@@ -221,15 +233,19 @@ export default function CarDetailPage() {
                   <div className="space-y-3 text-sm">
                     <div>
                       <span className="text-gray-600">WhatsApp:</span>
-                      <a href="tel:+60123456789" className="ml-2 text-gold-500">+60 12-345 6789</a>
+                      <a href={`tel:${settings.whatsappNumber}`} className="ml-2 text-gold-500">
+                        {settings.whatsappNumber}
+                      </a>
                     </div>
                     <div>
                       <span className="text-gray-600">Email:</span>
-                      <a href="mailto:info@mokcarrental.com" className="ml-2 text-gold-500">info@mokcarrental.com</a>
+                      <a href={`mailto:${settings.email}`} className="ml-2 text-gold-500">
+                        {settings.email}
+                      </a>
                     </div>
                     <div>
                       <span className="text-gray-600">Hours:</span>
-                      <span className="ml-2">24/7 Support</span>
+                      <span className="ml-2">{settings.workingHours} Support</span>
                     </div>
                   </div>
                 </div>

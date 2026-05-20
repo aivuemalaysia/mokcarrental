@@ -1,22 +1,21 @@
 'use client';
 
 import { FaWhatsapp } from 'react-icons/fa';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
 
 export default function WhatsAppFloat() {
-  const { getWhatsAppLink } = useSiteSettings();
+  const { openInquiry } = useWhatsAppInquiry();
   
   return (
-    <a
-      href={getWhatsAppLink()}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
+      onClick={() => openInquiry()}
       className="whatsapp-float animate-bounce-slow"
       aria-label="Chat on WhatsApp"
     >
       <div className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transform transition-all duration-300 hover:scale-110">
         <FaWhatsapp className="w-8 h-8" />
       </div>
-    </a>
+    </button>
   );
 }

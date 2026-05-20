@@ -1,3 +1,5 @@
+import LegalContactInfo from '@/components/LegalContactInfo';
+
 export const metadata = {
   title: 'Terms & Conditions',
   description: 'Read the terms and conditions for renting a car from Mok Car Rental in Johor Bahru.',
@@ -110,14 +112,8 @@ export default function TermsPage() {
               </p>
 
               <h2 className="text-2xl font-bold mb-4">11. Contact Information</h2>
-              <p className="text-gray-700 mb-6">
-                For any questions about these terms, please contact us:
-                <br />
-                <strong>Mok Car Rental</strong><br />
-                Taman Molek, Johor Bahru, Malaysia<br />
-                WhatsApp: +60 12-345 6789<br />
-                Email: info@mokcarrental.com
-              </p>
+              <p className="text-gray-700 mb-6">For any questions about these terms, please contact us:</p>
+              <LegalContactInfo />
             </div>
           </div>
         </div>

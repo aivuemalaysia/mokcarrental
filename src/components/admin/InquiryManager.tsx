@@ -2,8 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { FiSearch, FiFilter, FiMessageCircle, FiCheck, FiX } from 'react-icons/fi';
-import { supabase } from '@/lib/supabase';
 import { Inquiry } from '@/types';
+import { subscribeToInquiries } from '@/lib/realtime/inquiries';
+
+type InquiryStats = {
+  total: number;
+  pending: number;
+  confirmed: number;
+  cancelled: number;
+  latestCreatedAt: string | null;
+  eventsTableOk: boolean;
+  eventsTableWarning: string | null;
+};
 
 export default function InquiryManager() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
@@ -11,20 +21,36 @@ export default function InquiryManager() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  const [updating, setUpdating] = useState(false);
+  const [stats, setStats] = useState<InquiryStats | null>(null);
 
   useEffect(() => {
     fetchInquiries();
+    fetchStats();
+    const sub = subscribeToInquiries(() => {
+      fetchInquiries();
+      fetchStats();
+    });
+    const t = window.setInterval(() => {
+      fetchInquiries();
+      fetchStats();
+    }, 30_000);
+    return () => {
+      sub.unsubscribe();
+      window.clearInterval(t);
+    };
   }, []);
 
   const fetchInquiries = async () => {
     try {
-      const { data, error } = await supabase
-        .from('inquiries')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setInquiries(data || []);
+      const res = await fetch('/api/admin/inquiries', { cache: 'no-store' });
+      if (res.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+      const json = await res.json().catch(() => null);
+      if (!json?.ok) throw new Error(json?.error || 'Failed to fetch inquiries');
+      setInquiries(json.data || []);
     } catch (error) {
       console.error('Error fetching inquiries:', error);
     } finally {
@@ -32,18 +58,43 @@ export default function InquiryManager() {
     }
   };
 
+  const fetchStats = async () => {
+    try {
+      const res = await fetch('/api/admin/inquiries/stats', { cache: 'no-store' });
+      if (res.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+      const json = await res.json().catch(() => null);
+      if (!json?.ok) return;
+      setStats(json.data as InquiryStats);
+    } catch {}
+  };
+
   const updateStatus = async (id: string, status: string) => {
     try {
-      const { error } = await supabase
-        .from('inquiries')
-        .update({ status })
-        .eq('id', id);
-
-      if (error) throw error;
-      fetchInquiries();
+      setUpdating(true);
+      const res = await fetch(`/api/admin/inquiries/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (res.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+      const json = await res.json().catch(() => null);
+      if (!json?.ok) throw new Error(json?.error || 'Failed to update inquiry status');
+      setInquiries((prev) => prev.map((x) => (x.id === id ? { ...x, status: status as any } : x)));
+      setSelectedInquiry((prev) => (prev?.id === id ? { ...prev, status: status as any } : prev));
+      setSelectedInquiry(null);
+      await fetchInquiries();
+      await fetchStats();
     } catch (error) {
       console.error('Error updating inquiry:', error);
       alert('Failed to update inquiry status');
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -81,6 +132,21 @@ export default function InquiryManager() {
         <p className="text-gray-600 dark:text-gray-400 mt-1">
           Review and manage customer booking inquiries
         </p>
+        {stats && (
+          <div className="mt-3 flex flex-wrap gap-2 text-sm">
+            <div className="rounded-full bg-gray-100 px-3 py-1 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+              Total: {stats.total}
+            </div>
+            <div className="rounded-full bg-yellow-100 px-3 py-1 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+              Pending: {stats.pending}
+            </div>
+            {stats.eventsTableOk ? null : (
+              <div className="rounded-full bg-red-100 px-3 py-1 text-red-800 dark:bg-red-900 dark:text-red-100">
+                Live updates degraded
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
@@ -245,13 +311,15 @@ export default function InquiryManager() {
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => updateStatus(selectedInquiry.id!, 'confirmed')}
-                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                  disabled={updating}
+                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <FiCheck /> Confirm
                 </button>
                 <button
                   onClick={() => updateStatus(selectedInquiry.id!, 'cancelled')}
-                  className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                  disabled={updating}
+                  className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <FiX /> Cancel
                 </button>

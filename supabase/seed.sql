@@ -1,9 +1,12 @@
 -- Seed Cars Table
-INSERT INTO cars (name, brand, model, category, price, seats, transmission, fuel_type, image, images, features, description, available, featured) VALUES
+INSERT INTO cars (name, brand, model, year, vin, status, category, price, seats, transmission, fuel_type, image, images, features, description, available, featured) VALUES
 (
   'Perodua Axia',
   'Perodua',
   'Axia',
+  2022,
+  'DEMO-VIN-AXIA-001',
+  'available',
   'economy',
   120.00,
   5,
@@ -20,6 +23,9 @@ INSERT INTO cars (name, brand, model, category, price, seats, transmission, fuel
   'Perodua Bezza',
   'Perodua',
   'Bezza',
+  2023,
+  'DEMO-VIN-BEZZA-001',
+  'available',
   'economy',
   130.00,
   5,
@@ -36,6 +42,9 @@ INSERT INTO cars (name, brand, model, category, price, seats, transmission, fuel
   'Honda City',
   'Honda',
   'City',
+  2021,
+  'DEMO-VIN-CITY-001',
+  'available',
   'sedan',
   180.00,
   5,
@@ -52,6 +61,9 @@ INSERT INTO cars (name, brand, model, category, price, seats, transmission, fuel
   'Toyota Vios',
   'Toyota',
   'Vios',
+  2020,
+  'DEMO-VIN-VIOS-001',
+  'available',
   'sedan',
   170.00,
   5,
@@ -68,6 +80,9 @@ INSERT INTO cars (name, brand, model, category, price, seats, transmission, fuel
   'Toyota Alphard',
   'Toyota',
   'Alphard',
+  2024,
+  'DEMO-VIN-ALPHARD-001',
+  'available',
   'mpv',
   380.00,
   7,
@@ -84,6 +99,9 @@ INSERT INTO cars (name, brand, model, category, price, seats, transmission, fuel
   'Toyota Vellfire',
   'Toyota',
   'Vellfire',
+  2024,
+  'DEMO-VIN-VELLFIRE-001',
+  'available',
   'mpv',
   400.00,
   7,
@@ -100,6 +118,9 @@ INSERT INTO cars (name, brand, model, category, price, seats, transmission, fuel
   'Perodua Alza',
   'Perodua',
   'Alza',
+  2022,
+  'DEMO-VIN-ALZA-001',
+  'available',
   'mpv',
   200.00,
   7,
@@ -112,3 +133,18 @@ INSERT INTO cars (name, brand, model, category, price, seats, transmission, fuel
   true,
   false
 );
+
+-- Seed CMS content: Why Choose section
+INSERT INTO content_sections (key, title, content_html, items)
+VALUES (
+  'why_choose_us',
+  'Why Choose Mok Car Rental?',
+  '<ul><li><strong>Affordable Pricing</strong> Competitive rates without hidden charges. Best value for your money.</li><li><strong>Clean &amp; Sanitized</strong> All cars thoroughly cleaned and sanitized before every rental.</li><li><strong>Airport Delivery</strong> Convenient pickup and drop-off at Senai Airport.</li><li><strong>24/7 Support</strong> Round-the-clock customer support via WhatsApp.</li><li><strong>Trusted by Singaporeans</strong> Hundreds of satisfied customers from Singapore.</li><li><strong>Easy Booking</strong> Simple WhatsApp booking process. No complicated forms.</li></ul>',
+  '[{"icon":"dollar","title":"Affordable Pricing","description":"Competitive rates without hidden charges. Best value for your money."},{"icon":"smile","title":"Clean & Sanitized","description":"All cars thoroughly cleaned and sanitized before every rental."},{"icon":"truck","title":"Airport Delivery","description":"Convenient pickup and drop-off at Senai Airport."},{"icon":"headphones","title":"24/7 Support","description":"Round-the-clock customer support via WhatsApp."},{"icon":"award","title":"Trusted by Singaporeans","description":"Hundreds of satisfied customers from Singapore."},{"icon":"check","title":"Easy Booking","description":"Simple WhatsApp booking process. No complicated forms."}]'::jsonb
+)
+ON CONFLICT (key) DO UPDATE SET
+  title = EXCLUDED.title,
+  content_html = EXCLUDED.content_html,
+  items = EXCLUDED.items,
+  deleted_at = NULL,
+  deleted_by_email = NULL;

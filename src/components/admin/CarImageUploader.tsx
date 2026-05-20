@@ -6,6 +6,7 @@ import { FiRefreshCw, FiTrash2, FiUpload } from 'react-icons/fi';
 import {
   ACCEPT_IMAGE_ATTR,
   CAR_IMAGE_REQUIREMENTS_SHORT,
+  DEFAULT_MIN_IMAGES_PER_CAR,
   MAX_IMAGE_BYTES,
   MIN_HEIGHT,
   MIN_WIDTH,
@@ -114,7 +115,7 @@ function uploadWithProgress({
 
 export default function CarImageUploader({
   carId,
-  minImages = 5,
+  minImages = DEFAULT_MIN_IMAGES_PER_CAR,
   onCountChange,
 }: {
   carId: string;

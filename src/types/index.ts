@@ -3,6 +3,9 @@ export interface Car {
   name: string;
   brand: string;
   model: string;
+  year?: number;
+  vin?: string;
+  status?: 'available' | 'unavailable' | 'maintenance';
   category: 'economy' | 'sedan' | 'suv' | 'mpv' | 'luxury';
   price: number;
   seats: number;

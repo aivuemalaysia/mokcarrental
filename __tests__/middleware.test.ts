@@ -30,18 +30,18 @@ describe('middleware admin auth', () => {
     jest.restoreAllMocks();
   });
 
-  test('redirects unauthenticated admin page requests to /admin/login', () => {
-    const res = middleware(makeRequest('/admin/cars')) as any;
+  test('redirects unauthenticated admin page requests to /admin/login', async () => {
+    const res = (await middleware(makeRequest('/admin/cars'))) as any;
     expect(res?.headers?.get('location')).toBe('http://localhost/admin/login');
   });
 
-  test('allows authenticated admin page requests', () => {
-    const res = middleware(makeRequest('/admin/cars', 'token')) as any;
+  test('allows authenticated admin page requests', async () => {
+    const res = (await middleware(makeRequest('/admin/cars', 'admin-token-test'))) as any;
     expect(res?.headers?.get('location')).toBeNull();
   });
 
-  test('redirects authenticated users away from /admin/login', () => {
-    const res = middleware(makeRequest('/admin/login', 'token')) as any;
+  test('redirects authenticated users away from /admin/login', async () => {
+    const res = (await middleware(makeRequest('/admin/login', 'admin-token-test'))) as any;
     expect(res?.headers?.get('location')).toBe('http://localhost/admin/dashboard');
   });
 });

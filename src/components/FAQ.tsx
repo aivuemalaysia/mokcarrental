@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
+import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 
 const faqs = [
   {
@@ -71,14 +72,10 @@ export default function FAQ() {
 
         <div className="text-center mt-12">
           <p className="text-gray-600 mb-4">Still have questions?</p>
-          <a
-            href="https://wa.me/60123456789?text=Hello,%20I%20have%20a%20question%20about%20car%20rental."
-            target="_blank"
-            rel="noopener noreferrer"
+          <WhatsAppInquiryButton
+            label="Chat with Us on WhatsApp"
             className="btn-whatsapp inline-flex"
-          >
-            Chat with Us on WhatsApp
-          </a>
+          />
         </div>
       </div>
     </section>

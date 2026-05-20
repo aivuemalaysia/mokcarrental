@@ -11,11 +11,25 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const fetchWithTimeout = async (
+    input: RequestInfo | URL,
+    init: RequestInit | undefined,
+    timeoutMs: number,
+  ) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(input, { ...init, signal: controller.signal });
+    } finally {
+      clearTimeout(id);
+    }
+  };
+
   useEffect(() => {
-    fetch('/api/admin/session')
+    fetchWithTimeout('/api/admin/session', undefined, 10000)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data?.authenticated) router.replace('/admin/dashboard');
+        if (data?.data?.authenticated) router.replace('/admin/dashboard');
       })
       .catch(() => {});
   }, [router]);
@@ -26,23 +40,45 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetchWithTimeout(
+        '/api/admin/login',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        },
+        15000,
+      );
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setError(data?.error || 'Invalid email or password');
-        setLoading(false);
         return;
       }
 
-      localStorage.setItem('adminUser', JSON.stringify(data?.user || { email, name: 'Admin' }));
-      router.replace('/admin/dashboard');
-    } catch {
+      localStorage.setItem(
+        'adminUser',
+        JSON.stringify(data?.data?.user || { email, name: 'Admin' }),
+      );
+
+      const sessionRes = await fetchWithTimeout('/api/admin/session', undefined, 10000);
+      const sessionData = await sessionRes.json().catch(() => null);
+      if (sessionRes.ok && sessionData?.data?.authenticated) {
+        setLoading(false);
+        router.replace('/admin/dashboard');
+        return;
+      }
+      setError(
+        sessionData?.error ||
+          'Login succeeded but session is not active. Please refresh and try again.',
+      );
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setError('Request timed out. Please try again.');
+        return;
+      }
       setError('Something went wrong. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
@@ -110,7 +146,7 @@ export default function AdminLoginPage() {
         </div>
 
         <p className="text-center text-gray-500 text-sm mt-4">
-          Demo: admin@mokcarrental.com / admin123
+          Use your admin credentials to sign in.
         </p>
       </div>
     </div>

@@ -1,17 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiFilter } from 'react-icons/fi';
-import { supabase } from '@/lib/supabase';
 import { Car } from '@/types';
+import ConfirmDialog from '@/components/admin/ConfirmDialog';
+import CarImageUploader from '@/components/admin/CarImageUploader';
+import { DEFAULT_MIN_IMAGES_PER_CAR } from '@/lib/carImageConstraints';
 
 export default function CarFleetManager() {
+  const router = useRouter();
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Car | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     fetchCars();
@@ -19,30 +26,49 @@ export default function CarFleetManager() {
 
   const fetchCars = async () => {
     try {
-      const { data, error } = await supabase
-        .from('cars')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setCars(data || []);
+      setErrorMessage('');
+      const res = await fetch('/api/admin/cars', { cache: 'no-store' });
+      if (res.status === 401) {
+        router.replace('/admin/login');
+        return;
+      }
+      const json = await res.json().catch(() => null);
+      if (!json?.ok) {
+        setErrorMessage(json?.error || 'Failed to load cars.');
+        return;
+      }
+      setCars(json.data || []);
     } catch (error) {
-      console.error('Error fetching cars:', error);
+      console.error('IK: Error fetching cars:', error);
+      setErrorMessage('Failed to load cars.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this car?')) {
-      try {
-        const { error } = await supabase.from('cars').delete().eq('id', id);
-        if (error) throw error;
-        fetchCars();
-      } catch (error) {
-        console.error('Error deleting car:', error);
-        alert('Failed to delete car');
+    if (deleting) return;
+    setDeleting(true);
+    try {
+      setErrorMessage('');
+      console.info('IK: Deleting car', { id });
+      const res = await fetch(`/api/admin/cars/${id}`, { method: 'DELETE' });
+      if (res.status === 401) {
+        router.replace('/admin/login');
+        return;
       }
+      const json = await res.json().catch(() => null);
+      if (!json?.ok) {
+        setErrorMessage(json?.error || 'Failed to delete car.');
+        return;
+      }
+      await fetchCars();
+    } catch (error) {
+      console.error('IK: Error deleting car:', error);
+      setErrorMessage('Failed to delete car.');
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -77,6 +103,11 @@ export default function CarFleetManager() {
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        {errorMessage && (
+          <div className="mb-4 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg">
+            {errorMessage}
+          </div>
+        )}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="flex-1 relative">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -156,17 +187,22 @@ export default function CarFleetManager() {
                   <td className="py-4 px-4">
                     <div className="flex gap-2">
                       <button
+                        type="button"
                         onClick={() => {
                           setEditingCar(car);
                           setShowModal(true);
                         }}
                         className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                        aria-label={`Edit ${car.name}`}
                       >
                         <FiEdit2 />
                       </button>
                       <button
-                        onClick={() => handleDelete(car.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                        type="button"
+                        onClick={() => setDeleteTarget(car)}
+                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
+                        aria-label={`Delete ${car.name}`}
+                        disabled={deleting}
                       >
                         <FiTrash2 />
                       </button>
@@ -195,6 +231,26 @@ export default function CarFleetManager() {
           onSave={fetchCars}
         />
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete car?"
+        message={
+          deleteTarget
+            ? `This will permanently delete “${deleteTarget.name}” and any related inquiries.`
+            : ''
+        }
+        confirmLabel={deleting ? 'Deleting...' : 'Delete'}
+        danger
+        onCancel={() => {
+          if (deleting) return;
+          setDeleteTarget(null);
+        }}
+        onConfirm={() => {
+          if (!deleteTarget) return;
+          void handleDelete(deleteTarget.id);
+        }}
+      />
     </div>
   );
 }
@@ -208,36 +264,151 @@ function CarModal({
   onClose: () => void;
   onSave: () => void;
 }) {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: car?.name || '',
     brand: car?.brand || '',
     model: car?.model || '',
+    year: car?.year || new Date().getFullYear(),
+    vin: car?.vin || '',
+    status: car?.status || (car?.available ? 'available' : 'unavailable'),
     category: car?.category || 'economy',
     price: car?.price || 0,
     seats: car?.seats || 5,
     transmission: car?.transmission || 'automatic',
     fuel_type: car?.fuel_type || 'petrol',
-    image: car?.image || '',
+    featuresText: car?.features?.join('\n') || '',
     description: car?.description || '',
-    available: car?.available ?? true,
     featured: car?.featured ?? false,
   });
+  const [carId, setCarId] = useState<string>(car?.id || '');
+  const [imageCount, setImageCount] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleFinish = async () => {
+    if (!car && carId && imageCount < DEFAULT_MIN_IMAGES_PER_CAR) {
+      setErrorMessage(`Please upload at least ${DEFAULT_MIN_IMAGES_PER_CAR} images before finishing.`);
+      return;
+    }
+
+    if (!car && carId) {
+      try {
+        const res = await fetch(`/api/admin/cars/${carId}/finalize`, { method: 'POST' });
+        if (res.status === 401) {
+          router.replace('/admin/login');
+          return;
+        }
+        const json = await res.json().catch(() => null);
+        if (!json?.ok) {
+          setErrorMessage(json?.error || 'Failed to finalize car listing.');
+          return;
+        }
+      } catch {
+        setErrorMessage('Failed to finalize car listing.');
+        return;
+      }
+    }
+
+    onClose();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
+    setErrorMessage('');
     try {
-      if (car) {
-        const { error } = await supabase.from('cars').update(formData).eq('id', car.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from('cars').insert([formData]);
-        if (error) throw error;
+      const wasCarId = carId;
+      if (!car && wasCarId && imageCount < DEFAULT_MIN_IMAGES_PER_CAR) {
+        setErrorMessage(`Please upload at least ${DEFAULT_MIN_IMAGES_PER_CAR} images before finishing.`);
+        return;
       }
-      onSave();
-      onClose();
+      if (!formData.brand.trim()) {
+        setErrorMessage('Make is required.');
+        return;
+      }
+      if (!formData.model.trim()) {
+        setErrorMessage('Model is required.');
+        return;
+      }
+      if (!String(formData.year).trim()) {
+        setErrorMessage('Year is required.');
+        return;
+      }
+      if (!formData.vin.trim()) {
+        setErrorMessage('VIN is required.');
+        return;
+      }
+
+      const features = formData.featuresText
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const payload = {
+        name: formData.name,
+        brand: formData.brand,
+        model: formData.model,
+        year: Number(formData.year),
+        vin: formData.vin,
+        status: formData.status,
+        category: formData.category,
+        price: formData.price,
+        seats: formData.seats,
+        transmission: formData.transmission,
+        fuel_type: formData.fuel_type,
+        features,
+        description: formData.description,
+        featured: formData.featured,
+      };
+
+      if (carId) {
+        const res = await fetch(`/api/admin/cars/${carId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (res.status === 401) {
+          router.replace('/admin/login');
+          return;
+        }
+        const json = await res.json().catch(() => null);
+        if (!json?.ok) {
+          setErrorMessage(json?.error || 'Failed to save car.');
+          return;
+        }
+      } else {
+        const res = await fetch('/api/admin/cars', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (res.status === 401) {
+          router.replace('/admin/login');
+          return;
+        }
+        const json = await res.json().catch(() => null);
+        if (!json?.ok) {
+          setErrorMessage(json?.error || 'Failed to save car.');
+          return;
+        }
+        if (json?.data?.id) {
+          setCarId(json.data.id);
+        }
+      }
+      await onSave();
+      if (car) {
+        onClose();
+      } else if (wasCarId) {
+        onClose();
+      } else {
+        setErrorMessage(`Car saved. Please upload at least ${DEFAULT_MIN_IMAGES_PER_CAR} images before finishing.`);
+      }
     } catch (error) {
-      console.error('Error saving car:', error);
-      alert('Failed to save car');
+      console.error('IK: Error saving car:', error);
+      setErrorMessage('Failed to save car.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -250,6 +421,11 @@ function CarModal({
           </h3>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {errorMessage && (
+            <div className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg">
+              {errorMessage}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -265,7 +441,7 @@ function CarModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Brand
+                Make
               </label>
               <input
                 type="text"
@@ -275,6 +451,65 @@ function CarModal({
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Model
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.model}
+                onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Year
+              </label>
+              <input
+                type="number"
+                required
+                value={formData.year}
+                onChange={(e) => setFormData({ ...formData, year: Number(e.target.value) })}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Status
+              </label>
+              <select
+                value={formData.status}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    status: e.target.value as 'available' | 'unavailable' | 'maintenance',
+                  })
+                }
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+              >
+                <option value="available">Available</option>
+                <option value="unavailable">Unavailable</option>
+                <option value="maintenance">Maintenance</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              VIN
+            </label>
+            <input
+              type="text"
+              required
+              value={formData.vin}
+              onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+            />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
@@ -350,15 +585,22 @@ function CarModal({
             </div>
           </div>
 
+          {carId && (
+            <CarImageUploader
+              carId={carId}
+              minImages={DEFAULT_MIN_IMAGES_PER_CAR}
+              onCountChange={(count) => setImageCount(count)}
+            />
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Image URL
+              Features (one per line)
             </label>
-            <input
-              type="url"
-              required
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+            <textarea
+              rows={3}
+              value={formData.featuresText}
+              onChange={(e) => setFormData({ ...formData, featuresText: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
             />
           </div>
@@ -379,15 +621,6 @@ function CarModal({
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
-                checked={formData.available}
-                onChange={(e) => setFormData({ ...formData, available: e.target.checked })}
-                className="w-4 h-4"
-              />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Available for rental</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
                 checked={formData.featured}
                 onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
                 className="w-4 h-4"
@@ -399,16 +632,17 @@ function CarModal({
           <div className="flex gap-4 pt-4">
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => void handleFinish()}
               className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              Cancel
+              {car ? 'Cancel' : carId ? 'Finish' : 'Cancel'}
             </button>
             <button
               type="submit"
+              disabled={saving}
               className="flex-1 px-4 py-2 bg-gold-500 text-white rounded-lg hover:bg-gold-600 transition-colors"
             >
-              {car ? 'Update Car' : 'Add Car'}
+              {saving ? 'Saving...' : carId || car ? 'Update Car' : 'Save & Upload Images'}
             </button>
           </div>
         </form>

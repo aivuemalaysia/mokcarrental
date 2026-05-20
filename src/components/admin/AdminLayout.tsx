@@ -3,13 +3,15 @@
 import { useState, createContext, useContext, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { FiMenu, FiX, FiSun, FiMoon, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiSun, FiMoon } from 'react-icons/fi';
+import LogoutButton from '@/components/admin/LogoutButton';
 
 interface SidebarContextType {
   isCollapsed: boolean;
   setIsCollapsed: (value: boolean) => void;
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  isAuthenticated: boolean;
 }
 
 const SidebarContext = createContext<SidebarContextType>({
@@ -17,6 +19,7 @@ const SidebarContext = createContext<SidebarContextType>({
   setIsCollapsed: () => {},
   theme: 'light',
   toggleTheme: () => {},
+  isAuthenticated: false,
 });
 
 export const useSidebar = () => useContext(SidebarContext);
@@ -28,6 +31,7 @@ export default function AdminLayout({
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -45,7 +49,9 @@ export default function AdminLayout({
     fetch('/api/admin/session')
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (!data?.authenticated && pathname !== '/admin/login') {
+        const authed = Boolean(data?.data?.authenticated);
+        setIsAuthenticated(authed);
+        if (!authed && pathname !== '/admin/login') {
           router.replace('/admin/login');
         }
       })
@@ -64,7 +70,9 @@ export default function AdminLayout({
   };
 
   return (
-    <SidebarContext.Provider value={{ isCollapsed, setIsCollapsed, theme, toggleTheme }}>
+    <SidebarContext.Provider
+      value={{ isCollapsed, setIsCollapsed, theme, toggleTheme, isAuthenticated }}
+    >
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <AdminSidebar />
         <div className={`transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
@@ -83,17 +91,23 @@ function AdminSidebar() {
     ? 'cars'
     : pathname.includes('/admin/inquiries')
       ? 'inquiries'
+      : pathname.includes('/admin/business-applications')
+        ? 'business-applications'
       : pathname.includes('/admin/branding')
         ? 'branding'
-        : pathname.includes('/admin/settings')
-          ? 'settings'
-          : 'dashboard';
+        : pathname.includes('/admin/content')
+          ? 'content'
+          : pathname.includes('/admin/settings')
+            ? 'settings'
+            : 'dashboard';
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
     { id: 'cars', label: 'Car Fleet', href: '/admin/cars', icon: '🚗' },
     { id: 'inquiries', label: 'Inquiries', href: '/admin/inquiries', icon: '📋' },
+    { id: 'business-applications', label: 'Business Leads', href: '/admin/business-applications', icon: '🧾' },
     { id: 'branding', label: 'Branding', href: '/admin/branding', icon: '🎨' },
+    { id: 'content', label: 'Content', href: '/admin/content', icon: '📝' },
     { id: 'settings', label: 'Settings', href: '/admin/settings', icon: '⚙️' },
   ];
 
@@ -138,9 +152,8 @@ function AdminSidebar() {
 }
 
 function AdminHeader() {
-  const { theme, toggleTheme } = useSidebar();
+  const { theme, toggleTheme, isAuthenticated } = useSidebar();
   const [adminUser, setAdminUser] = useState({ name: 'Admin', email: 'admin@mokcarrental.com' });
-  const router = useRouter();
 
   useEffect(() => {
     const userStr = localStorage.getItem('adminUser');
@@ -148,12 +161,6 @@ function AdminHeader() {
       setAdminUser(JSON.parse(userStr));
     }
   }, []);
-
-  const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' }).catch(() => {});
-    localStorage.removeItem('adminUser');
-    router.replace('/admin/login');
-  };
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
@@ -170,13 +177,7 @@ function AdminHeader() {
           >
             {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
           </button>
-          <button
-            onClick={handleLogout}
-            className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 rounded-lg transition-colors"
-            title="Logout"
-          >
-            <FiLogOut size={20} />
-          </button>
+          <LogoutButton authenticated={isAuthenticated} />
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold">
               {adminUser.name.charAt(0)}

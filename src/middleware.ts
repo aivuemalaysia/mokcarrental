@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ADMIN_TOKEN_COOKIE } from '@/lib/adminAuth';
 import { getAdminRedirect } from '@/lib/adminRouting';
+import { verifyAdminSessionToken } from '@/lib/adminSession';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const hasToken = Boolean(request.cookies.get(ADMIN_TOKEN_COOKIE)?.value);
+  const token = request.cookies.get(ADMIN_TOKEN_COOKIE)?.value || '';
+  const verified = token ? await verifyAdminSessionToken(token) : { ok: false as const };
+  const hasToken = verified.ok;
   const redirectTo = getAdminRedirect(pathname, hasToken);
 
   if (!redirectTo) return NextResponse.next();

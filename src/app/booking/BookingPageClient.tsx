@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Inquiry, Car } from '@/types';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { DEFAULT_PICKUP_LOCATIONS, PickupLocationItem } from '@/lib/pickupLocations';
 
 export default function BookingPageClient({ initialCarId }: { initialCarId: string }) {
   const { settings, getWhatsAppLink } = useSiteSettings();
 
   const [cars, setCars] = useState<Car[]>([]);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [pickupLocations, setPickupLocations] = useState<PickupLocationItem[]>(DEFAULT_PICKUP_LOCATIONS);
   const [formData, setFormData] = useState<Partial<Inquiry>>({
     carId: initialCarId || '',
     carName: '',
@@ -18,7 +20,7 @@ export default function BookingPageClient({ initialCarId }: { initialCarId: stri
     email: '',
     pickupDate: '',
     returnDate: '',
-    pickupLocation: 'Mok Car Rental Office',
+    pickupLocation: DEFAULT_PICKUP_LOCATIONS[0]?.label || '',
     notes: '',
     status: 'pending',
   });
@@ -28,6 +30,34 @@ export default function BookingPageClient({ initialCarId }: { initialCarId: stri
 
   useEffect(() => {
     fetchCars();
+  }, []);
+
+  useEffect(() => {
+    const loadPickupLocations = async () => {
+      try {
+        const res = await fetch('/api/content/pickup-locations', { cache: 'no-store' });
+        const json = await res.json().catch(() => null);
+        const items = Array.isArray(json?.data?.items) ? (json.data.items as any[]) : [];
+        const parsed = items
+          .map((raw) => {
+            const id = typeof raw?.id === 'string' ? raw.id : '';
+            const label = typeof raw?.label === 'string' ? raw.label : '';
+            if (!id || !label) return null;
+            return { id, label };
+          })
+          .filter(Boolean) as PickupLocationItem[];
+
+        if (parsed.length) {
+          setPickupLocations(parsed);
+          setFormData((prev) => {
+            const current = typeof prev.pickupLocation === 'string' ? prev.pickupLocation : '';
+            const stillValid = parsed.some((x) => x.label === current);
+            return stillValid ? prev : { ...prev, pickupLocation: parsed[0].label };
+          });
+        }
+      } catch {}
+    };
+    void loadPickupLocations();
   }, []);
 
   useEffect(() => {
@@ -64,11 +94,26 @@ export default function BookingPageClient({ initialCarId }: { initialCarId: stri
     setLoading(true);
 
     try {
-      const { error } = await supabase.from('inquiries').insert([formData]);
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          carId: formData.carId,
+          carName: formData.carName,
+          customerName: formData.customerName,
+          whatsappNumber: formData.whatsappNumber,
+          email: formData.email,
+          pickupDate: formData.pickupDate,
+          returnDate: formData.returnDate,
+          pickupLocation: formData.pickupLocation,
+          notes: formData.notes,
+        }),
+      });
 
-      if (error) {
-        console.error('Error submitting inquiry:', error);
-        alert('Failed to submit inquiry. Please try again.');
+      const json = await res.json().catch(() => null);
+      if (!json?.ok) {
+        console.error('Error submitting inquiry:', json?.error);
+        alert(json?.error || 'Failed to submit inquiry. Please try again.');
         return;
       }
 
@@ -263,9 +308,11 @@ Please confirm my booking. Thank you!`;
                       setFormData({ ...formData, pickupLocation: e.target.value })
                     }
                   >
-                    <option value="Mok Car Rental Office">Mok Car Rental Office - Taman Molek</option>
-                    <option value="Senai Airport">Senai Airport (Arrival Hall)</option>
-                    <option value="CIQ Johor Bahru">CIQ Johor Bahru</option>
+                    {pickupLocations.map((loc) => (
+                      <option key={loc.id} value={loc.label}>
+                        {loc.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -297,4 +344,3 @@ Please confirm my booking. Thank you!`;
     </div>
   );
 }
-

@@ -1,3 +1,5 @@
+import LegalContactInfo from '@/components/LegalContactInfo';
+
 export const metadata = {
   title: 'Privacy Policy',
   description: 'Learn how Mok Car Rental collects, uses, and protects your personal information.',
@@ -120,14 +122,9 @@ export default function PrivacyPage() {
 
               <h2 className="text-2xl font-bold mb-4">12. Contact Us</h2>
               <p className="text-gray-700 mb-6">
-                If you have any questions about this Privacy Policy or our data practices,
-                please contact us:
-                <br /><br />
-                <strong>Mok Car Rental</strong><br />
-                Taman Molek, Johor Bahru, Malaysia<br />
-                WhatsApp: +60 12-345 6789<br />
-                Email: info@mokcarrental.com
+                If you have any questions about this Privacy Policy or our data practices, please contact us:
               </p>
+              <LegalContactInfo />
             </div>
           </div>
         </div>

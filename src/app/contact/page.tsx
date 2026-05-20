@@ -2,8 +2,12 @@
 
 import { useState } from 'react';
 import { FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
 
 export default function ContactPage() {
+  const { settings } = useSiteSettings();
+  const { openInquiry } = useWhatsAppInquiry();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -48,7 +52,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-bold mb-1">Our Location</h3>
                     <p className="text-gray-600">
-                      Taman Molek, Johor Bahru, Malaysia
+                      {settings.address}
                     </p>
                   </div>
                 </div>
@@ -59,8 +63,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Phone / WhatsApp</h3>
-                    <a href="tel:+60123456789" className="text-gold-500 hover:text-gold-600">
-                      +60 12-345 6789
+                    <a
+                      href={`tel:${settings.whatsappNumber}`}
+                      className="text-gold-500 hover:text-gold-600"
+                    >
+                      {settings.whatsappNumber}
                     </a>
                   </div>
                 </div>
@@ -71,8 +78,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Email</h3>
-                    <a href="mailto:info@mokcarrental.com" className="text-gold-500 hover:text-gold-600">
-                      info@mokcarrental.com
+                    <a
+                      href={`mailto:${settings.email}`}
+                      className="text-gold-500 hover:text-gold-600"
+                    >
+                      {settings.email}
                     </a>
                   </div>
                 </div>
@@ -84,7 +94,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-bold mb-1">Business Hours</h3>
                     <p className="text-gray-600">
-                      24/7 Support Available
+                      {settings.workingHours} Support Available
                     </p>
                   </div>
                 </div>
@@ -92,14 +102,13 @@ export default function ContactPage() {
 
               <div>
                 <h3 className="font-bold mb-4">Quick Contact</h3>
-                <a
-                  href="https://wa.me/60123456789?text=Hello%20Mok%20Car%20Rental,%20I%20would%20like%20to%20inquire%20about%20car%20rental."
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => openInquiry()}
                   className="btn-whatsapp text-lg"
                 >
                   Chat on WhatsApp
-                </a>
+                </button>
               </div>
             </div>
 
@@ -181,16 +190,22 @@ export default function ContactPage() {
               </div>
 
               <div className="mt-8 rounded-2xl overflow-hidden shadow-lg">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15958.1234567890!2d103.7654!3d1.4927!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMjknMzIuMCJOIDEwM8KwNDUnNTQuMCJF!5e0!3m2!1sen!2smy!4v1234567890123"
-                  width="100%"
-                  height="300"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Mok Car Rental Location"
-                />
+                {settings.mapsEmbedUrl ? (
+                  <iframe
+                    src={settings.mapsEmbedUrl}
+                    width="100%"
+                    height="300"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Location"
+                  />
+                ) : (
+                  <div className="bg-gray-100 text-gray-700 p-6 text-sm">
+                    Map is not configured yet. Set it in Admin → Settings.
+                  </div>
+                )}
               </div>
             </div>
           </div>

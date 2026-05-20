@@ -135,11 +135,12 @@ pnpm dev
 
 ## 🔐 Admin Access
 
-Default credentials:
-- **Email**: admin@mokcarrental.com
-- **Password**: admin123
+Admin credentials are configured via environment variables in production.
 
-⚠️ Change these credentials in production!
+- **Email**: `ADMIN_EMAIL` (default: `admin@mokcarrental.com`)
+- **Password**: use one of:
+  - `ADMIN_PASSWORD` (stored encrypted at rest by your hosting provider)
+  - `ADMIN_PASSWORD_SALT` + `ADMIN_PASSWORD_HASH` (+ optional `ADMIN_PASSWORD_ITERATIONS`) for PBKDF2 verification
 
 ## 🧯 Root Cause Analysis: Admin `net::ERR_ABORTED` / Chunk Fallback Loads
 
@@ -181,11 +182,94 @@ The website is fully SEO optimized with:
 
 ## 📊 Supabase Tables
 
+## 🧩 Supabase Integration Architecture
+- **Client (anon)**: `src/lib/supabase.ts` uses `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` for public reads and realtime subscriptions.
+- **Server (service role)**: Next.js route handlers use `SUPABASE_SERVICE_ROLE_KEY` for all writes and admin operations (keeps RLS enabled and avoids client-side inserts/updates/deletes).
+- **Customer inquiry writes**: `POST /api/inquiries` validates input, rate-limits by IP, writes to `inquiries`, and emits a realtime-safe event row in `inquiries_events`.
+- **Admin writes**: `src/app/api/admin/**` uses the service role and requires an admin session cookie; clients redirect to `/admin/login` on 401.
+- **Realtime**: Admin inquiries UI subscribes to `inquiries_events` (no PII) and refetches `/api/admin/inquiries` on change.
+
+## 🌍 Environments (dev / staging / prod)
+- Create separate Supabase projects for each environment and configure env vars per environment (local `.env.*` and Vercel environment variables).
+- Required env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
+- Recommended env vars: `ADMIN_SESSION_SECRET` (signs admin cookie tokens), `SUPABASE_CAR_IMAGES_BUCKET`.
+
 ### cars
 Stores all rental vehicles with specifications, pricing, and availability.
 
+#### Troubleshooting: `Could not find the 'status' column of 'cars' in the schema cache`
+- Ensure DB migrations are applied (especially `supabase/migrations/003_add_car_year_vin_status.sql`; hardening migration `supabase/migrations/009_cars_status_constraints.sql` is safe to apply too).
+- If the column exists but the error persists, refresh PostgREST schema cache:
+  - Admin API: `POST /api/admin/diagnostics/reload-schema` (requires an admin session cookie)
+  - SQL editor: `NOTIFY pgrst, 'reload schema';`
+  - RPC: `SELECT pgrst_reload_schema();` (service role)
+  - If `pgrst_reload_schema` itself is missing in the schema cache, apply `supabase/migrations/006_execution_system.sql` first, then run the SQL editor `NOTIFY` once to make the function visible.
+
 ### inquiries
 Stores customer booking inquiries with contact details and rental preferences.
+
+### content_sections
+Stores editable website content sections (CMS), including the “Why Choose” 6-item list.
+
+#### Troubleshooting: `Could not find the table 'public.content_sections' in the schema cache`
+- Ensure migrations are applied (especially `supabase/migrations/004_content_sections.sql` and `supabase/migrations/005_content_sections_items.sql`) or run the full schema from `supabase/schema.sql`.
+- If the table exists but the error persists, refresh PostgREST schema cache in Supabase:
+  - Run in Supabase SQL editor: `NOTIFY pgrst, 'reload schema';`
+  - Then retry the request.
+
+## 🔐 Secure Execution API (Trae-safe operations)
+
+This project includes a server-side execution endpoint that only runs pre-defined operations within strict security boundaries.
+
+### Endpoint
+- `POST /api/execution`
+
+### Authentication
+- Requires `Authorization: Bearer <Supabase JWT>` (validated via Supabase Auth).
+
+### Authorization (RBAC)
+- Roles are stored in `public.user_roles` (migration `006_execution_system.sql`).
+- Only roles explicitly allowed by an operation can run it.
+
+### Rate limiting
+- In-memory 30 requests/min per user (suitable for local/dev). For production, replace with a shared store (Redis).
+
+### Built-in operations
+- `supabase.reload_schema_cache` (calls `pgrst_reload_schema()` RPC)
+- `content.why_choose.update_item` (updates one of the 6 “Why Choose” cards by icon key)
+
+### Example request
+```json
+{
+  "op": "content.why_choose.update_item",
+  "input": {
+    "icon": "truck",
+    "title": "Airport Delivery",
+    "description": "Convenient pickup and drop-off at Senai Airport."
+  }
+}
+```
+
+## 🖼️ Car Image Uploads (Supabase Storage)
+
+### Storage bucket
+- Create a Supabase Storage bucket named `car-images`
+- Bucket can be Public (URLs will be used directly on the website)
+
+### Database
+- Apply migration `supabase/migrations/007_car_images.sql` (creates `car_images` table)
+
+### Admin upload API
+- `POST /api/admin/cars/:id/images` (multipart/form-data)
+  - Field: `files` (multiple)
+  - Validation: JPEG/PNG/WebP, max 10MB each, min 800×600
+  - Processing: generates `thumb.webp` (200×200) and `medium.webp` (1024×768)
+  - Persists metadata to `car_images` and updates `cars.image` + `cars.images` to the medium URLs for fast delivery
+- `GET /api/admin/cars/:id/images` list images
+- `DELETE /api/admin/cars/:id/images/:imageId` delete image
+
+### Admin UI
+- `/admin/cars` car modal includes drag/drop uploader and requires at least 3 images before finishing a new car listing.
 
 ## 🎨 Customization
 

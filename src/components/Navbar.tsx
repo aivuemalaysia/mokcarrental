@@ -8,6 +8,7 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/cars', label: 'Our Fleet' },
+  { href: '/start-business', label: 'Start Business' },
   { href: '/about', label: 'About Us' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Contact' },

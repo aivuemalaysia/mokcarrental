@@ -1,0 +1,12 @@
+ALTER TABLE cars
+ADD COLUMN IF NOT EXISTS year INTEGER,
+ADD COLUMN IF NOT EXISTS vin TEXT,
+ADD COLUMN IF NOT EXISTS status TEXT;
+
+UPDATE cars
+SET status = CASE WHEN available THEN 'available' ELSE 'unavailable' END
+WHERE status IS NULL;
+
+ALTER TABLE cars
+ALTER COLUMN status SET DEFAULT 'available';
+

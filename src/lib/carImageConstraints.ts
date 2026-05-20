@@ -13,7 +13,7 @@ export const THUMB_HEIGHT = 200;
 export const MEDIUM_MAX_WIDTH = 1024;
 export const MEDIUM_MAX_HEIGHT = 768;
 
-export const DEFAULT_MIN_IMAGES_PER_CAR = 5;
+export const DEFAULT_MIN_IMAGES_PER_CAR = 3;
 export const DEFAULT_MAX_FILES_PER_UPLOAD = 10;
 
 export const CAR_IMAGE_REQUIREMENTS_SHORT = 'JPEG/PNG/WebP only. Max 10MB each. Minimum 800×600.';

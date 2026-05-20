@@ -4,6 +4,30 @@
 @tailwind components;
 @tailwind utilities;
 
+.rich-text a {
+  @apply text-gold-600 hover:text-gold-700 underline;
+}
+
+.rich-text ul {
+  @apply list-disc pl-6 space-y-1;
+}
+
+.rich-text ol {
+  @apply list-decimal pl-6 space-y-1;
+}
+
+.rich-text p {
+  @apply mb-3;
+}
+
+.rich-text h3 {
+  @apply text-xl font-bold text-gray-900 mb-3;
+}
+
+.rich-text h4 {
+  @apply text-lg font-bold text-gray-900 mb-2;
+}
+
 @layer base {
   :root {
     --gold: #D4AF37;

@@ -4,12 +4,19 @@ type SessionPayload = {
   exp: number;
 };
 
-function getSecret() {
-  const secret = process.env.ADMIN_SESSION_SECRET || '';
-  if (!secret && process.env.NODE_ENV === 'production') {
-    throw new Error('Server misconfigured');
+function getSecret(required: boolean) {
+  const candidates = [
+    process.env.ADMIN_SESSION_SECRET,
+    process.env.ADMIN_PASSWORD,
+    process.env.VERCEL_DEPLOYMENT_ID,
+    process.env.VERCEL_GIT_COMMIT_SHA,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+  ];
+  for (const value of candidates) {
+    if (typeof value === 'string' && value) return value;
   }
-  return secret;
+  if (required) throw new Error('Server misconfigured: missing ADMIN_SESSION_SECRET');
+  return '';
 }
 
 function bytesToBase64(bytes: Uint8Array) {
@@ -52,7 +59,7 @@ async function getHmacKey(secret: string) {
 }
 
 export async function createAdminSessionToken(email: string) {
-  const secret = getSecret();
+  const secret = getSecret(process.env.NODE_ENV === 'production');
   if (!secret) {
     return `admin-token-${crypto.randomUUID()}`;
   }
@@ -66,10 +73,10 @@ export async function createAdminSessionToken(email: string) {
 }
 
 export async function verifyAdminSessionToken(token: string) {
-  if (token.startsWith('admin-token-')) {
+  if (process.env.NODE_ENV !== 'production' && token.startsWith('admin-token-')) {
     return { ok: true as const, email: 'admin@mokcarrental.com' };
   }
-  const secret = getSecret();
+  const secret = getSecret(false);
   if (!secret) {
     return { ok: false as const };
   }

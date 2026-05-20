@@ -1,10 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiCheckCircle } from 'react-icons/fi';
+import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
 
 export default function Hero() {
+  const { openInquiry } = useWhatsAppInquiry();
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&h=1080&fit=crop"
@@ -33,15 +37,14 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a
-              href="https://wa.me/60123456789?text=Hello%20Mok%20Car%20Rental,%20I%20would%20like%20to%20inquire%20about%20car%20rental."
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => openInquiry()}
               className="btn-whatsapp text-lg px-8 py-4"
             >
               <span>Book via WhatsApp</span>
               <span>💬</span>
-            </a>
+            </button>
 
             <Link href="/cars" className="btn-secondary text-lg px-8 py-4">
               Browse Cars

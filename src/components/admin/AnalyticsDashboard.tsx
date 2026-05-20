@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { FiTrendingUp, FiTrendingDown, FiTruck, FiMessageCircle, FiDollarSign, FiUsers } from 'react-icons/fi';
-import { supabase } from '@/lib/supabase';
 import { Inquiry, Car } from '@/types';
 import { AuditLogViewer } from '@/components/admin/AuditLogViewer';
+import { subscribeToInquiries } from '@/lib/realtime/inquiries';
 
 export default function AnalyticsDashboard() {
   const [stats, setStats] = useState({
@@ -20,28 +20,59 @@ export default function AnalyticsDashboard() {
 
   useEffect(() => {
     fetchAnalytics();
+    const sub = subscribeToInquiries(() => {
+      fetchAnalytics();
+    });
+    const t = window.setInterval(() => {
+      fetchAnalytics();
+    }, 60_000);
+    return () => {
+      sub.unsubscribe();
+      window.clearInterval(t);
+    };
   }, []);
 
   const fetchAnalytics = async () => {
     try {
-      const { data: cars } = await supabase.from('cars').select('*');
-      const { data: inquiries } = await supabase
-        .from('inquiries')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      if (cars && inquiries) {
-        setStats({
-          totalCars: cars.length,
-          availableCars: cars.filter((c: Car) => c.available).length,
-          totalInquiries: inquiries.length,
-          pendingInquiries: inquiries.filter((i: Inquiry) => i.status === 'pending').length,
-          monthlyRevenue: inquiries.length * 200,
-          avgDailyRate: cars.reduce((sum: number, c: Car) => sum + c.price, 0) / cars.length,
-        });
-        setRecentInquiries(inquiries);
+      const carsRes = await fetch('/api/admin/cars', { cache: 'no-store' });
+      if (carsRes.status === 401) {
+        window.location.href = '/admin/login';
+        return;
       }
+      const carsJson = await carsRes.json().catch(() => null);
+      if (!carsJson?.ok) return;
+      const cars = (carsJson.data || []) as Car[];
+
+      const statsRes = await fetch('/api/admin/inquiries/stats', { cache: 'no-store' });
+      if (statsRes.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+      const statsJson = await statsRes.json().catch(() => null);
+      if (!statsJson?.ok) return;
+
+      const inquiriesRes = await fetch('/api/admin/inquiries?limit=5', { cache: 'no-store' });
+      if (inquiriesRes.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+      const inquiriesJson = await inquiriesRes.json().catch(() => null);
+      if (!inquiriesJson?.ok) return;
+      const inquiries = (inquiriesJson.data || []) as Inquiry[];
+
+      const totalCars = cars.length;
+      const totalInquiries = Number(statsJson.data?.total) || 0;
+      const pendingInquiries = Number(statsJson.data?.pending) || 0;
+
+      setStats({
+        totalCars,
+        availableCars: cars.filter((c) => c.available).length,
+        totalInquiries,
+        pendingInquiries,
+        monthlyRevenue: totalInquiries * 200,
+        avgDailyRate: totalCars ? cars.reduce((sum, c) => sum + c.price, 0) / totalCars : 0,
+      });
+      setRecentInquiries(inquiries);
     } catch (error) {
       console.error('Error fetching analytics:', error);
     } finally {

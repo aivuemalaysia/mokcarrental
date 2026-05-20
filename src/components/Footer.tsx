@@ -20,18 +20,26 @@ export default function Footer() {
               Malaysia. Serving Singapore customers and tourists since 2020.
             </p>
             <div className="flex gap-4">
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-gold-500/20 flex items-center justify-center hover:bg-gold-500 transition-colors"
-              >
-                <span className="text-gold-500 hover:text-white">FB</span>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-gold-500/20 flex items-center justify-center hover:bg-gold-500 transition-colors"
-              >
-                <span className="text-gold-500 hover:text-white">IG</span>
-              </a>
+              {settings.facebookUrl && (
+                <a
+                  href={settings.facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-gold-500/20 flex items-center justify-center hover:bg-gold-500 transition-colors"
+                >
+                  <span className="text-gold-500 hover:text-white">FB</span>
+                </a>
+              )}
+              {settings.instagramUrl && (
+                <a
+                  href={settings.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-gold-500/20 flex items-center justify-center hover:bg-gold-500 transition-colors"
+                >
+                  <span className="text-gold-500 hover:text-white">IG</span>
+                </a>
+              )}
             </div>
           </div>
 
