@@ -1,6 +1,12 @@
 import { POST } from '@/app/api/admin/login/route';
 import { ADMIN_TOKEN_COOKIE } from '@/lib/adminAuth';
 
+beforeAll(() => {
+  // Set a test admin password so we don't rely on hardcoded defaults
+  process.env.ADMIN_PASSWORD = 'AdminTest123';
+  process.env.NODE_ENV = 'test';
+});
+
 describe('/api/admin/login', () => {
   beforeEach(() => {
     jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -26,7 +32,7 @@ describe('/api/admin/login', () => {
     const request = new Request('http://localhost/api/admin/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'admin@mokcarrental.com', password: 'admin123' }),
+      body: JSON.stringify({ email: 'admin@mokcarrental.com', password: 'AdminTest123' }),
     });
 
     const response = await POST(request);

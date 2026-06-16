@@ -5,18 +5,19 @@ type SessionPayload = {
 };
 
 function getSecret(required: boolean) {
-  const candidates = [
-    process.env.ADMIN_SESSION_SECRET,
-    process.env.ADMIN_PASSWORD,
-    process.env.VERCEL_DEPLOYMENT_ID,
-    process.env.VERCEL_GIT_COMMIT_SHA,
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
-  ];
-  for (const value of candidates) {
-    if (typeof value === 'string' && value) return value;
+  const secret = process.env.ADMIN_SESSION_SECRET || '';
+  if (!secret) {
+    // In production, throw a clear error
+    if (required) {
+      throw new Error(
+        'Server misconfigured: ADMIN_SESSION_SECRET environment variable must be set. ' +
+        'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+      );
+    }
+    // In non-production, allow unsigned dev tokens
+    return '';
   }
-  if (required) throw new Error('Server misconfigured: missing ADMIN_SESSION_SECRET');
-  return '';
+  return secret;
 }
 
 function bytesToBase64(bytes: Uint8Array) {

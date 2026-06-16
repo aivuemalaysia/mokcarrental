@@ -1,7 +1,10 @@
 import { getSupabaseAdminClient } from '@/lib/supabaseAdmin';
+import 'server-only';
 
 export const ADMIN_EMAIL = 'admin@mokcarrental.com';
-export const ADMIN_PASSWORD = 'admin123';
+// DEPRECATED: Production must use ADMIN_PASSWORD_HASH + ADMIN_PASSWORD_SALT env vars.
+// The plain password fallback is for local development only and will be removed.
+export const ADMIN_PASSWORD = process.env.NODE_ENV !== 'production' ? 'admin123' : '';
 export const ADMIN_TOKEN_COOKIE = 'admin_token';
 
 export type AdminAuthMode = 'pbkdf2' | 'plain' | 'missing';
@@ -16,8 +19,11 @@ function getAdminEmail() {
 }
 
 function getAdminPassword() {
-  const envPassword = process.env.ADMIN_PASSWORD;
-  return typeof envPassword === 'string' && envPassword ? envPassword : ADMIN_PASSWORD;
+  // DEPRECATED: Production must use ADMIN_PASSWORD_HASH + ADMIN_PASSWORD_SALT
+  const envPassword = process.env.ADMIN_PASSWORD || '';
+  if (envPassword) return envPassword;
+  // Development fallback only - never used in production
+  return ADMIN_PASSWORD;
 }
 
 function base64UrlToBytes(b64url: string) {
