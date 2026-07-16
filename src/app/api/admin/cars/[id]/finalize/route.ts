@@ -34,3 +34,4 @@ export async function POST(request: Request, ctx: { params: { id: string } }) {
 
   return NextResponse.json({ ok: true, data: { imageCount } });
 }
+

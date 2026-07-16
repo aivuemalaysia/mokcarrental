@@ -4,7 +4,8 @@ import 'server-only';
 export const ADMIN_EMAIL = 'admin@mokcarrental.com';
 // DEPRECATED: Production must use ADMIN_PASSWORD_HASH + ADMIN_PASSWORD_SALT env vars.
 // The plain password fallback is for local development only and will be removed.
-export const ADMIN_PASSWORD = process.env.NODE_ENV !== 'production' ? 'admin123' : '';
+// SECURITY FIX: Hardcoded password removed. Admin must configure PBKDF2 hash env vars.
+export const ADMIN_PASSWORD = '';
 export const ADMIN_TOKEN_COOKIE = 'admin_token';
 
 export type AdminAuthMode = 'pbkdf2' | 'plain' | 'missing';
@@ -22,8 +23,8 @@ function getAdminPassword() {
   // DEPRECATED: Production must use ADMIN_PASSWORD_HASH + ADMIN_PASSWORD_SALT
   const envPassword = process.env.ADMIN_PASSWORD || '';
   if (envPassword) return envPassword;
-  // Development fallback only - never used in production
-  return ADMIN_PASSWORD;
+  // SECURITY FIX: No fallback - admin must configure PBKDF2 hash or env password
+  return '';
 }
 
 function base64UrlToBytes(b64url: string) {
@@ -123,7 +124,10 @@ async function verifyPassword(password: string) {
     return constantTimeEqual(actual, expected);
   }
 
-  return password === getAdminPassword();
+  const fallbackPassword = getAdminPassword();
+  if (fallbackPassword && password === fallbackPassword) return true;
+  // SECURITY FIX: No hardcoded fallback; PBKDF2 auth must succeed or login fails
+  return false;
 }
 
 export function getAdminAuthDebugInfo() {

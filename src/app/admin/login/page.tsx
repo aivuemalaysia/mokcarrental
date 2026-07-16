@@ -56,10 +56,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      localStorage.setItem(
-        'adminUser',
-        JSON.stringify(data?.data?.user || { email, name: 'Admin' }),
-      );
+      // SECURITY FIX: Removed localStorage admin storage; rely solely on HTTP-only cookie
 
       const sessionRes = await fetchWithTimeout('/api/admin/session', undefined, 10000);
       const sessionData = await sessionRes.json().catch(() => null);

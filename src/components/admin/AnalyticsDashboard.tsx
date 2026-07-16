@@ -69,7 +69,7 @@ export default function AnalyticsDashboard() {
         availableCars: cars.filter((c) => c.available).length,
         totalInquiries,
         pendingInquiries,
-        monthlyRevenue: totalInquiries * 200,
+        monthlyRevenue: 0, // TODO: Add bookings/revenue table for actual tracking
         avgDailyRate: totalCars ? cars.reduce((sum, c) => sum + c.price, 0) / totalCars : 0,
       });
       setRecentInquiries(inquiries);

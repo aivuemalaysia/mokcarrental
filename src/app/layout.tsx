@@ -51,9 +51,63 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ms">
+    <head>
+      {/* JSON-LD Structured Data for LocalBusiness SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'CarRental',
+            name: 'Mok Car Rental',
+            description: 'Affordable, reliable, and hassle-free rental cars in Johor Bahru, Malaysia',
+            url: 'https://mokcarrental.com',
+            telephone: '+60-XXX-XXXXXXX',
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: 'Johor Bahru',
+              addressLocality: 'Johor Bahru',
+              addressRegion: 'Johor',
+              addressCountry: 'MY',
+            },
+            geo: {
+              '@type': 'GeoCoordinates',
+              latitude: 1.4927,
+              longitude: 103.7414,
+            },
+            openingHoursSpecification: {
+              '@type': 'OpeningHoursSpecification',
+              dayOfWeek: [
+                'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+              ],
+              opens: '08:00',
+              closes: '22:00',
+            },
+            priceRange: '\$\$',
+            areaServed: {
+              '@type': 'GeoCircle',
+              geoMidpoint: {
+                '@type': 'GeoCoordinates',
+                latitude: 1.4927,
+                longitude: 103.7414,
+              },
+              geoRadius: '50000',
+            },
+          }),
+        }}
+      />
+    </head>
       <body className="antialiased">
-        <ClientLayout>{children}</ClientLayout>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-gold-500 focus:text-white focus:rounded-lg"
+      >
+        Skip to main content
+      </a>
+        <ClientLayout>
+        <main id="main-content">{children}</main>
+      </ClientLayout>
       </body>
     </html>
   );

@@ -2,14 +2,16 @@
 
 import { FaWhatsapp } from 'react-icons/fa';
 import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
+import { usePathname } from 'next/navigation';
 
 export default function WhatsAppFloat() {
   const { openInquiry } = useWhatsAppInquiry();
+  const pathname = usePathname();
   
   return (
     <button
       type="button"
-      onClick={() => openInquiry()}
+      onClick={() => openInquiry(pathname)}
       className="whatsapp-float animate-bounce-slow"
       aria-label="Chat on WhatsApp"
     >

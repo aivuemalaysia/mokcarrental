@@ -89,7 +89,14 @@ export async function PUT(request: Request) {
   const client = getSupabaseAdminClient();
   if (!client) return NextResponse.json({ ok: false, error: 'Server misconfigured' }, { status: 500 });
 
-  const body = await request.json().catch(() => null);
+  const body = await request.json()
+  // CSRF protection
+  const cookieStore = cookies();
+  const csrfValid = await validateCsrfToken(request, cookieStore);
+  if (!csrfValid) {
+    return jsonError('Invalid CSRF token', 403);
+  }
+.catch(() => null);
   const title = typeof body?.title === 'string' ? body.title.trim() : '';
   const items = parseItems(body?.items);
   const content_html_raw = typeof body?.content_html === 'string' ? body.content_html : '';
@@ -172,3 +179,4 @@ export async function DELETE(request: Request) {
 
   return NextResponse.json({ ok: true, data });
 }
+

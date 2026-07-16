@@ -61,6 +61,18 @@ export async function POST(request: Request) {
     if (!ownerName) return NextResponse.json({ ok: false, error: 'Owner name is required.' }, { status: 400 });
     if (!contactNumber) return NextResponse.json({ ok: false, error: 'Contact number is required.' }, { status: 400 });
 
+    // SECURITY FIX: Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+      return NextResponse.json({ ok: false, error: 'Invalid email format.' }, { status: 400 });
+    }
+
+    // SECURITY FIX: Validate phone number format (basic international format)
+    const phoneClean = contactNumber.replace(/[\s\-\(\)]/g, '');
+    if (!/^\+?[0-9]{7,15}$/.test(phoneClean)) {
+      return NextResponse.json({ ok: false, error: 'Invalid phone number format.' }, { status: 400 });
+    }
+
     const files = form.getAll('files').filter(Boolean) as File[];
     if (!files.length) return NextResponse.json({ ok: false, error: 'At least 1 car photo is required.' }, { status: 400 });
     if (files.length > 6) return NextResponse.json({ ok: false, error: 'Too many files (max 6).' }, { status: 400 });

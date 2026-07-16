@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "baseUrl": "http://localhost:3013",
+  "results": [
+    {
+      "name": "health",
+      "url": "http://localhost:3013/api/health",
+      "ok": true,
+      "status": 200,
+      "elapsedMs": 393,
+      "snippet": "{\"ok\":true,\"data\":{\"status\":\"ok\",\"env\":\"local\",\"commit\":null,\"time\":\"2026-05-13T09:46:47.286Z\"}}"
+    },
+    {
+      "name": "home",
+      "url": "http://localhost:3013/",
+      "ok": true,
+      "status": 200,
+      "elapsedMs": 4712,
+      "snippet": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"preload\" as=\"image\" href=\"https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&amp;h=1080&amp;f"
+    },
+    {
+      "name": "cars",
+      "url": "http://localhost:3013/cars",
+      "ok": true,
+      "status": 200,
+      "elapsedMs": 4913,
+      "snippet": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/app/layout.css?v=1778665616863\" data-precedence=\"next_static/css/app/layou"
+    },
+    {
+      "name": "admin_login",
+      "url": "http://localhost:3013/admin/login",
+      "ok": true,
+      "status": 200,
+      "elapsedMs": 353,
+      "snippet": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/app/layout.css?v=1778665617264\" data-precedence=\"next_static/css/app/layou"
+    }
+  ]
+}

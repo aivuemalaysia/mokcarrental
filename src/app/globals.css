@@ -30,6 +30,8 @@
 
 @layer base {
   :root {
+  --gold-primary: #B8960C;
+  --gold-hover: #9A7D0A;
     --gold: #D4AF37;
     --gold-light: #F4D03F;
     --gold-dark: #B8972F;

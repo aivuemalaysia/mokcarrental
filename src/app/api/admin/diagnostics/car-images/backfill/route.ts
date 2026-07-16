@@ -104,7 +104,14 @@ export async function POST(request: Request) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   if (!supabaseUrl) return NextResponse.json({ ok: false, error: 'Server misconfigured' }, { status: 500 });
 
-  const body = await request.json().catch(() => null);
+  const body = await request.json()
+  // CSRF protection
+  const cookieStore = cookies();
+  const csrfValid = await validateCsrfToken(request, cookieStore);
+  if (!csrfValid) {
+    return jsonError('Invalid CSRF token', 403);
+  }
+.catch(() => null);
   const onlyCarId = typeof body?.carId === 'string' ? body.carId : '';
   const limit = typeof body?.limit === 'number' && Number.isFinite(body.limit) ? Math.max(1, Math.min(500, body.limit)) : 200;
 

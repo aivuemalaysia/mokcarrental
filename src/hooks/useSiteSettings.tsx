@@ -70,7 +70,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const boot = async () => {
-      setSettings(readFromStorage());
       try {
         const res = await fetch('/api/content/site-settings', { cache: 'no-store' });
         const json = await res.json().catch(() => null);
@@ -80,8 +79,14 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           setSettings(merged);
           localStorage.setItem('siteSettings', JSON.stringify(merged));
           window.dispatchEvent(new Event('settings-updated'));
+        } else {
+          setSettings(readFromStorage());
         }
-      } catch {}
+      } catch {
+        setSettings(readFromStorage());
+      } finally {
+        setLoading(false);
+      }
       setLoading(false);
     };
     void boot();
@@ -103,15 +108,21 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const updateSettings = (newSettings: Partial<SiteSettings>) => {
+  const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     const updated = { ...settings, ...newSettings };
     setSettings(updated);
     try {
+      await fetch('/api/content/site-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated),
+      });
       localStorage.setItem('siteSettings', JSON.stringify(updated));
       window.dispatchEvent(new Event('settings-updated'));
       console.info('IK: siteSettings updated');
     } catch (e) {
       console.error('IK: Error saving settings:', e);
+      localStorage.setItem('siteSettings', JSON.stringify(updated));
       throw e;
     }
   };

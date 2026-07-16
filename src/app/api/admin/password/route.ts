@@ -54,7 +54,14 @@ export async function POST(request: Request) {
   const session = await requireAdminSession(request);
   if (!session.ok) return jsonError('Unauthorized', 401);
 
-  const body = await request.json().catch(() => null);
+  const body = await request.json()
+  // CSRF protection
+  const cookieStore = cookies();
+  const csrfValid = await validateCsrfToken(request, cookieStore);
+  if (!csrfValid) {
+    return jsonError('Invalid CSRF token', 403);
+  }
+.catch(() => null);
   const currentPassword = typeof body?.currentPassword === 'string' ? body.currentPassword : '';
   const newPassword = typeof body?.newPassword === 'string' ? body.newPassword : '';
   const confirmPassword = typeof body?.confirmPassword === 'string' ? body.confirmPassword : '';

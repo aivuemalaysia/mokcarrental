@@ -49,7 +49,14 @@ export async function POST(request: Request) {
   const client = getAdminClient();
   if (!client) return NextResponse.json({ ok: false, error: 'Server misconfigured' }, { status: 500 });
 
-  const body = await request.json().catch(() => null);
+  const body = await request.json()
+  // CSRF protection
+  const cookieStore = cookies();
+  const csrfValid = await validateCsrfToken(request, cookieStore);
+  if (!csrfValid) {
+    return jsonError('Invalid CSRF token', 403);
+  }
+.catch(() => null);
   if (!body || typeof body !== 'object') {
     return NextResponse.json({ ok: false, error: 'Invalid body' }, { status: 400 });
   }
@@ -71,3 +78,4 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ ok: true, data }, { status: 201 });
 }
+

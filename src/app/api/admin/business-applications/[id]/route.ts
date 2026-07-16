@@ -56,7 +56,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   const client = getSupabaseAdminClient();
   if (!client) return NextResponse.json({ ok: false, error: 'Server misconfigured' }, { status: 500 });
 
-  const body = await request.json().catch(() => null);
+  const body = await request.json()
+  // CSRF protection
+  const cookieStore = cookies();
+  const csrfValid = await validateCsrfToken(request, cookieStore);
+  if (!csrfValid) {
+    return jsonError('Invalid CSRF token', 403);
+  }
+.catch(() => null);
   const status = normalizeText(body?.status);
   const adminNotes = normalizeText(body?.adminNotes);
   const adminEmail = request.headers.get('x-admin-email') || null;
@@ -92,4 +99,5 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
   return NextResponse.json({ ok: true, data });
 }
+
 

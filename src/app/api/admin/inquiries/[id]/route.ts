@@ -10,7 +10,14 @@ export async function PUT(request: Request, ctx: { params: { id: string } }) {
   const client = getSupabaseAdminClient();
   if (!client) return jsonError('Server misconfigured', 500);
 
-  const body = await request.json().catch(() => null);
+  const body = await request.json()
+  // CSRF protection
+  const cookieStore = cookies();
+  const csrfValid = await validateCsrfToken(request, cookieStore);
+  if (!csrfValid) {
+    return jsonError('Invalid CSRF token', 403);
+  }
+.catch(() => null);
   const validated = validateInquiryStatus(body);
   if (!validated.ok) return jsonError(validated.error, 400);
 

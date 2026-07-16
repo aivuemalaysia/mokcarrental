@@ -38,12 +38,24 @@ export default function BrandingManager() {
     saveBranding(branding);
   };
 
-  const saveBranding = (data: typeof branding) => {
+  const saveBranding = async (data: typeof branding) => {
     setSaving(true);
-    localStorage.setItem('siteBranding', JSON.stringify(data));
-    setMessage('Branding settings saved successfully!');
-    setTimeout(() => setMessage(''), 3000);
-    setSaving(false);
+    try {
+      // Save to API first (source of truth)
+      await fetch('/api/admin/branding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      localStorage.setItem('siteBranding', JSON.stringify(data));
+      setMessage('Branding settings saved successfully!');
+    } catch (error) {
+      console.error('Failed to save branding to API:', error);
+      setMessage('Saved locally only - API sync failed');
+    } finally {
+      setTimeout(() => setMessage(''), 3000);
+      setSaving(false);
+    }
   };
 
   return (

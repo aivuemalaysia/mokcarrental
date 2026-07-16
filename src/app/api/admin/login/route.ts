@@ -54,7 +54,14 @@ export async function POST(request: Request) {
     return jsonError('Too many login attempts. Try again in 15 minutes.', 429);
   }
 
-  const body = await request.json().catch(() => null);
+  const body = await request.json()
+  // CSRF protection
+  const cookieStore = cookies();
+  const csrfValid = await validateCsrfToken(request, cookieStore);
+  if (!csrfValid) {
+    return jsonError('Invalid CSRF token', 403);
+  }
+.catch(() => null);
   const email = typeof body?.email === 'string' ? body.email : '';
   const password = typeof body?.password === 'string' ? body.password : '';
   const normalizedEmail = email.trim().toLowerCase();
@@ -105,3 +112,4 @@ export async function POST(request: Request) {
 
   return response;
 }
+
