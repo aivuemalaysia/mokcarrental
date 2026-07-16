@@ -9,7 +9,7 @@ export function generateCsrfToken(): string {
 export function setCsrfTokenCookie(response: any) {
   const token = generateCsrfToken();
   response.cookies.set(CSRF_COOKIE_NAME, token, {
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
