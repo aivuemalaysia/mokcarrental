@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -10,6 +10,7 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const csrfFetched = useRef(false);
 
   const fetchWithTimeout = async (
     input: RequestInfo | URL,
@@ -24,6 +25,15 @@ export default function AdminLoginPage() {
       clearTimeout(id);
     }
   };
+
+  // Fetch CSRF token once on mount
+  useEffect(() => {
+    if (csrfFetched.current) return;
+    csrfFetched.current = true;
+    fetchWithTimeout('/api/admin/session', undefined, 10000)
+      .then(() => {})
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetchWithTimeout('/api/admin/session', undefined, 10000)
@@ -40,11 +50,20 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
+      // Get the CSRF token from cookies
+      const csrfToken = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrf_token='))
+        ?.split('=')[1];
+
       const res = await fetchWithTimeout(
         '/api/admin/login',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(csrfToken ? { 'x-csrf-token': csrfToken } : {}),
+          },
           body: JSON.stringify({ email, password }),
         },
         15000,
@@ -55,8 +74,6 @@ export default function AdminLoginPage() {
         setError(data?.error || 'Invalid email or password');
         return;
       }
-
-      // SECURITY FIX: Removed localStorage admin storage; rely solely on HTTP-only cookie
 
       const sessionRes = await fetchWithTimeout('/api/admin/session', undefined, 10000);
       const sessionData = await sessionRes.json().catch(() => null);
