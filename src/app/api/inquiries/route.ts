@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     request.headers.get('x-real-ip') ||
     'unknown';
-  const limited = rateLimit({ key: `inquiries:${ip}`, limit: 20, windowMs: 60_000 });
+  const limited = await rateLimit({ key: `inquiries:${ip}`, limit: 20, windowMs: 60_000 });
   if (!limited.ok) return jsonError('Too many requests', 429);
 
   const body = await request.json().catch(() => null);

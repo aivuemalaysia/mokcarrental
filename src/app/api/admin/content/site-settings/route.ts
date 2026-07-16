@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { requireAdminSession } from '@/lib/adminApi';
 import { getSupabaseAdminClient } from '@/lib/supabaseAdmin';
 import { writeAuditLog } from '@/lib/auditLog';
+import { cookies } from 'next/headers';
+import { validateCsrfToken } from "@/lib/csrf";
+import { jsonError } from '@/lib/apiResponse';
 
 const CONTENT_KEY = 'site_settings';
 
@@ -116,14 +119,13 @@ export async function PUT(request: Request) {
   const client = getSupabaseAdminClient();
   if (!client) return NextResponse.json({ ok: false, error: 'Server misconfigured' }, { status: 500 });
 
-  const body = await request.json()
+  const body = await request.json().catch(() => null);
   // CSRF protection
   const cookieStore = cookies();
   const csrfValid = await validateCsrfToken(request, cookieStore);
   if (!csrfValid) {
     return jsonError('Invalid CSRF token', 403);
   }
-.catch(() => null);
   const settings = parseSettings(body);
   if (!settings) {
     return NextResponse.json({ ok: false, error: 'Invalid settings payload.' }, { status: 400 });

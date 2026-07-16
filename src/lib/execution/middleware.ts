@@ -35,7 +35,7 @@ export async function handleExecutionRequest(request: Request) {
   if (authError) return { status: 401, body: { ok: false, error: authError } };
 
   const rateKey = `exec:${user.id}`;
-  const limited = rateLimit({ key: rateKey, limit: 30, windowMs: 60_000 });
+  const limited = await rateLimit({ key: rateKey, limit: 30, windowMs: 60_000 });
   if (!limited.ok) {
     await writeAuditLog({
       action: 'rate_limit',

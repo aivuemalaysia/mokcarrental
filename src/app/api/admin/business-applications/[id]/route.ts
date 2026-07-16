@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { requireAdminSession } from '@/lib/adminApi';
 import { getSupabaseAdminClient } from '@/lib/supabaseAdmin';
 import { writeAuditLog } from '@/lib/auditLog';
+import { cookies } from 'next/headers';
+import { validateCsrfToken } from "@/lib/csrf";
+import { jsonError } from '@/lib/apiResponse';
 
 function normalizeSchemaCacheError(message: string) {
   if (message.includes("Could not find the table 'public.business_applications' in the schema cache")) {
@@ -56,14 +59,13 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   const client = getSupabaseAdminClient();
   if (!client) return NextResponse.json({ ok: false, error: 'Server misconfigured' }, { status: 500 });
 
-  const body = await request.json()
+  const body = await request.json().catch(() => null);
   // CSRF protection
   const cookieStore = cookies();
   const csrfValid = await validateCsrfToken(request, cookieStore);
   if (!csrfValid) {
     return jsonError('Invalid CSRF token', 403);
   }
-.catch(() => null);
   const status = normalizeText(body?.status);
   const adminNotes = normalizeText(body?.adminNotes);
   const adminEmail = request.headers.get('x-admin-email') || null;

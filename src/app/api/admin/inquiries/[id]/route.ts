@@ -2,6 +2,8 @@ import { jsonError, jsonOk } from '@/lib/apiResponse';
 import { requireAdminSession } from '@/lib/adminApi';
 import { getSupabaseAdminClient } from '@/lib/supabaseAdmin';
 import { validateInquiryStatus } from '@/lib/validation/inquiry';
+import { cookies } from 'next/headers';
+import { validateCsrfToken } from "@/lib/csrf";
 
 export async function PUT(request: Request, ctx: { params: { id: string } }) {
   const session = await requireAdminSession(request);
@@ -10,14 +12,13 @@ export async function PUT(request: Request, ctx: { params: { id: string } }) {
   const client = getSupabaseAdminClient();
   if (!client) return jsonError('Server misconfigured', 500);
 
-  const body = await request.json()
+  const body = await request.json().catch(() => null);
   // CSRF protection
   const cookieStore = cookies();
   const csrfValid = await validateCsrfToken(request, cookieStore);
   if (!csrfValid) {
     return jsonError('Invalid CSRF token', 403);
   }
-.catch(() => null);
   const validated = validateInquiryStatus(body);
   if (!validated.ok) return jsonError(validated.error, 400);
 

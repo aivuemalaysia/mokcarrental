@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { requireAdminSession } from '@/lib/adminApi';
 import { DEFAULT_MIN_IMAGES_PER_CAR } from '@/lib/carImageConstraints';
+import { cookies } from 'next/headers';
+import { validateCsrfToken } from "@/lib/csrf";
+import { jsonError } from '@/lib/apiResponse';
 
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -48,14 +51,13 @@ export async function PUT(request: Request, ctx: { params: { id: string } }) {
   const client = getAdminClient();
   if (!client) return NextResponse.json({ ok: false, error: 'Server misconfigured' }, { status: 500 });
 
-  const body = await request.json()
+  const body = await request.json().catch(() => null);
   // CSRF protection
   const cookieStore = cookies();
   const csrfValid = await validateCsrfToken(request, cookieStore);
   if (!csrfValid) {
     return jsonError('Invalid CSRF token', 403);
   }
-.catch(() => null);
   if (!body || typeof body !== 'object') {
     return NextResponse.json({ ok: false, error: 'Invalid body' }, { status: 400 });
   }

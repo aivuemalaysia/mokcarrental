@@ -3,6 +3,8 @@ import { ADMIN_TOKEN_COOKIE, getAdminAuthDebugInfo, isValidAdminCredentials } fr
 import { jsonError, jsonOk } from '@/lib/apiResponse';
 import { getSupabaseAdminClient } from '@/lib/supabaseAdmin';
 import { createAdminSessionToken } from '@/lib/adminSession';
+import { cookies } from 'next/headers';
+import { validateCsrfToken } from '@/lib/csrf';
 
 const MAX_LOGIN_ATTEMPTS = 10;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
@@ -54,14 +56,13 @@ export async function POST(request: Request) {
     return jsonError('Too many login attempts. Try again in 15 minutes.', 429);
   }
 
-  const body = await request.json()
+  const body = await request.json().catch(() => null);
   // CSRF protection
   const cookieStore = cookies();
   const csrfValid = await validateCsrfToken(request, cookieStore);
   if (!csrfValid) {
     return jsonError('Invalid CSRF token', 403);
   }
-.catch(() => null);
   const email = typeof body?.email === 'string' ? body.email : '';
   const password = typeof body?.password === 'string' ? body.password : '';
   const normalizedEmail = email.trim().toLowerCase();

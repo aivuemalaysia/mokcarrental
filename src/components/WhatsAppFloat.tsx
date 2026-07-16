@@ -11,7 +11,7 @@ export default function WhatsAppFloat() {
   return (
     <button
       type="button"
-      onClick={() => openInquiry(pathname)}
+      onClick={() => openInquiry()}
       className="whatsapp-float animate-bounce-slow"
       aria-label="Chat on WhatsApp"
     >
