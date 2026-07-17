@@ -13,7 +13,6 @@ export async function PUT(request: Request, ctx: { params: { id: string } }) {
   if (!client) return jsonError('Server misconfigured', 500);
 
   const body = await request.json().catch(() => null);
-  // CSRF protection
   const cookieStore = cookies();
   const csrfValid = await validateCsrfToken(request, cookieStore);
   if (!csrfValid) {

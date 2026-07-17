@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FiSearch, FiFilter, FiMessageCircle, FiCheck, FiX } from 'react-icons/fi';
 import { Inquiry } from '@/types';
 import { subscribeToInquiries } from '@/lib/realtime/inquiries';
+import { csrfFetch } from '@/lib/csrfFetch';
 
 type InquiryStats = {
   total: number;
@@ -74,9 +75,8 @@ export default function InquiryManager() {
   const updateStatus = async (id: string, status: string) => {
     try {
       setUpdating(true);
-      const res = await fetch(`/api/admin/inquiries/${id}`, {
+      const res = await csrfFetch(`/api/admin/inquiries/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
       });
       if (res.status === 401) {

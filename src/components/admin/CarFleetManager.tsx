@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,6 +7,7 @@ import { Car } from '@/types';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
 import CarImageUploader from '@/components/admin/CarImageUploader';
 import { DEFAULT_MIN_IMAGES_PER_CAR } from '@/lib/carImageConstraints';
+import { csrfFetch, resetCsrfToken } from '@/lib/csrfFetch';
 
 export default function CarFleetManager() {
   const router = useRouter();
@@ -29,6 +30,7 @@ export default function CarFleetManager() {
       setErrorMessage('');
       const res = await fetch('/api/admin/cars', { cache: 'no-store' });
       if (res.status === 401) {
+        resetCsrfToken();
         router.replace('/admin/login');
         return;
       }
@@ -52,8 +54,9 @@ export default function CarFleetManager() {
     try {
       setErrorMessage('');
       console.info('IK: Deleting car', { id });
-      const res = await fetch(`/api/admin/cars/${id}`, { method: 'DELETE' });
+      const res = await csrfFetch(`/api/admin/cars/${id}`, { method: 'DELETE' });
       if (res.status === 401) {
+        resetCsrfToken();
         router.replace('/admin/login');
         return;
       }
@@ -237,7 +240,7 @@ export default function CarFleetManager() {
         title="Delete car?"
         message={
           deleteTarget
-            ? `This will permanently delete “${deleteTarget.name}” and any related inquiries.`
+            ? `This will permanently delete "${deleteTarget.name}" and any related inquiries.`
             : ''
         }
         confirmLabel={deleting ? 'Deleting...' : 'Delete'}
@@ -294,8 +297,9 @@ function CarModal({
 
     if (!car && carId) {
       try {
-        const res = await fetch(`/api/admin/cars/${carId}/finalize`, { method: 'POST' });
+        const res = await csrfFetch(`/api/admin/cars/${carId}/finalize`, { method: 'POST' });
         if (res.status === 401) {
+          resetCsrfToken();
           router.replace('/admin/login');
           return;
         }
@@ -363,12 +367,12 @@ function CarModal({
       };
 
       if (carId) {
-        const res = await fetch(`/api/admin/cars/${carId}`, {
+        const res = await csrfFetch(`/api/admin/cars/${carId}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
         if (res.status === 401) {
+          resetCsrfToken();
           router.replace('/admin/login');
           return;
         }
@@ -378,12 +382,12 @@ function CarModal({
           return;
         }
       } else {
-        const res = await fetch('/api/admin/cars', {
+        const res = await csrfFetch('/api/admin/cars', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
         if (res.status === 401) {
+          resetCsrfToken();
           router.replace('/admin/login');
           return;
         }

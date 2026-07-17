@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ADMIN_TOKEN_COOKIE } from '@/lib/adminAuth';
 import { getAdminRedirect } from '@/lib/adminRouting';
@@ -14,10 +14,10 @@ function addSecurityHeaders(response: NextResponse) {
   response.headers.set('Content-Security-Policy',
     "default-src 'self'; " +
     "script-src 'self' 'unsafe-eval' 'unsafe-inline'; " +
-    "style-src 'self' 'unsafe-inline'; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "img-src 'self' data: https:; " +
-    "font-src 'self' data:; " +
-    "connect-src 'self' https://suksakybghzumjkzfshj.supabase.co; " +
+    "font-src 'self' data: https://fonts.gstatic.com; " +
+    "connect-src 'self' https://suksakybghzumjkzfshj.supabase.co wss://suksakybghzumjkzfshj.supabase.co ws://suksakybghzumjkzfshj.supabase.co; " +
     "frame-src 'self'; " +
     "object-src 'none'; " +
     "base-uri 'self'; " +

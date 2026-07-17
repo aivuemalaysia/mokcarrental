@@ -1,7 +1,8 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { FiCheck, FiEye, FiRefreshCw, FiX } from 'react-icons/fi';
+import { csrfFetch } from '@/lib/csrfFetch';
 
 type BusinessApplication = {
   id: string;
@@ -178,12 +179,9 @@ export default function BusinessApplicationsManager() {
     setSaving(true);
     setError('');
     try {
-      const res = await fetch(`/api/admin/business-applications/${selectedId}`, {
+      const res = await csrfFetch(`/api/admin/business-applications/${selectedId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(adminEmail ? { 'x-admin-email': adminEmail } : {}),
-        },
+        ...(adminEmail ? { headers: { 'x-admin-email': adminEmail } } : {}),
         body: JSON.stringify({ status, adminNotes }),
       });
       if (res.status === 401) {
@@ -392,7 +390,7 @@ export default function BusinessApplicationsManager() {
                           row.status === 'pending'
                             ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                             : row.status === 'approved'
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                              ? 'bg-green-100 text-green-800 dark:bg-yellow-900 dark:text-yellow-200'
                               : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'
                         }`}
                       >
@@ -541,4 +539,3 @@ export default function BusinessApplicationsManager() {
     </div>
   );
 }
-
