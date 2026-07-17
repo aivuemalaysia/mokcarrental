@@ -6,15 +6,15 @@ export function generateCsrfToken(): string {
   return randomBytes(32).toString('hex');
 }
 
-export function setCsrfTokenCookie(response: any) {
-  const token = generateCsrfToken();
-  response.cookies.set(CSRF_COOKIE_NAME, token, {
+export function setCsrfTokenCookie(response: any, token?: string) {
+  const csrfToken = token || generateCsrfToken();
+  response.cookies.set(CSRF_COOKIE_NAME, csrfToken, {
     httpOnly: false,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
   });
-  return token;
+  return csrfToken;
 }
 
 export async function validateCsrfToken(request: Request, cookieStore: any): Promise<boolean> {
