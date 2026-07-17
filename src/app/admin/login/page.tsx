@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -10,7 +10,7 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const csrfFetched = useRef(false);
+  const [csrfToken, setCsrfToken] = useState<string | null>(null);
 
   const fetchWithTimeout = async (
     input: RequestInfo | URL,
@@ -26,20 +26,17 @@ export default function AdminLoginPage() {
     }
   };
 
-  // Fetch CSRF token once on mount
-  useEffect(() => {
-    if (csrfFetched.current) return;
-    csrfFetched.current = true;
-    fetchWithTimeout('/api/admin/session', undefined, 10000)
-      .then(() => {})
-      .catch(() => {});
-  }, []);
-
+  // Fetch session and CSRF token on mount
   useEffect(() => {
     fetchWithTimeout('/api/admin/session', undefined, 10000)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data?.data?.authenticated) router.replace('/admin/dashboard');
+        if (data?.data?.csrfToken) {
+          setCsrfToken(data.data.csrfToken);
+        }
+        if (data?.data?.authenticated) {
+          router.replace('/admin/dashboard');
+        }
       })
       .catch(() => {});
   }, [router]);
@@ -50,11 +47,11 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      // Get the CSRF token from cookies
-      const csrfToken = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrf_token='))
-        ?.split('=')[1];
+      if (!csrfToken) {
+        setError('CSRF token not available. Please refresh and try again.');
+        setLoading(false);
+        return;
+      }
 
       const res = await fetchWithTimeout(
         '/api/admin/login',
@@ -62,7 +59,7 @@ export default function AdminLoginPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            ...(csrfToken ? { 'x-csrf-token': csrfToken } : {}),
+            'x-csrf-token': csrfToken,
           },
           body: JSON.stringify({ email, password }),
         },
@@ -75,6 +72,7 @@ export default function AdminLoginPage() {
         return;
       }
 
+      // Verify session after login
       const sessionRes = await fetchWithTimeout('/api/admin/session', undefined, 10000);
       const sessionData = await sessionRes.json().catch(() => null);
       if (sessionRes.ok && sessionData?.data?.authenticated) {
