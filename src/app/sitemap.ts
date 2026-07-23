@@ -1,9 +1,11 @@
 import { MetadataRoute } from 'next';
+import { supabase } from '@/lib/supabase';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://www.mokcarrental.com';
-  
-  return [
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mokcarrental.com';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Static pages
+  const staticPages = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -13,8 +15,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/cars`,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
+      changeFrequency: 'daily',
+      priority: 0.95,
     },
     {
       url: `${baseUrl}/about`,
@@ -38,7 +40,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/booking`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
-      priority: 0.9,
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/start-business`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
     {
       url: `${baseUrl}/terms`,
@@ -53,4 +61,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
   ];
+
+  // Dynamic car pages from Supabase
+  let carPages: MetadataRoute.Sitemap = [];
+  try {
+    const { data: cars } = await supabase
+      .from('cars')
+      .select('id, updated_at')
+      .eq('available', true);
+
+    if (cars) {
+      carPages = cars.map((car: any) => ({
+        url: `${baseUrl}/cars/${car.id}`,
+        lastModified: car.updated_at ? new Date(car.updated_at) : new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      }));
+    }
+  } catch (err) {
+    console.error('Sitemap: Error fetching cars:', err);
+  }
+
+  return [...staticPages, ...carPages];
 }
+

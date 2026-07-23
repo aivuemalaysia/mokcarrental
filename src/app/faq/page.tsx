@@ -1,10 +1,28 @@
+import type { Metadata } from 'next';
 import FAQ from '@/components/FAQ';
 import CTASection from '@/components/CTASection';
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 
-export const metadata = {
-  title: 'FAQ',
-  description: 'Frequently asked questions about Mok Car Rental services, booking process, and rental terms.',
+export const metadata: Metadata = {
+  title: 'FAQ — Car Rental Questions Johor Bahru | MOK Car Rental',
+  description: 'Frequently asked questions about car rental in Johor Bahru. Learn about booking, documents needed, driving in Malaysia, Singapore to JB tips, pickup/drop-off, and our rental terms.',
+  keywords: [
+    'car rental faq johor bahru',
+    'rental car questions jb',
+    'singapore to jb car rental faq',
+    'driving license malaysia foreigner',
+    'car rental requirements jb',
+  ].join(', '),
+  openGraph: {
+    title: 'FAQ — MOK Car Rental Johor Bahru',
+    description: 'Common questions about renting a car in Johor Bahru for Singapore travelers and tourists.',
+    url: 'https://www.mokcarrental.com/faq',
+    type: 'website',
+    locale: 'en_MY',
+  },
+  alternates: {
+    canonical: 'https://www.mokcarrental.com/faq',
+  },
 };
 
 export default function FAQPage() {
@@ -16,7 +34,7 @@ export default function FAQPage() {
             Frequently Asked Questions
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Everything you need to know about renting a car with Mok Car Rental
+            Everything you need to know about renting a car with Mok Car Rental in Johor Bahru
           </p>
         </div>
       </section>
@@ -28,7 +46,7 @@ export default function FAQPage() {
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">Still Have Questions?</h2>
             <p className="text-gray-600 mb-8">
-              Can't find the answer you're looking for? Feel free to reach out to us directly.
+              Can&apos;t find the answer you&apos;re looking for? Our team is available 24/7 via WhatsApp.
             </p>
             <WhatsAppInquiryButton
               label="Chat with Us on WhatsApp"
