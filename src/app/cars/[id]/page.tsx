@@ -1,6 +1,5 @@
-﻿import type { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
-import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiUsers, FiSettings, FiZap, FiCheck, FiArrowLeft, FiImage } from 'react-icons/fi';
@@ -8,7 +7,6 @@ import { supabase } from '@/lib/supabase';
 import { Car } from '@/types';
 import CarCard from '@/components/CarCard';
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
-;
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -111,9 +109,8 @@ async function fetchRelatedCars(car: Car, carId: string) {
   }
 }
 
-export default async function CarDetailPage() {
-  const params = await useParams();
-  const id = typeof params.id === 'string' ? params.id : '';
+export default async function CarDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const car = await fetchCar(id);
 
   if (!car) {
@@ -131,10 +128,7 @@ export default async function CarDetailPage() {
   const mainImageSrc = typeof car.image === 'string' ? car.image.trim() : '';
   const galleryImages = Array.isArray(car.images)
     ? car.images.filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
-    : [];<any>((resolve) => {
-    // Default site settings â€” actual settings come from context on client
-    resolve({ whatsappNumber: '', email: '', workingHours: '' });
-  });
+    : [];
 
   // JSON-LD structured data for this specific car (Product + Offer schema)
   const carJsonLd = {
@@ -372,5 +366,4 @@ export default async function CarDetailPage() {
     </>
   );
 }
-
 

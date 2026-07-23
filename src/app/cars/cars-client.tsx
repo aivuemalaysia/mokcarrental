@@ -150,7 +150,7 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
           {filteredCars.length === 0 && !loading && (
             <div className="text-center py-16">
               <FiFilter className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-      <div className="text-center py-16">
+
               <p className="text-gray-500 text-lg mb-4">No cars found in this category.</p>
               <button
                 onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
