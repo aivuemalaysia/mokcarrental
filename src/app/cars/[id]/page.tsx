@@ -90,7 +90,7 @@ export async function generateMetadata(
 
     return {
 
-      title: `${name} â€” ${price}/day Rental | Johor Bahru Car Rental`,
+      title: `${name} — ${price}/day Rental | Johor Bahru Car Rental`,
 
       description: `Rent the ${name} (${category}) in Johor Bahru from RM${price}/day. ${car.description || 'Well-maintained vehicle with premium features.'} Perfect for Singapore travelers, airport transfers, and JB city exploration.`,
 
@@ -114,7 +114,7 @@ export async function generateMetadata(
 
       openGraph: {
 
-        title: `${name} â€” RM${price}/day | Mok Car Rental JB`,
+        title: `${name} — RM${price}/day | Mok Car Rental JB`,
 
         description: `Rent the ${name} in Johor Bahru from RM${price}/day. Prime vehicle with ${car.seats} seats, ${car.transmission} transmission.`,
 
@@ -414,7 +414,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
             <p className="text-xl text-gray-300 mt-2 capitalize">
 
-              {car.brand} {car.model} Â· {car.category} Rental in Johor Bahru
+              {car.brand} {car.model} · {car.category} Rental in Johor Bahru
 
             </p>
 
