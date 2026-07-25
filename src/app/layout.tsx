@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
-    custom: "47m0vD9-az9ZCyWUUtwU5ebM1RM-f34mqraRVIojdUY",
+
   },
 };
 
