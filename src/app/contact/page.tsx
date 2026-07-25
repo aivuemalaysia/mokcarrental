@@ -1,11 +1,16 @@
 'use client';
 
+import type { Metadata } from 'next';
 import { useState } from 'react';
 import Link from 'next/link';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
 
+export const metadata: Metadata = {
+  title: 'Contact Us | Mok Car Rental JB — WhatsApp, Email & Office',
+  description: 'Get in touch with Mok Car Rental Johor Bahru. Book via WhatsApp, email, or visit our office. Available for Singapore customers crossing the causeway.',
+};
 export default function ContactPage() {
   const { settings } = useSiteSettings();
   const { openInquiry } = useWhatsAppInquiry();

@@ -1,9 +1,9 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 export const metadata: Metadata = {
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
       "Affordable car rental in Johor Bahru serving Singapore customers. Alphard, MPV, luxury cars with airport delivery. Book via WhatsApp.",
     images: [
       {
-        url: `${siteUrl}/og-image.jpg`,
+        url: `${siteUrl}/og-home.jpg`,
         width: 1200,
         height: 630,
         alt: "Mok Car Rental - Premium Car Rental Johor Bahru",
@@ -74,7 +74,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
-
   },
 };
 
