@@ -72,10 +72,10 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Services</h3>
             <ul className="space-y-3">
-              <li className="text-gray-400">Airport Delivery</li>
-              <li className="text-gray-400">Self-Drive Rental</li>
-              <li className="text-gray-400">Corporate Rental</li>
-              <li className="text-gray-400">Tour Packages</li>
+<li><Link href="/contact" className="text-gray-400 hover:text-gold-500 transition-colors">Airport Delivery at Senai</Link></li>
+<li><Link href="/cars" className="text-gray-400 hover:text-gold-500 transition-colors">Self Drive Car Rental JB</Link></li>
+<li><Link href="/booking" className="text-gray-400 hover:text-gold-500 transition-colors">Corporate Car Rental Johor Bahru</Link></li>
+<li><Link href="/faq" className="text-gray-400 hover:text-gold-500 transition-colors">Singapore to JB Car Rental</Link></li>
             </ul>
           </div>
 

@@ -43,7 +43,9 @@ export default function FeaturedCars() {
       <section className="py-12 md:py-20 bg-gray-50">
         <div className="container-custom">
           <div className="text-center mb-12">
-            <h2 className="section-title">Featured Rental Cars</h2>
+          <h2 className="section-title">
+            Featured Rental Cars in Johor Bahru — Alphard, MPV, Sedan & Luxury Fleet
+          </h2>
             <p className="section-subtitle">Loading...</p>
           </div>
         </div>

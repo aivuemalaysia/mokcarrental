@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 const baseUrl = process.env.SITE_URL || 'https://www.mokcarrental.com';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static pages
+  // Static pages — higher priority for key conversion pages
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -19,28 +19,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.95,
     },
     {
+      url: `${baseUrl}/booking`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.7,
+      priority: 0.8,
+    },
+  {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/faq`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
       priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/booking`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.85,
     },
     {
       url: `${baseUrl}/start-business`,
@@ -62,20 +62,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic car pages from Supabase
+  // Dynamic car pages from Supabase — each car is a unique SEO page
   let carPages: MetadataRoute.Sitemap = [];
   try {
     const { data: cars } = await supabase
       .from('cars')
-      .select('id, updated_at')
+      .select('id, updated_at, available, featured')
       .eq('available', true);
 
     if (cars) {
       carPages = cars.map((car: any) => ({
         url: `${baseUrl}/cars/${car.id}`,
         lastModified: car.updated_at ? new Date(car.updated_at) : new Date(),
-        changeFrequency: 'weekly',
-        priority: 0.8,
+        changeFrequency: car.featured ? 'weekly' : 'monthly',
+        priority: car.featured ? 0.9 : 0.75,
       }));
     }
   } catch (err) {
