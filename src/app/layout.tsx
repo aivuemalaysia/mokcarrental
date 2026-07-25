@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
 
@@ -74,6 +74,7 @@ export const metadata: Metadata = {
   },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
+    custom: "47m0vD9-az9ZCyWUUtwU5ebM1RM-f34mqraRVIojdUY",
   },
 };
 
