@@ -8,7 +8,7 @@ import CTASection from '@/components/CTASection';
 import BookingPageClient from './BookingPageClient';
 
 export const metadata = {
-  title: 'Book a Car | Mok Car Rental JB — Reserve Online',
+  title: 'Book a Car — Reserve Online',
   description: 'Book your rental car in Johor Bahru. Choose dates, select your vehicle, and confirm your reservation with Mok Car Rental.',
 };
 export default function BookingPage({
