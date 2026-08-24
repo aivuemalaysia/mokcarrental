@@ -3,6 +3,7 @@ import LegalContactInfo from '@/components/LegalContactInfo';
 export const metadata = {
   title: 'Privacy Policy',
   description: 'Learn how Mok Car Rental collects, uses, and protects your personal information.',
+  alternates: { canonical: '/privacy' },
 };
 
 export default function PrivacyPage() {

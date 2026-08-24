@@ -3,6 +3,7 @@ import LegalContactInfo from '@/components/LegalContactInfo';
 export const metadata = {
   title: 'Terms & Conditions',
   description: 'Read the terms and conditions for renting a car from Mok Car Rental in Johor Bahru.',
+  alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {

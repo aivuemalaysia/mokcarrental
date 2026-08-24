@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ADMIN_TOKEN_COOKIE } from '@/lib/adminAuth';
 import { getAdminRedirect } from '@/lib/adminRouting';
@@ -18,7 +18,7 @@ function addSecurityHeaders(response: NextResponse) {
     "img-src 'self' data: https:; " +
     "font-src 'self' data: https://fonts.gstatic.com; " +
     "connect-src 'self' https://suksakybghzumjkzfshj.supabase.co wss://suksakybghzumjkzfshj.supabase.co ws://suksakybghzumjkzfshj.supabase.co; " +
-    "frame-src 'self'; " +
+    "frame-src 'self' https://www.google.com https://www.google.com/maps/embed; " +
     "object-src 'none'; " +
     "base-uri 'self'; " +
     "form-action 'self'; " +
