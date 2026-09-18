@@ -37,7 +37,7 @@ begin
         'login_attempts','rate_limit_tracker','audit_logs','user_roles',
         'content_sections'
       )
-      and p.permissive = 'OR'
+      and p.polpermissive = 'o'
   loop
     v_sql := format('drop policy %I on public.%I', r.polname, r.relname);
     execute v_sql;
@@ -85,4 +85,4 @@ where n.nspname = 'public'
     'login_attempts','rate_limit_tracker','audit_logs','user_roles',
     'content_sections'
   )
-  and p.permissive = 'OR';
+  and p.polpermissive = 'o';
