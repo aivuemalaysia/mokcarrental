@@ -1,7 +1,7 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { FiSearch, FiFilter, FiMessageCircle, FiCheck, FiX } from 'react-icons/fi';
+import { FiSearch, FiFilter, FiMessageCircle, FiCheck, FiX, FiDownload, FiRefreshCw } from 'react-icons/fi';
 import { Inquiry } from '@/types';
 import { subscribeToInquiries } from '@/lib/realtime/inquiries';
 import { csrfFetch } from '@/lib/csrfFetch';
@@ -19,11 +19,50 @@ type InquiryStats = {
 export default function InquiryManager() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
   const [updating, setUpdating] = useState(false);
   const [stats, setStats] = useState<InquiryStats | null>(null);
+
+  const fetchInquiries = useCallback(async () => {
+    try {
+      setFetchError(null);
+      const res = await fetch('/api/admin/inquiries', { cache: 'no-store' });
+      if (res.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+      const json = await res.json().catch(() => null);
+      if (!json?.ok) {
+        setFetchError(json?.error || 'Failed to fetch inquiries');
+        setInquiries([]);
+        return;
+      }
+      setInquiries(Array.isArray(json.data) ? json.data : []);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Network error';
+      console.error('IK: Error fetching inquiries:', error);
+      setFetchError(msg);
+      setInquiries([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/inquiries/stats', { cache: 'no-store' });
+      if (res.status === 401) {
+        window.location.href = '/admin/login';
+        return;
+      }
+      const json = await res.json().catch(() => null);
+      if (!json?.ok) return;
+      setStats(json.data as InquiryStats);
+    } catch {}
+  }, []);
 
   useEffect(() => {
     fetchInquiries();
@@ -40,45 +79,7 @@ export default function InquiryManager() {
       sub.unsubscribe();
       window.clearInterval(t);
     };
-  }, []);
-
-  const fetchInquiries = async () => {
-    try {
-      const res = await fetch('/api/admin/inquiries', { cache: 'no-store' });
-      if (res.status === 401) {
-        window.location.href = '/admin/login';
-        return;
-      }
-      const json = await res.json().catch(() => null);
-      if (!json?.ok) throw new Error(json?.error || 'Failed to fetch inquiries');
-      setInquiries(json.data || []);
-    } catch (error) {
-      console.error('IK: Error fetching inquiries:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fallback: refetch if list is empty and not loading (e.g. transient 5xx during boot)
-  useEffect(() => {
-    if (!loading && inquiries.length === 0) {
-      const t = window.setTimeout(() => fetchInquiries(), 1500);
-      return () => window.clearTimeout(t);
-    }
-  }, [loading, inquiries.length]);
-
-  const fetchStats = async () => {
-    try {
-      const res = await fetch('/api/admin/inquiries/stats', { cache: 'no-store' });
-      if (res.status === 401) {
-        window.location.href = '/admin/login';
-        return;
-      }
-      const json = await res.json().catch(() => null);
-      if (!json?.ok) return;
-      setStats(json.data as InquiryStats);
-    } catch {}
-  };
+  }, [fetchInquiries, fetchStats]);
 
   const updateStatus = async (id: string, status: string) => {
     try {
@@ -106,6 +107,28 @@ export default function InquiryManager() {
     }
   };
 
+  const exportToExcel = () => {
+    const rows = filteredInquiries;
+    const headers = ['ID', 'Customer', 'WhatsApp', 'Email', 'Car', 'Pickup Date', 'Return Date', 'Pickup Location', 'Status', 'Notes', 'Created At'];
+    const escapeXml = (v: any) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const xmlRows = rows.map((r) => {
+      const cells = [
+        r.id, r.customer_name, r.whatsapp_number, r.email, r.car_name,
+        r.pickup_date, r.return_date, r.pickup_location, r.status, r.notes, r.created_at,
+      ];
+      return '<Row>' + cells.map((c) => `<Cell ss:DataType="String"><Data>${escapeXml(c)}</Data></Cell>`).join('') + '</Row>';
+    }).join('');
+    const headerRow = '<Row>' + headers.map((h) => `<Cell ss:StyleID="s62036301"><Data ss:Type="String">${h}</Data></Cell>`).join('') + '</Row>';
+    const xml = `<?xml version="1.0"?>\n<?mso-application progid="Excel.Sheet"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n<Worksheet ss:Name="Inquiries"><Table>\n${headerRow}\n${xmlRows}\n</Table></Worksheet></Workbook>`;
+    const blob = new Blob([xml], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `inquiries-${new Date().toISOString().slice(0, 10)}.xls`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const filteredInquiries = inquiries.filter((inquiry) => {
     const matchesSearch =
       inquiry.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -128,37 +151,73 @@ export default function InquiryManager() {
   };
 
   if (loading) {
-    return <div className="animate-pulse">Loading...</div>;
+    return <div className="animate-pulse text-gray-500">Loading inquiries...</div>;
+  }
+
+  if (fetchError) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Inquiry Management</h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Review and manage customer booking inquiries</p>
+        </div>
+        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="font-semibold text-red-800 dark:text-red-200">Failed to load inquiries</p>
+              <p className="text-sm text-red-700 dark:text-red-300 mt-1 font-mono">{fetchError}</p>
+            </div>
+            <button
+              onClick={() => { fetchInquiries(); fetchStats(); }}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2 text-sm"
+            >
+              <FiRefreshCw /> Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Inquiry Management
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">
-          Review and manage customer booking inquiries
-        </p>
-        {stats && (
-          <div className="mt-3 flex flex-wrap gap-2 text-sm">
-            <div className="rounded-full bg-gray-100 px-3 py-1 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-              Total: {stats.total}
-            </div>
-            <div className="rounded-full bg-yellow-100 px-3 py-1 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-              Pending: {stats.pending}
-            </div>
-            {stats.eventsTableOk ? null : (
-              <div className="rounded-full bg-red-100 px-3 py-1 text-red-800 dark:bg-red-900 dark:text-red-100">
-                Live updates degraded
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Inquiry Management
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              Review and manage customer booking inquiries
+            </p>
+            {stats && (
+              <div className="mt-3 flex flex-wrap gap-2 text-sm">
+                <div className="rounded-full bg-gray-100 px-3 py-1 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                  Total: {stats.total}
+                </div>
+                <div className="rounded-full bg-yellow-100 px-3 py-1 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                  Pending: {stats.pending}
+                </div>
+                {stats.eventsTableOk ? null : (
+                  <div className="rounded-full bg-red-100 px-3 py-1 text-red-800 dark:bg-red-900 dark:text-red-100">
+                    Live updates degraded
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
+          <button
+            onClick={exportToExcel}
+            disabled={filteredInquiries.length === 0}
+            className="px-4 py-2 bg-gold-500 text-white rounded-lg hover:bg-gold-600 transition-colors flex items-center gap-2 disabled:opacity-40"
+          >
+            <FiDownload /> Export to Excel
+          </button>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
           <div className="flex-1 relative">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
@@ -184,54 +243,72 @@ export default function InquiryManager() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredInquiries.map((inquiry) => (
-            <div
-              key={inquiry.id}
-              className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => setSelectedInquiry(inquiry)}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold">
-                    {inquiry.customer_name?.charAt(0) || 'U'}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900 dark:text-white">
-                      {inquiry.customer_name}
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {inquiry.whatsapp_number}
-                    </p>
-                  </div>
-                </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                    inquiry.status || 'pending'
-                  )}`}
-                >
-                  {inquiry.status || 'pending'}
-                </span>
-              </div>
-              <div className="space-y-2 text-sm">
-                <p className="text-gray-700 dark:text-gray-300">
-                  <strong>Car:</strong> {inquiry.car_name}
-                </p>
-                <p className="text-gray-700 dark:text-gray-300">
-                  <strong>Pickup:</strong> {inquiry.pickup_date}
-                </p>
-                <p className="text-gray-700 dark:text-gray-300">
-                  <strong>Return:</strong> {inquiry.return_date}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredInquiries.length === 0 && (
+        {filteredInquiries.length === 0 ? (
           <div className="text-center py-12">
             <FiMessageCircle className="mx-auto text-gray-400 mb-4" size={48} />
             <p className="text-gray-500 dark:text-gray-400">No inquiries found</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto -mx-6 px-6">
+            <table className="w-full text-sm min-w-[900px]">
+              <thead>
+                <tr className="border-b-2 border-gray-200 dark:border-gray-700">
+                  <th className="text-left py-3 px-3 font-semibold text-gray-600 dark:text-gray-300">Customer</th>
+                  <th className="text-left py-3 px-3 font-semibold text-gray-600 dark:text-gray-300">Car</th>
+                  <th className="text-left py-3 px-3 font-semibold text-gray-600 dark:text-gray-300">Dates</th>
+                  <th className="text-left py-3 px-3 font-semibold text-gray-600 dark:text-gray-300">Location</th>
+                  <th className="text-left py-3 px-3 font-semibold text-gray-600 dark:text-gray-300">Status</th>
+                  <th className="text-right py-3 px-3 font-semibold text-gray-600 dark:text-gray-300">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredInquiries.map((inquiry) => (
+                  <tr
+                    key={inquiry.id}
+                    className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
+                    onClick={() => setSelectedInquiry(inquiry)}
+                  >
+                    <td className="py-3 px-3">
+                      <div className="font-semibold text-gray-900 dark:text-white">{inquiry.customer_name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">{inquiry.whatsapp_number}</div>
+                      {inquiry.email && <div className="text-xs text-gray-400">{inquiry.email}</div>}
+                    </td>
+                    <td className="py-3 px-3 text-gray-700 dark:text-gray-300">{inquiry.car_name}</td>
+                    <td className="py-3 px-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                      {inquiry.pickup_date} <span className="text-gray-400">&rarr;</span> {inquiry.return_date}
+                    </td>
+                    <td className="py-3 px-3 text-gray-700 dark:text-gray-300">{inquiry.pickup_location}</td>
+                    <td className="py-3 px-3">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          inquiry.status || 'pending'
+                        )}`}
+                      >
+                        {inquiry.status || 'pending'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3 text-right">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); updateStatus(inquiry.id!, 'confirmed'); }}
+                        disabled={updating}
+                        className="px-2 py-1 mr-1 text-xs rounded bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/40 dark:text-green-300"
+                        title="Confirm"
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); updateStatus(inquiry.id!, 'cancelled'); }}
+                        disabled={updating}
+                        className="px-2 py-1 text-xs rounded bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/40 dark:text-red-300"
+                        title="Cancel"
+                      >
+                        Cancel
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
