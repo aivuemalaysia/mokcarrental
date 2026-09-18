@@ -29,7 +29,9 @@ export default function ContactsManager() {
       }
       const json = await res.json().catch(() => null);
       if (!json?.ok) return;
-      setContacts(json.data || []);
+      const rawList = json.data;
+      const list = Array.isArray(rawList) ? rawList : Array.isArray(rawList?.data) ? rawList.data : [];
+      setContacts(list);
       setTableMissing(Boolean(json.tableMissing));
       setTableError(json.tableError || null);
     } catch (error) {
@@ -45,7 +47,8 @@ export default function ContactsManager() {
     return () => window.clearInterval(t);
   }, []);
 
-  const filteredContacts = contacts.filter((c) =>
+  const safeContacts = Array.isArray(contacts) ? contacts : [];
+  const filteredContacts = safeContacts.filter((c) =>
     c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.phone?.includes(searchTerm) ||
     c.email?.toLowerCase().includes(searchTerm.toLowerCase())
