@@ -159,14 +159,19 @@ export default function WhatsAppInquiryProvider({ children }: { children: React.
     try {
       console.info('IK: WhatsApp inquiry submit', { car: form.carInterested });
 
-      const popup = window.open(url, '_blank', 'noopener,noreferrer');
+      let popup: Window | null = null;
+      try {
+        popup = window.open(url, '_blank', 'noopener,noreferrer');
+      } catch {
+        popup = null;
+      }
       if (!popup) {
+        // Popup blocked: still save the lead so it reaches the admin backend,
+        // and show the "Open WhatsApp" fallback button so the user can chat.
         setFallbackUrl(url);
         setError(
-          'Could not open WhatsApp automatically (popup blocked). Tap "Open WhatsApp" below.'
+          'Could not open WhatsApp automatically (popup blocked). Your inquiry was saved - tap "Open WhatsApp" below to continue the chat.'
         );
-        setSaving(false);
-        return;
       }
 
       const res = await fetch('/api/inquiries', {
