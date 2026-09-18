@@ -56,28 +56,20 @@ export async function POST(request: Request) {
     const client = getAdminClient();
     if (!client) return jsonError('Server misconfigured', 500);
 
-    const now = new Date().toISOString();
-    const today = now.split('T')[0];
-
-    const { data, error } = await (client.from('inquiries') as any).insert([{
-      car_id: 'general',
-      car_name: 'General Inquiry',
-      customer_name: name,
-      whatsapp_number: phone,
+    // Write to dedicated contacts table (not inquiries)
+    const { data, error } = await (client.from('contacts') as any).insert([{
+      name,
       email,
-      pickup_date: today,
-      return_date: today,
-      pickup_location: 'General Inquiry',
-      notes: message || null,
-      status: 'pending' as const,
+      phone,
+      message,
     }]).select('*').single();
 
     if (error) {
       console.error('CONTACT_DB_ERROR:', error);
-      return jsonError('Failed to save your inquiry. Please try again or contact us via WhatsApp.', 500);
+      return jsonError('Failed to save your message. Please try again or contact us via WhatsApp.', 500);
     }
 
-    const inquiryId = (data as any)?.id || null;
+    const contactId = (data as any)?.id || null;
 
     // Fire-and-forget email notification
     const sendEmailPromise = (async () => {
@@ -87,28 +79,28 @@ export async function POST(request: Request) {
         if (toEmail) {
           const html = `
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
-              <h2 style="color:#b8860b;">New General Inquiry from ${safeText(name)}</h2>
+              <h2 style="color:#b8860b;">New Message from ${safeText(name)}</h2>
               <table style="border-collapse:collapse;">
                 <tr><td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:bold;">Email</td>
                     <td style="padding:8px 12px;border-bottom:1px solid #eee;">${safeText(email)}</td></tr>
                 <tr><td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:bold;">Phone</td>
                     <td style="padding:8px 12px;border-bottom:1px solid #eee;">${safeText(phone)}</td></tr>
                 <tr><td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:bold;">Message</td>
-                    <td style="padding:8px 12px;border-bottom:1px solid #eee;">${safeText(message)}</td></tr>
+                    <td style="padding:8px 12px;">${safeText(message)}</td></tr>
               </table>
               <p style="margin-top:20px;color:#666;">Received from contact page on Mok Car Rental website.</p>
             </div>
           `;
           const result = await sendResendEmail({
             to: toEmail,
-            subject: `[MOK Car] New Inquiry from ${safeText(name)}`,
+            subject: `[MOK Car] New Message from ${safeText(name)}`,
             html,
             replyTo: email,
           });
           if (!result.ok) {
             console.warn('CONTACT_EMAIL_FAILED:', result.error);
           } else {
-            console.info('CONTACT_EMAIL_SENT', { inquiryId, to: toEmail });
+            console.info('CONTACT_EMAIL_SENT', { contactId, to: toEmail });
           }
         }
       } catch (emailErr) {
@@ -116,14 +108,9 @@ export async function POST(request: Request) {
       }
     })();
 
-    // Log the event
-    const eventInsert = (client.from('inquiries_events') as any)
-      .insert([{ event_type: 'inquiry_created', inquiry_id: inquiryId }])
-      .select('id').single();
+    await sendEmailPromise.catch(() => {});
 
-    await Promise.allSettled([sendEmailPromise, eventInsert]);
-
-    return jsonOk({ ok: true, inquiryId }, { status: 201 });
+    return jsonOk({ ok: true, contactId }, { status: 201 });
   } catch (err) {
     console.error('CONTACT_ROUTE_ERROR:', err);
     return jsonError('Internal server error', 500);

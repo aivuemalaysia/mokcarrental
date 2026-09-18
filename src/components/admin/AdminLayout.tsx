@@ -91,6 +91,8 @@ function AdminSidebar() {
     ? 'cars'
     : pathname.includes('/admin/inquiries')
       ? 'inquiries'
+    : pathname.includes('/admin/contacts')
+      ? 'contacts'
       : pathname.includes('/admin/business-applications')
         ? 'business-applications'
       : pathname.includes('/admin/branding')
@@ -105,6 +107,7 @@ function AdminSidebar() {
     { id: 'dashboard', label: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
     { id: 'cars', label: 'Car Fleet', href: '/admin/cars', icon: '🚗' },
     { id: 'inquiries', label: 'Inquiries', href: '/admin/inquiries', icon: '📋' },
+    { id: 'contacts', label: 'Messages', href: '/admin/contacts', icon: '💬' },
     { id: 'business-applications', label: 'Business Leads', href: '/admin/business-applications', icon: '🧾' },
     { id: 'branding', label: 'Branding', href: '/admin/branding', icon: '🎨' },
     { id: 'content', label: 'Content', href: '/admin/content', icon: '📝' },
