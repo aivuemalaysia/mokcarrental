@@ -43,3 +43,8 @@ coverage/
 
 .vercel
 .env*
+
+# local dev artifacts
+cookies.txt
+login_headers.txt
+supabase/.temp/
