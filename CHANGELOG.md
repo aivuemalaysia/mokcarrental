@@ -8,3 +8,4 @@
 - Inquiries admin: added stats endpoint + UI polling fallback so inquiry list and status updates keep working even if realtime events stop.
 - Admin Settings: moved business/contact/social/map settings to server-backed storage (content_sections key site_settings) so changes apply across admin sessions.
 - Partner onboarding: added public “Start Business” multi-step submission + admin review page (Business Leads). Admin still manually creates car listings after approval.
+
