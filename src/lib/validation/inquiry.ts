@@ -47,7 +47,8 @@ export function validateInquiryCreateInput(input: any) {
   const pickupLocation = normalizeString(input?.pickupLocation);
   const notes = normalizeOptionalString(input?.notes);
 
-  if (!carId) return { ok: false as const, error: 'carId is required' };
+  // carId is optional for WhatsApp general inquiries (set by car page buttons)
+  if (!carId) { console.info('IK:WhatsApp inquiry without carId', { carName, customerName }); }
   if (!carName) return { ok: false as const, error: 'carName is required' };
   if (!customerName) return { ok: false as const, error: 'customerName is required' };
   if (!whatsappNumber) return { ok: false as const, error: 'whatsappNumber is required' };

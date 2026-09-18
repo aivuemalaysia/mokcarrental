@@ -188,7 +188,10 @@ export default function WhatsAppInquiryProvider({ children }: { children: React.
         }),
       });
       const json = await res.json().catch(() => null);
-      if (!json?.ok) console.error('IK: Inquiry save failed:', json?.error);
+      if (!json?.ok) {
+        console.error('IK: Inquiry save failed:', json?.error);
+        setError('Failed to save your inquiry. Please try again or message us directly on WhatsApp.');
+      }
     } catch (err) {
       console.error('IK: Inquiry save exception:', err);
     }
