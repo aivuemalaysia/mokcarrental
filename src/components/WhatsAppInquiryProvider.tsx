@@ -169,10 +169,6 @@ export default function WhatsAppInquiryProvider({ children }: { children: React.
         return;
       }
 
-      setOpen(false);
-      setForm(initialForm);
-      setSaving(false);
-
       const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -191,7 +187,13 @@ export default function WhatsAppInquiryProvider({ children }: { children: React.
       if (!json?.ok) {
         console.error('IK: Inquiry save failed:', json?.error);
         setError('Failed to save your inquiry. Please try again or message us directly on WhatsApp.');
+        setSaving(false);
+        return;
       }
+
+      setOpen(false);
+      setForm(initialForm);
+      setSaving(false);
     } catch (err) {
       console.error('IK: Inquiry save exception:', err);
     }
