@@ -53,11 +53,19 @@ export default function InquiryManager() {
       if (!json?.ok) throw new Error(json?.error || 'Failed to fetch inquiries');
       setInquiries(json.data || []);
     } catch (error) {
-      console.error('Error fetching inquiries:', error);
+      console.error('IK: Error fetching inquiries:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Fallback: refetch if list is empty and not loading (e.g. transient 5xx during boot)
+  useEffect(() => {
+    if (!loading && inquiries.length === 0) {
+      const t = window.setTimeout(() => fetchInquiries(), 1500);
+      return () => window.clearTimeout(t);
+    }
+  }, [loading, inquiries.length]);
 
   const fetchStats = async () => {
     try {
