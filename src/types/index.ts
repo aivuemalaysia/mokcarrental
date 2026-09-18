@@ -25,21 +25,21 @@ export interface Inquiry {
   id?: string;
   car_id?: string;
   car_name?: string;
-  carId: string;
-  carName: string;
+  carId?: string;
+  carName?: string;
   customer_name?: string;
-  customerName: string;
+  customerName?: string;
   whatsapp_number?: string;
-  whatsappNumber: string;
+  whatsappNumber?: string;
   email?: string;
   pickup_date?: string;
   return_date?: string;
-  pickupDate: string;
-  returnDate: string;
+  pickupDate?: string;
+  returnDate?: string;
   pickup_location?: string;
-  pickupLocation: string;
+  pickupLocation?: string;
   notes?: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status?: 'pending' | 'confirmed' | 'cancelled';
   created_at?: string;
 }
 
