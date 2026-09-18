@@ -1,32 +1,7 @@
-name: Deploy to Production
-
-on:
-  push:
-    branches: [master]
-  workflow_dispatch:
-
+name: Deploy
+on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build and Deploy
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          npx vercel build --prod --token=$VERCEL_TOKEN --yes --scope=vuebies-projects --project=mok-car-rentals
-          npx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --yes --scope=vuebies-projects --project=mok-car-rentals
+      - run: echo "Deployed by Vercel Git Integration"
