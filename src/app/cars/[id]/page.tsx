@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 import { FiUsers, FiSettings, FiZap, FiCheck, FiArrowLeft, FiImage } from 'react-icons/fi';
 
-import { supabase } from '@/lib/supabase';
+import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 import { Car } from '@/types';
 
@@ -25,10 +25,11 @@ type Props = { params: Promise<{ id: string }> };
 // Dynamic SEO metadata per car
 
 export async function generateStaticParams() {
-
   try {
-
-    const { data } = await supabase.from('cars').select('id');
+    const { data } = await getSupabaseServerClient()
+      .from('cars')
+      .select('id')
+      .eq('available', true);
 
     return (data || []).map((car: any) => ({ id: car.id }));
 
@@ -54,7 +55,7 @@ export async function generateMetadata(
 
   try {
 
-    const { data: car } = await supabase
+    const { data: car } = await getSupabaseServerClient()
 
       .from('cars')
 
@@ -166,7 +167,7 @@ async function fetchCar(id: string) {
 
   try {
 
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseServerClient()
 
       .from('cars')
 
@@ -193,8 +194,8 @@ async function fetchCar(id: string) {
 async function fetchRelatedCars(car: Car, carId: string) {
 
   try {
-
-    const { data } = await supabase
+    const { data } = await getSupabaseServerClient()
+    
 
       .from('cars')
 

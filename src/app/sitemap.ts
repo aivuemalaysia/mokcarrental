@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 const baseUrl = process.env.SITE_URL || 'https://www.mokcarrental.com';
 
@@ -65,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic car pages from Supabase — each car is a unique SEO page
   let carPages: MetadataRoute.Sitemap = [];
   try {
-    const { data: cars } = await supabase
+    const client = getSupabaseServerClient(); const { data: cars } = await client
       .from('cars')
       .select('id, updated_at, available, featured')
       .eq('available', true);

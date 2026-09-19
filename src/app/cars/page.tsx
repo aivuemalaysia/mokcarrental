@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import CarsClient from './cars-client';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 const baseUrl = process.env.SITE_URL || 'https://www.mokcarrental.com';
 
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 async function fetchCars() {
   try {
-    const { data } = await supabase
+    const client = getSupabaseServerClient(); const { data } = await client
       .from('cars')
       .select('*')
       .eq('available', true)
