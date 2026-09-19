@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import CarCard from '@/components/CarCard';
-import { supabase } from '@/lib/supabase';
+
 import { Car } from '@/types';
 import Link from 'next/link';
 import { FiSearch, FiFilter } from 'react-icons/fi';
@@ -31,12 +31,12 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
 
   const fetchCars = async () => {
     try {
-      const { data, error } = await supabase
-        .from('cars')
-        .select('*')
-        .eq('available', true)
-        .order('featured', { ascending: false })
-        .order('price', { ascending: true });
+      const res = await fetch('/api/public/cars', { cache: 'no-store' });
+      const json = await res.json().catch(() => null);
+      const data: Car[] = Array.isArray(json?.data?.cars) ? json.data.cars : [];
+      const error = json?.ok ? null : json?.error ? new Error(String(json.error)) : null;
+
+
 
       if (error) {
         console.error('Error fetching cars:', error);

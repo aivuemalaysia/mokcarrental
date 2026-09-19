@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import CarCard from './CarCard';
-import { supabase } from '@/lib/supabase';
 import { Car } from '@/types';
 
 export default function FeaturedCars() {
@@ -11,41 +10,30 @@ export default function FeaturedCars() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchFeaturedCars();
-  }, []);
-
-  const fetchFeaturedCars = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('cars')
-        .select('*')
-        .eq('featured', true)
-        .eq('available', true)
-        .limit(6)
-        .order('updated_at', { ascending: false })
-        .order('price', { ascending: true });
-
-      if (error) {
+    const load = async () => {
+      try {
+        const res = await fetch('/api/public/cars', { cache: 'no-store' });
+        const json = await res.json().catch(() => null);
+        const cars: Car[] = Array.isArray(json?.data?.cars) ? json.data.cars : [];
+        // Endpoint returns all available cars sorted featured-first; take the top 6.
+        setFeaturedCars(cars.slice(0, 6));
+      } catch (error) {
         console.error('Error fetching featured cars:', error);
-        return;
+      } finally {
+        setLoading(false);
       }
-
-      setFeaturedCars(data || []);
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    void load();
+  }, []);
 
   if (loading) {
     return (
       <section className="py-12 md:py-20 bg-gray-50">
         <div className="container-custom">
           <div className="text-center mb-12">
-          <h2 className="section-title">
-            Featured Rental Cars in Johor Bahru — Alphard, MPV, Sedan & Luxury Fleet
-          </h2>
+            <h2 className="section-title">
+              Featured Rental Cars in Johor Bahru — Alphard, MPV, Sedan &amp; Luxury Fleet
+            </h2>
             <p className="section-subtitle">Loading...</p>
           </div>
         </div>

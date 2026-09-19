@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+
 import { Inquiry, Car } from '@/types';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { DEFAULT_PICKUP_LOCATIONS, PickupLocationItem } from '@/lib/pickupLocations';
@@ -72,11 +72,11 @@ export default function BookingPageClient({ initialCarId }: { initialCarId: stri
 
   const fetchCars = async () => {
     try {
-      const { data, error } = await supabase
-        .from('cars')
-        .select('*')
-        .eq('available', true)
-        .order('price', { ascending: true });
+      const res = await fetch('/api/public/cars', { cache: 'no-store' });
+      const json = await res.json().catch(() => null);
+      const data: Car[] = Array.isArray(json?.data?.cars) ? json.data.cars : [];
+      const error = json?.ok ? null : json?.error ? new Error(String(json.error)) : null;
+
 
       if (error) {
         console.error('Error fetching cars:', error);

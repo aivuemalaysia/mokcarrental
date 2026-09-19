@@ -24,10 +24,10 @@ create or replace policy "Public can view available cars"
   for select to anon
   using (available = true and deleted_at is null);
 
-create or replace policy "Public can view available car images"
-  on public.car_images
-  for select to anon
-  using (deleted_at is null);
+-- Note: car_images stays admin-only. Car image URLs are stored on the cars
+-- table (image + images columns) and served from public storage, so the
+-- browser never needs direct table reads. The /api/public/cars endpoint
+-- exposes the fleet via the service_role key instead.
 
 -- 2. Force PostgREST to refresh its schema cache so new policies apply.
 select public.pgrst_reload_schema();
