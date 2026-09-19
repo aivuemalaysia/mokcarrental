@@ -17,12 +17,13 @@
 -- Safe to re-run: every statement is idempotent.
 
 -- 1. Allow anonymous (public) reads of the active fleet.
---    available = true filters out admin-hid cars; deleted_at = null excludes
---    soft-deleted rows. Service role (used by admin APIs) already bypasses RLS.
+--    available = true filters out admin-hid cars. Service role (used by admin
+--    APIs) already bypasses RLS, so the SQL endpoint works regardless of whether
+--    this policy is applied.
 create or replace policy "Public can view available cars"
   on public.cars
   for select to anon
-  using (available = true and deleted_at is null);
+  using (available = true);
 
 -- Note: car_images stays admin-only. Car image URLs are stored on the cars
 -- table (image + images columns) and served from public storage, so the

@@ -20,7 +20,6 @@ export async function GET() {
       .from('cars')
       .select('*')
       .eq('available', true)
-      .eq('deleted_at', null)
       .order('featured', { ascending: false })
       .order('price', { ascending: true });
 
