@@ -4,14 +4,18 @@ type Subscription = {
   unsubscribe: () => void;
 };
 
+/**
+ * Subscribe to new bookings in real-time and call onChange when any
+ * INSERT happens on the public.bookings table (i.e. a new booking was placed).
+ */
 export function subscribeToInquiries(onChange: () => void): Subscription {
   if (!supabase?.channel) return { unsubscribe: () => {} };
 
   const channel = supabase
-    .channel('realtime:inquiries_events')
+    .channel('realtime:bookings')
     .on(
       'postgres_changes',
-      { event: '*', schema: 'public', table: 'inquiries_events' },
+      { event: 'INSERT', schema: 'public', table: 'bookings' },
       () => {
         onChange();
       },
