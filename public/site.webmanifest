@@ -1,11 +1,11 @@
 {
   "name": "Mok Car Rental JB",
-  "short_name": "Mok Car Rental",
-  "description": "Affordable car rental in Johor Bahru",
+  "short_name": "Mok Rental",
+  "description": "Affordable car rental in Johor Bahru. Rebook in one tap.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#000000",
+  "theme_color": "#D4AF37",
   "icons": [
     {
       "src": "/favicon-16x16.png",
@@ -31,6 +31,20 @@
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book a Car",
+      "url": "/booking"
+    },
+    {
+      "name": "My Bookings",
+      "url": "/my-bookings"
+    },
+    {
+      "name": "Our Fleet",
+      "url": "/cars"
     }
   ]
 }
