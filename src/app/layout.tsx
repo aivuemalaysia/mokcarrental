@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
+import PwaRegister from "@/components/PwaRegister";
 
 const siteUrl =
   process.env.SITE_URL ||
@@ -39,6 +40,12 @@ export const metadata: Metadata = {
     languages: {
       en: siteUrl,
     },
+  },
+  manifest: "/site.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Mok Car Rental",
   },
   openGraph: {
     type: "website",
@@ -299,6 +306,7 @@ export default function RootLayout({
   return (
     <html lang="en" dir="ltr">
     <head>
+      <meta name="theme-color" content="#D4AF37" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       {/* JSON-LD Structured Data for LocalBusiness, CarRental & Website SEO */}
@@ -325,6 +333,7 @@ export default function RootLayout({
         <ClientLayout>
         <main id="main-content">{children}</main>
       </ClientLayout>
+        <PwaRegister />
       </body>
     </html>
   );
