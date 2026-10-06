@@ -15,7 +15,17 @@ export const metadata = {
 export default function BookingPage({
   searchParams,
 }: {
-  searchParams?: { car?: string };
+  searchParams?: {
+    car?: string;
+    rebook?: string;
+    whatsapp?: string;
+  };
 }) {
-  return <BookingPageClient initialCarId={searchParams?.car || ''} />;
+  return (
+    <BookingPageClient
+      initialCarId={searchParams?.car || ''}
+      rebookId={searchParams?.rebook || ''}
+      rebookWhatsapp={searchParams?.whatsapp || ''}
+    />
+  );
 }
