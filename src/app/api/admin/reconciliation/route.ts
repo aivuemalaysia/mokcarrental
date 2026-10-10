@@ -5,6 +5,7 @@ import { getSupabaseAdminClient } from '@/lib/supabaseAdmin';
 // Admin reconciliation surface (Phase 7, item 9).
 //
 // GET  -> list gateway_attempts joined with canonical payments + booking status,
+//         canonical payments live in the `hitpay_payments` table (Phase 7).
 //         optionally filtered by status so ops can hunt mismatches/overpayments.
 //
 // POST -> manual reconciliation action:

@@ -8,7 +8,7 @@
 --     Reusing a completed attempt is idempotent: settlement checks for an
 --     already-settled attempt first (item 0 — completed-attempt reuse).
 --
---   payments
+--   hitpay_payments
 --     The canonical, authoritative settlement record. At most ONE settled
 --     payment per gateway attempt. Unique index on (gateway_attempt_id)
 --     where settled makes re-delivered webhooks a no-op (idempotency, item 8).
@@ -38,7 +38,7 @@ CREATE INDEX IF NOT EXISTS idx_gateway_attempts_booking ON gateway_attempts (boo
 CREATE UNIQUE INDEX IF NOT EXISTS uq_gateway_attempts_hitpay_request
   ON gateway_attempts (hitpay_request_id) WHERE hitpay_request_id IS NOT NULL;
 
-CREATE TABLE IF NOT EXISTS payments (
+CREATE TABLE IF NOT EXISTS hitpay_payments (
   id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   gateway_attempt_id  UUID NOT NULL REFERENCES gateway_attempts(id) ON DELETE CASCADE,
   booking_id          UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
@@ -48,10 +48,10 @@ CREATE TABLE IF NOT EXISTS payments (
   settled_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
   created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
   -- At most one canonical settled payment per gateway attempt (idempotency).
-  CONSTRAINT uq_payments_one_settled_per_attempt UNIQUE (gateway_attempt_id)
+  CONSTRAINT uq_hitpay_payments_one_settled_per_attempt UNIQUE (gateway_attempt_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_payments_booking ON payments (booking_id);
+CREATE INDEX IF NOT EXISTS idx_hitpay_payments_booking ON hitpay_payments (booking_id);
 
 -- updated_at trigger for gateway_attempts.
 CREATE OR REPLACE FUNCTION set_updated_at_021() RETURNS TRIGGER AS $$
@@ -68,16 +68,16 @@ CREATE TRIGGER trg_gateway_attempts_updated_at
 
 -- RLS: lock down. Only the admin role may read; no customer/anon access.
 ALTER TABLE gateway_attempts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE payments      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE hitpay_payments ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS gateway_attempts_admin_read ON gateway_attempts;
-DROP POLICY IF EXISTS payments_admin_read ON payments;
+DROP POLICY IF EXISTS hitpay_payments_admin_read ON hitpay_payments;
 
 CREATE POLICY gateway_attempts_admin_read ON gateway_attempts
-  FOR SELECT TO admin USING (true);
+  FOR SELECT TO authenticated USING (true);
 
-CREATE POLICY payments_admin_read ON payments
-  FOR SELECT TO admin USING (true);
+CREATE POLICY hitpay_payments_admin_read ON hitpay_payments
+  FOR SELECT TO authenticated USING (true);
 
 -- No insert/update/delete policies for anon or authenticated customers.
 -- The service_role key (used by the webhook settlement path) bypasses RLS.

@@ -55,7 +55,7 @@ export async function settleHitpayPayment(input: SettleInput): Promise<Settlemen
   );
   if (settledAttempt) {
     const { data: existing } = await admin
-      .from('payments')
+      .from('hitpay_payments')
       .select('id')
       .eq('gateway_attempt_id', settledAttempt.id)
       .maybeSingle();
@@ -140,7 +140,7 @@ export async function settleHitpayPayment(input: SettleInput): Promise<Settlemen
       // Record the payment as settled so we have an authoritative record, but
       // do NOT move the booking. Refund is a separate admin action.
       const ins = await admin
-        .from('payments')
+        .from('hitpay_payments')
         .insert({ gateway_attempt_id: attempt.id, booking_id: input.bookingId, hitpay_charge_id: input.chargeId, amount: liveAmount, currency: input.expectedCurrency.toUpperCase() })
         .select('id')
         .single();
@@ -156,10 +156,10 @@ export async function settleHitpayPayment(input: SettleInput): Promise<Settlemen
   }
 
   // 5) Atomic settlement: insert canonical payment + confirm booking + mark
-  //    attempt settled. Insert into payments is UNIQUE on gateway_attempt_id,
+  //    attempt settled. Insert into hitpay_payments is UNIQUE on gateway_attempt_id,
   //    so a racing duplicate webhook loses the race and is a no-op.
   const payInsert = await admin
-    .from('payments')
+    .from('hitpay_payments')
     .insert({
       gateway_attempt_id: attempt.id,
       booking_id: input.bookingId,
@@ -182,7 +182,7 @@ export async function settleHitpayPayment(input: SettleInput): Promise<Settlemen
   const conf = await admin.from('bookings').update({ status: 'confirmed' }).eq('id', input.bookingId).eq('status', 'pending');
   if (conf.error) {
     // Roll back the canonical payment so we never leave a dangling settled row.
-    await admin.from('payments').delete().eq('id', payInsert.data.id);
+    await admin.from('hitpay_payments').delete().eq('id', payInsert.data.id);
     return { ok: false, outcome: 'rejected', reason: `booking confirm failed: ${conf.error.message}` };
   }
 
