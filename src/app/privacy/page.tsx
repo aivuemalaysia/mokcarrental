@@ -1,133 +1,82 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
 import LegalContactInfo from '@/components/LegalContactInfo';
 
-export const metadata = {
-  title: 'Privacy Policy',
-  description: 'Learn how Mok Car Rental collects, uses, and protects your personal information.',
+export const metadata: Metadata = {
+  title: 'Privacy Information',
+  description: 'Learn how MOK Car Rental handles enquiries on the Johor Bahru marketing website, and where to review booking and document-handling information in MOK PWA.',
   alternates: { canonical: '/privacy' },
 };
+
+const bookingPrivacyUrl = 'https://app.mokcarrental.com/terms';
 
 export default function PrivacyPage() {
   return (
     <div className="pt-20">
-      <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
-        <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Privacy Policy
-          </h1>
-          <p className="text-xl text-gray-300">
-            Your privacy matters to us
+      <section className="bg-[#1B1D1F] py-20 text-white">
+        <div className="container-custom max-w-5xl">
+          <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-[#FF923F]">MOK Car Rental</p>
+          <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl">Privacy Information</h1>
+          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-[#CFD4D6]">
+            Information about enquiries sent through this marketing website and the separate MOK booking app.
           </p>
         </div>
       </section>
 
-      <section className="py-20">
-        <div className="container-custom">
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 md:p-12 shadow-xl">
-            <div className="prose prose-lg max-w-none">
-              <p className="text-gray-600 mb-8">Last updated: January 2024</p>
-
-              <h2 className="text-2xl font-bold mb-4">1. Introduction</h2>
-              <p className="text-gray-700 mb-6">
-                Mok Car Rental ("we," "our," or "us") is committed to protecting your privacy.
-                This Privacy Policy explains how we collect, use, disclose, and safeguard your
-                information when you use our car rental services.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">2. Information We Collect</h2>
-              <p className="text-gray-700 mb-4">
-                We may collect the following types of information:
-              </p>
-              <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                <li>Personal identification information (name, email, phone number)</li>
-                <li>Driving license details</li>
-                <li>Payment information</li>
-                <li>Rental preferences and history</li>
-                <li>Communication preferences</li>
-                <li>Device and usage information when you visit our website</li>
-              </ul>
-
-              <h2 className="text-2xl font-bold mb-4">3. How We Use Your Information</h2>
-              <p className="text-gray-700 mb-4">
-                We use the information we collect to:
-              </p>
-              <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                <li>Process and manage your car rental bookings</li>
-                <li>Communicate with you about your reservations</li>
-                <li>Provide customer support</li>
-                <li>Send promotional communications (with your consent)</li>
-                <li>Improve our services and website</li>
-                <li>Comply with legal obligations</li>
-              </ul>
-
-              <h2 className="text-2xl font-bold mb-4">4. Information Sharing</h2>
-              <p className="text-gray-700 mb-6">
-                We do not sell your personal information. We may share your information with:
-              </p>
-              <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                <li>Service providers who assist in our operations</li>
-                <li>Insurance companies for rental coverage</li>
-                <li>Legal authorities when required by law</li>
-                <li>Business partners with your consent</li>
-              </ul>
-
-              <h2 className="text-2xl font-bold mb-4">5. Data Security</h2>
-              <p className="text-gray-700 mb-6">
-                We implement appropriate security measures to protect your personal information
-                from unauthorized access, alteration, disclosure, or destruction. However, no
-                method of transmission over the Internet is 100% secure.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">6. Data Retention</h2>
-              <p className="text-gray-700 mb-6">
-                We retain your personal information for as long as necessary to fulfill the
-                purposes outlined in this policy, unless a longer retention period is required
-                by law.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">7. Your Rights</h2>
-              <p className="text-gray-700 mb-4">
-                You have the right to:
-              </p>
-              <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                <li>Access your personal information</li>
-                <li>Correct inaccurate information</li>
-                <li>Request deletion of your information</li>
-                <li>Opt-out of marketing communications</li>
-                <li>Withdraw consent where applicable</li>
-              </ul>
-
-              <h2 className="text-2xl font-bold mb-4">8. Cookies & Tracking</h2>
-              <p className="text-gray-700 mb-6">
-                Our website may use cookies and similar technologies to enhance your browsing
-                experience. You can control cookie preferences through your browser settings.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">9. Third-Party Links</h2>
-              <p className="text-gray-700 mb-6">
-                Our website may contain links to third-party websites. We are not responsible
-                for the privacy practices of these external sites. We encourage you to review
-                their privacy policies.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">10. Children's Privacy</h2>
-              <p className="text-gray-700 mb-6">
-                Our services are not intended for individuals under 21 years of age. We do not
-                knowingly collect personal information from minors.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">11. Changes to This Policy</h2>
-              <p className="text-gray-700 mb-6">
-                We may update this Privacy Policy from time to time. Any changes will be posted
-                on this page with an updated "Last updated" date.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">12. Contact Us</h2>
-              <p className="text-gray-700 mb-6">
-                If you have any questions about this Privacy Policy or our data practices, please contact us:
-              </p>
-              <LegalContactInfo />
-            </div>
+      <section className="bg-white py-16 md:py-20">
+        <div className="container-custom max-w-4xl">
+          <div className="rounded-3xl border border-[#E2E5E7] bg-[#F7F7F5] p-7 md:p-9">
+            <h2 className="text-2xl font-bold text-[#1B1D1F]">Two separate customer experiences</h2>
+            <p className="mt-4 leading-relaxed text-[#4D565C]">
+              This website provides general rental information and an enquiry form. New vehicle bookings,
+              rental quotations, identification steps and payments are handled through MOK PWA,
+              not through this marketing website.
+            </p>
+            <a href={bookingPrivacyUrl}
+              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-xl bg-[#FF761A] px-6 py-3 font-bold text-[#17191B] hover:bg-[#FF923F]">
+              Review MOK booking terms and privacy information
+            </a>
           </div>
+
+          <div className="mt-12 space-y-9 leading-relaxed text-[#4D565C]">
+            <section aria-labelledby="enquiry-data">
+              <h2 id="enquiry-data" className="text-2xl font-bold text-[#1B1D1F]">Website enquiries</h2>
+              <p className="mt-3">
+                If you choose to contact MOK through the website, the information you submit may include
+                your name, contact details and enquiry message. This information is used to handle the
+                enquiry and respond to you. Please do not enter passwords, payment card numbers or
+                identity-document images into a general enquiry.
+              </p>
+            </section>
+            <section aria-labelledby="booking-information">
+              <h2 id="booking-information" className="text-2xl font-bold text-[#1B1D1F]">Booking and driver documents</h2>
+              <p className="mt-3">
+                For a new rental, continue to the MOK booking app. Review the information presented there
+                before submitting identification, driving-licence or payment details. The booking app
+                operates separately from the marketing website, and its current terms explain
+                booking-related information and document handling.
+              </p>
+            </section>
+            <section aria-labelledby="website-operation">
+              <h2 id="website-operation" className="text-2xl font-bold text-[#1B1D1F]">Website operation and third-party services</h2>
+              <p className="mt-3">
+                Website hosting and support services may process technical information needed to
+                deliver and protect the site, such as request data and browser information.
+                Links to WhatsApp or MOK PWA take you to their respective services. Please consider
+                the information you share before using external links.
+              </p>
+            </section>
+            <section aria-labelledby="privacy-requests">
+              <h2 id="privacy-requests" className="text-2xl font-bold text-[#1B1D1F]">Privacy enquiries and requests</h2>
+              <p className="mt-3">
+                To ask how your information is used, request a correction, or enquire about retention,
+                deletion or marketing preferences, contact MOK using the details below. Requests are
+                handled subject to applicable legal and operational requirements.
+              </p>
+              <div className="mt-5"><Link href="/contact" className="btn-secondary">Contact MOK</Link></div>
+            </section>
+          </div>
+          <LegalContactInfo/>
         </div>
       </section>
     </div>

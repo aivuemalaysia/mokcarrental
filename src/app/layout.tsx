@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_MY',
-    url: SEO_ORIGIN,
     siteName: 'MOK Car Rental',
     title: 'Car Rental Johor Bahru | MOK Car Rental',
     description: 'Johor Bahru car rental information and online booking. Explore vehicle options, airport rental guidance and trip planning with MOK.',
@@ -82,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <ClientLayout>
-          <main id="main-content">{children}</main>
+          <div id="main-content">{children}</div>
         </ClientLayout>
 
       </body>

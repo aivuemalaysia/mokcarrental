@@ -14,5 +14,5 @@ export const metadata: Metadata = {
  openGraph: {title:'Car Rental Johor Bahru | MOK Car Rental',url:canonicalFor('/'),description:'Johor Bahru car rental information and online booking with MOK.'}
 };
 export default function Home(){
- return <><Hero/><ServicesOverview/><RentalProcess/><SEODynamicContent/><FAQ/><CTASection/></>;
+ return <main><Hero/><ServicesOverview/><RentalProcess/><SEODynamicContent/><FAQ/><CTASection/></main>;
 }
