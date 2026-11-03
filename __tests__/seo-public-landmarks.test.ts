@@ -16,8 +16,8 @@ describe('MOK public SEO pages expose a single main landmark', () => {
   ];
   it.each(routes)('%s renders one main landmark', (file) => {
     const src = fs.readFileSync(path.join(process.cwd(), file), 'utf8');
-    expect((src.match(/<main\\b/g) || []).length).toBe(1);
-    expect((src.match(/<\\/main>/g) || []).length).toBe(1);
+    expect(src.split('<main').length - 1).toBe(1);
+    expect(src.split('</main>').length - 1).toBe(1);
   });
 
   it('keeps the shared skip-link target without introducing a nested root main', () => {
