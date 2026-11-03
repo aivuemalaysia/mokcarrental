@@ -4,7 +4,7 @@ import CTASection from '@/components/CTASection';
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 
 export const metadata: Metadata = {
-  title: 'FAQ — Car Rental Questions Johor Bahru | MOK Car Rental',
+  title: 'Car Rental FAQ in Johor Bahru',
   description: 'Frequently asked questions about car rental in Johor Bahru. Learn about booking, documents needed, driving in Malaysia, Singapore to JB tips, pickup/drop-off, and our rental terms.',
   keywords: [
     'car rental faq johor bahru',

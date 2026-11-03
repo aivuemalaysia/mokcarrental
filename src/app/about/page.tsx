@@ -53,10 +53,10 @@ export default function AboutPage() {
                   Whether you are travelling from Singapore, visiting Johor Bahru for shopping or business, or exploring Johor, your travel dates, passenger count and luggage determine which vehicle types to compare. Check available options in the MOK booking app.
                 </p>
                 <p>
-                  We take pride in our well-maintained fleet of vehicles, professional service, and commitment to customer satisfaction. Our goal is to make every rental experience smooth and enjoyable.
+                  Our aim is to make it straightforward to compare rental options, understand the booking process and get assistance with travel arrangements.
                 </p>
                 <p>
-                  Whether you need a compact car for city driving, a spacious MPV for family trips, or a luxury vehicle for special occasions, we have the perfect car for you. Many of our regular customers are Singaporeans who rent from us for weekend trips to JB, business visits, or cross-border travel.
+                  If you are visiting JB for a family holiday or business trip, compare passenger capacity, luggage needs and rental conditions before booking. For international travel, confirm any border-crossing restrictions directly with the team.
                 </p>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function AboutPage() {
               <div className="text-5xl mb-4">🎯</div>
               <h3 className="text-xl font-bold mb-3">Reliability</h3>
               <p className="text-gray-600">
-                Count on us for dependable vehicles and dependable service, every single time. Our cars are always ready and professionally maintained.
+                Review vehicle details, booking terms and handover information before confirming your rental.
               </p>
             </div>
 
