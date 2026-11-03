@@ -20,7 +20,8 @@ describe('MOK marketing website SEO contract', () => {
     for (const path of ['/', '/cars', '/booking', '/about', '/faq', '/contact', '/terms', '/privacy']) {
       expect(STATIC_INDEXABLE_PATHS).toContain(path);
     }
-    expect(STATIC_INDEXABLE_PATHS.every((path) => !path.startsWith('/admin') && !path.startsWith('/api') && path !== '/my-bookings')).toBe(true);
+    expect(STATIC_INDEXABLE_PATHS.every((path) => !path.startsWith('/admin') && !path.startsWith('/api'))).toBe(true);
+    expect((STATIC_INDEXABLE_PATHS as readonly string[]).includes('/my-bookings')).toBe(false);
     expect(new Set(STATIC_INDEXABLE_PATHS).size).toBe(STATIC_INDEXABLE_PATHS.length);
   });
 });

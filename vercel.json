@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm exec tsc --noEmit || exit 21; pnpm exec jest --runInBand --testPathPattern='(seo|bookingHandoff)' || exit 22; pnpm exec next build || exit 23",
+  "buildCommand": "pnpm exec tsc --noEmit -p tsconfig.app.json || exit 21; pnpm exec jest --runInBand --testPathPattern='(seo|bookingHandoff)' || exit 22; pnpm exec next build || exit 23",
   "outputDirectory": ".next",
   "devCommand": "next dev",
   "installCommand": "pnpm install"
