@@ -296,7 +296,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
   return (
 
-    <>
+    <main>
 
       {/* Structured Data Scripts */}
 
@@ -658,7 +658,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
       </div>
 
-    </>
+    </main>
 
   );
 

@@ -51,7 +51,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="pt-20">
+    <main className="pt-20">
       <nav aria-label="Breadcrumb" className="bg-gray-50 py-3">
         <div className="container-custom">
           <ol className="flex items-center gap-2 text-sm text-gray-600">
@@ -286,6 +286,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

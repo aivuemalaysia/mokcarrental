@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="pt-20">
+    <main className="pt-20">
       <section className="bg-[#1B1D1F] py-20 text-white">
         <div className="container-custom max-w-5xl">
           <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-[#FF923F]">Rental information</p>
@@ -73,6 +73,6 @@ export default function TermsPage() {
           <LegalContactInfo />
         </div>
       </section>
-    </div>
+    </main>
   );
 }

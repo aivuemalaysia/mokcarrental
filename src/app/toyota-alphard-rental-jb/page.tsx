@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 const items=[{"title":"Passenger comfort","text":"Compare the actual seating layout and passenger count for your group."},{"title":"Luggage capacity","text":"Consider suitcases, child seats and the space remaining with every seat occupied."},{"title":"Prices and availability","text":"Model availability, rental rates and deposit requirements depend on the current booking quotation."}];
 export default function LandingPage(){
- return <>
+ return <main>
   <section className="bg-[#1B1D1F] pb-20 pt-36 text-white">
    <div className="container-custom max-w-5xl">
     <Link href="/" className="text-sm font-semibold text-[#FF923F] hover:underline">Home</Link><span className="mx-2 text-gray-500">/</span><span className="text-sm text-gray-300">Premium MPV rental guide</span>
@@ -30,5 +30,5 @@ export default function LandingPage(){
    <p className="mt-4 max-w-3xl leading-relaxed text-gray-700">Use your travel dates and group requirements to compare current options. Request confirmation of pickup location, optional services and final charges before relying on an arrangement.</p>
    <div className="mt-8 flex flex-wrap gap-3"><a href={MOK_BOOKING_URL} className="btn-primary">Check live rental options</a><Link href="/cars" className="btn-secondary">Compare vehicle types</Link></div>
   </div></section>
- </>;
+ </main>;
 }

@@ -80,7 +80,7 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
   }, [allCars, selectedCategory, searchQuery]);
 
   return (
-    <>
+    <main>
       {/* Breadcrumb navigation */}
       <nav aria-label="Breadcrumb" className="bg-gray-50 py-3">
         <div className="container-custom">
@@ -162,6 +162,6 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
           )}
         </div>
       </section>
-    </>
+    </main>
   );
 }

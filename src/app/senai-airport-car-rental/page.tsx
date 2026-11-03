@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 const items=[{"title":"Arrival timing","text":"Allow time after landing for bags, immigration if applicable and any onward connection."},{"title":"Handover point","text":"Confirm where and when the car is collected. Airport delivery must not be assumed."},{"title":"Documents and terms","text":"Check driver licence, ID, deposit, insurance and cancellation conditions during booking."}];
 export default function LandingPage(){
- return <>
+ return <main>
   <section className="bg-[#1B1D1F] pb-20 pt-36 text-white">
    <div className="container-custom max-w-5xl">
     <Link href="/" className="text-sm font-semibold text-[#FF923F] hover:underline">Home</Link><span className="mx-2 text-gray-500">/</span><span className="text-sm text-gray-300">Airport rental planning</span>
@@ -30,5 +30,5 @@ export default function LandingPage(){
    <p className="mt-4 max-w-3xl leading-relaxed text-gray-700">Use your travel dates and group requirements to compare current options. Request confirmation of pickup location, optional services and final charges before relying on an arrangement.</p>
    <div className="mt-8 flex flex-wrap gap-3"><a href={MOK_BOOKING_URL} className="btn-primary">Check live rental options</a><Link href="/contact" className="btn-secondary">Ask about airport handover</Link></div>
   </div></section>
- </>;
+ </main>;
 }
