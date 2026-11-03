@@ -1,5 +1,5 @@
 {
-  "buildCommand": "next build",
+  "buildCommand": "pnpm exec tsc --noEmit && pnpm exec jest --runInBand --testPathPattern='(seo|bookingHandoff)' && pnpm exec next build",
   "outputDirectory": ".next",
   "devCommand": "next dev",
   "installCommand": "pnpm install"
