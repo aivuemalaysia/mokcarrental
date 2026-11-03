@@ -1,84 +1,33 @@
-'use client';
-
 import Link from 'next/link';
+import { FiArrowRight, FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
 export default function Hero() {
-
-  return (
-    <section
-      className="relative min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden"
-      aria-label="Car rental in Johor Bahru hero section"
-    >
-      {/* Background image - using direct img tag since next.config has unoptimized:true */}
-      <div className="absolute inset-0">
-        <img
-          src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&h=1080&fit=crop&q=80"
-          alt="Affordable car rental in Johor Bahru - Toyota Alphard and luxury fleet parked near city skyline"
-          className="object-cover w-full h-full object-center"
-          loading="eager"
-          fetchPriority="high"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
-      </div>
-
-      <div className="relative z-10 container-custom text-center text-white pt-20">
-        <div className="max-w-4xl mx-auto animate-fade-in">
-          {/* Keyword-rich eyebrow */}
-          <div className="inline-block px-4 py-2 bg-gold-500/20 backdrop-blur-sm rounded-full border border-gold-500/50 mb-6">
-            <span className="text-gold-400 font-medium">
-              Trusted by 500+ Customers Since 2020
-            </span>
-          </div>
-
-          {/* Primary H1 — exact match for "car rental johor bahru" and "affordable car rental jb" */}
-          <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
-            Affordable <span className="text-gradient">Car Rental</span> in{' '}
-            <span className="text-gradient">Johor Bahru</span>
-          </h1>
-
-          {/* Supporting description — includes target keywords naturally */}
-          <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto">
-            Premium Toyota Alphard, MPV, sedan &amp; luxury car rental in Johor Bahru from RM150/day.
-            Serving Singapore customers crossing the Causeway, tourists at Senai Airport, and locals.
-          </p>
-
-          {/* Booking continues in the MOK PWA; fleet discovery stays on this SEO website. */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href={MOK_BOOKING_URL} className="btn-primary text-lg px-8 py-4">
-              <span>Book Online</span>
-              <span aria-hidden="true">→</span>
-            </a>
-
-            <Link href="/cars" className="btn-secondary text-lg px-8 py-4">
-              Browse Our Fleet
-            </Link>
-          </div>
-
-          {/* Trust signals */}
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gold-400">500+</div>
-              <div className="text-gray-400 text-sm mt-1">Happy Customers</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gold-400">15+</div>
-              <div className="text-gray-400 text-sm mt-1">Quality Cars</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gold-400">24/7</div>
-              <div className="text-gray-400 text-sm mt-1">Support Available</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gold-400">4.9&#9733;</div>
-              <div className="text-gray-400 text-sm mt-1">Customer Rating</div>
-            </div>
-          </div>
+  return <section aria-label="Car rental in Johor Bahru" className="relative isolate overflow-hidden bg-[#191B1D] pb-20 pt-36 text-white md:pb-24 md:pt-44">
+    <div className="pointer-events-none absolute inset-0 z-[-1]">
+      <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&h=1080&fit=crop&q=80"
+        alt="" aria-hidden="true" width="1920" height="1080" loading="eager" fetchPriority="high"
+        className="absolute inset-0 h-full w-full object-cover object-center opacity-25 grayscale"/>
+      <div className="absolute inset-0 bg-gradient-to-r from-[#101214]/95 via-[#191B1D]/90 to-[#17191B]/60"/>
+    </div>
+    <div className="container-custom relative">
+      <div className="max-w-4xl">
+        <p className="mb-6 inline-flex rounded-full border border-[#FF923F]/40 bg-[#FF761A]/10 px-4 py-2 text-xs font-bold uppercase tracking-[.16em] text-[#FFAF77]">Johor Bahru, Malaysia · Rental guides & booking</p>
+        <h1 className="text-[clamp(2.75rem,7vw,5.7rem)] font-extrabold leading-[1.06] tracking-[-.055em]">
+          Car Rental in <span className="text-[#FF923F]">Johor Bahru.</span>
+          <span className="mt-2 block text-white">Explore JB on your terms.</span>
+        </h1>
+        <p className="mt-7 max-w-2xl text-lg leading-relaxed text-[#D7DADD] md:text-xl">
+          Compare vehicle types for family trips, business travel and your next visit to JB. Find useful local information here, then check live cars and dates in the MOK booking app.
+        </p>
+        <div className="mt-9 flex flex-wrap gap-3">
+          <a href={MOK_BOOKING_URL} className="btn-primary text-base">Check Available Cars <FiArrowUpRight aria-hidden="true"/></a>
+          <Link href="#rental-services" className="inline-flex min-h-[48px] items-center gap-2 rounded-xl border border-white/30 px-6 py-3 font-semibold text-white hover:border-[#FF923F] hover:bg-white/10">Explore Rental Types <FiArrowRight aria-hidden="true"/></Link>
+        </div>
+        <div className="mt-14 grid max-w-3xl gap-5 border-t border-white/15 pt-6 text-sm text-gray-200 sm:grid-cols-3">
+          {['Johor Bahru rental guides','Vehicle options for different trips','Live dates and rates in MOK app'].map(x=><div key={x} className="flex items-start gap-2"><FiCheckCircle aria-hidden="true" className="mt-0.5 flex-shrink-0 text-[#FF923F]"/>{x}</div>)}
         </div>
       </div>
-
-      {/* Organic gradient transition */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
-    </section>
-  );
+    </div>
+  </section>;
 }

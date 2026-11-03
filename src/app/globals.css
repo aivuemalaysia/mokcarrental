@@ -129,3 +129,21 @@
 .whatsapp-float {
   @apply fixed bottom-6 right-6 z-50;
 }
+
+/* Scoped acquisition-site theme. Website /admin keeps its existing styles. */
+.mok-marketing { --mok-orange: #FF761A; --mok-ink: #1B1D1F; background: #F7F7F5; color: #1B1D1F; }
+.mok-marketing :is(a,button,input,textarea,select):focus-visible { outline: 3px solid #FF761A; outline-offset: 3px; }
+.mok-marketing .btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:48px; padding:.8rem 1.4rem; color:#17191B; background:#FF761A; border:1px solid #FF761A; border-radius:12px; font-weight:750; box-shadow:0 10px 28px rgba(255,118,26,.16); transform:none; }
+.mok-marketing .btn-primary:hover { background:#FF923F; border-color:#FF923F; color:#17191B; transform:none; }
+.mok-marketing .btn-secondary { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:.8rem 1.4rem; color:#1B1D1F; background:transparent; border:1px solid #767B80; border-radius:12px; font-weight:650; transform:none; }
+.mok-marketing .btn-secondary:hover { color:#1B1D1F; border-color:#FF761A; background:#FFF3E9; transform:none; }
+.mok-marketing .section-title { font-family:Inter,system-ui,sans-serif; font-weight:800; color:#1B1D1F; line-height:1.14; letter-spacing:-.035em; }
+.mok-marketing .text-gradient { background:none; color:#FF923F; -webkit-text-fill-color:currentColor; }
+.mok-marketing .text-gold-500 { color:#E85E07; }
+.mok-marketing .text-gold-400 { color:#FF923F; }
+.mok-marketing .text-gold-600 { color:#CE5205; }
+.mok-marketing .text-gold-700 { color:#A94100; }
+.mok-marketing .bg-gold-500 { background-color:#FF761A; }
+.mok-marketing .border-gold-500 { border-color:#FF761A; }
+.mok-marketing .bg-gold-50 { background-color:#FFF3E9; }
+@media (prefers-reduced-motion: reduce) { .mok-marketing *, .mok-marketing *::before, .mok-marketing *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } }

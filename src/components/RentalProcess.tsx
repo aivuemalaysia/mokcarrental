@@ -1,78 +1,21 @@
-'use client';
-
-import { FiSearch, FiCalendar, FiCheck, FiTruck } from 'react-icons/fi';
+import { FiSearch, FiCalendar, FiCheckCircle } from 'react-icons/fi';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
-
-const steps = [
-  {
-    number: 1,
-    icon: FiSearch,
-    title: 'Choose Your Car',
-    description: 'Browse our fleet and select the perfect vehicle for your needs',
-  },
-  {
-    number: 2,
-    icon: FiCalendar,
-    title: 'Check Dates Online',
-    description: 'Select your rental dates and check cars in the MOK booking app',
-  },
-  {
-    number: 3,
-    icon: FiCheck,
-    title: 'Complete Booking',
-    description: 'Follow the booking and confirmation steps in the MOK app',
-  },
-  {
-    number: 4,
-    icon: FiTruck,
-    title: 'Pickup & Drive',
-    description: 'Collect your car and enjoy your journey',
-  },
+const steps=[
+ {icon:FiSearch,title:'Explore rental options',desc:'Find vehicle information and rental guidance on this website.'},
+ {icon:FiCalendar,title:'Choose dates in MOK',desc:'Check available models, dates and the booking quotation in MOK PWA.'},
+ {icon:FiCheckCircle,title:'Complete booking',desc:'Follow the reservation and confirmation steps shown in the app.'}
 ];
-
-export default function RentalProcess() {
-
-  return (
-    <section className="py-20 bg-gray-900 text-white">
-      <div className="container-custom">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            How It Works
-          </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Renting a car has never been easier. Simple 4-step process
-          </p>
-        </div>
-
-        <div className="relative">
-          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gold-500/20 hidden lg:block -translate-y-1/2" />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-            {steps.map((step, index) => (
-              <div key={index} className="relative">
-                <div className="bg-gray-800 rounded-2xl p-8 hover:bg-gray-700 transition-colors duration-300 h-full">
-                  <div className="relative z-10">
-                    <div className="w-16 h-16 rounded-full bg-gold-500 text-white flex items-center justify-center text-2xl font-bold mb-6 mx-auto">
-                      {step.number}
-                    </div>
-                    <div className="text-center mb-4">
-                      <step.icon className="w-12 h-12 text-gold-400 mx-auto" />
-                    </div>
-                    <h3 className="text-xl font-bold mb-2 text-center">{step.title}</h3>
-                    <p className="text-gray-400 text-center">{step.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="text-center mt-12">
-          <a href={MOK_BOOKING_URL} className="btn-primary text-lg px-8 py-4 inline-flex">
-            Start Your Booking
-          </a>
-        </div>
-      </div>
-    </section>
-  );
+export default function RentalProcess(){
+ return <section className="bg-[#1B1D1F] py-20 text-white md:py-24" aria-labelledby="steps-heading">
+ <div className="container-custom">
+  <p className="mb-3 text-center text-xs font-extrabold uppercase tracking-[.2em] text-[#FF923F]">Simple online journey</p>
+  <h2 id="steps-heading" className="mx-auto max-w-2xl text-center text-4xl font-extrabold tracking-tight md:text-5xl">From search to your rental.</h2>
+  <div className="mt-12 grid gap-5 md:grid-cols-3">
+   {steps.map((step,index)=>{const Icon=step.icon;return <div key={step.title} className="rounded-[22px] border border-white/10 bg-[#292C2E] p-7">
+    <div className="mb-7 flex items-center justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF761A]/15 text-[#FF923F]"><Icon aria-hidden="true" className="h-6 w-6"/></span><span className="text-3xl font-black text-white/20">0{index+1}</span></div>
+    <h3 className="text-xl font-bold">{step.title}</h3><p className="mt-3 leading-relaxed text-[#BBC0C3]">{step.desc}</p>
+   </div>;})}
+  </div>
+  <div className="mt-10 text-center"><a href={MOK_BOOKING_URL} className="btn-primary">Continue to MOK Booking</a></div>
+ </div></section>;
 }
