@@ -110,9 +110,11 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <button
+                  type="button"
                   key={category.id}
+                  aria-pressed={selectedCategory === category.id}
                   onClick={() => handleCategoryChange(category.id)}
-                  className={`px-5 py-2.5 rounded-full font-medium transition-all duration-300 text-sm ${
+                  className={`min-h-11 px-5 py-2.5 rounded-full font-medium transition-all duration-300 text-sm ${
                     selectedCategory === category.id
                       ? 'bg-gold-500 text-white shadow-lg'
                       : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
@@ -123,9 +125,11 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
               ))}
             </div>
             <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <label htmlFor="vehicle-search" className="sr-only">Search vehicles by name or brand</label>
+              <FiSearch aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
-                type="text"
+                id="vehicle-search"
+                type="search"
                 placeholder="Search by name or brand..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -138,7 +142,7 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
 
       <section className="py-12 bg-white">
         <div className="container-custom">
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-gray-500 mb-6" role="status" aria-live="polite">
             Showing {filteredCars.length} of {allCars.length} vehicle profiles
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -149,10 +153,11 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
 
           {filteredCars.length === 0 && !loading && (
             <div className="text-center py-16">
-              <FiFilter className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <FiFilter aria-hidden="true" className="w-12 h-12 text-gray-300 mx-auto mb-4" />
 
               <p className="text-gray-500 text-lg mb-4">No cars found in this category.</p>
               <button
+                type="button"
                 onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
                 className="text-gold-500 hover:text-gold-600 font-medium"
               >
