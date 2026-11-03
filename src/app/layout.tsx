@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import ClientLayout from '@/components/ClientLayout';
-import PwaRegister from '@/components/PwaRegister';
+
 import { SEO_ORIGIN } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -74,10 +74,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="theme-color" content="#FF761A" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/brand/mok-icon-192.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/brand/mok-apple-touch-icon.png" />
       </head>
       <body className="antialiased">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-[#FF761A] focus:px-4 focus:py-2 focus:text-[#17191B]">
@@ -86,7 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ClientLayout>
           <main id="main-content">{children}</main>
         </ClientLayout>
-        <PwaRegister />
+
       </body>
     </html>
   );
