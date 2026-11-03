@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import CarsClient from './cars-client';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
-const baseUrl = process.env.SITE_URL || 'https://www.mokcarrental.com';
+const baseUrl = 'https://www.mokcarrental.com';
 
 export const metadata: Metadata = {
   title: 'Our Car Fleet \u2014 Rental Cars in Johor Bahru | Alphard, MPV, Sedan & Luxury',

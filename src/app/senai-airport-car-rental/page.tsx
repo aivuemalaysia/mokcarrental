@@ -4,7 +4,7 @@ import { FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
 import { canonicalFor } from '@/lib/seo';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 export const metadata: Metadata = {
- title: 'Senai Airport Car Rental in Johor Bahru | MOK Car Rental',
+ title: 'Senai Airport Car Rental in Johor Bahru',
  description: 'Arriving at Senai International Airport (JHB)? Learn about rental handover, trip planning and how to check current available cars with MOK.',
  alternates:{canonical:canonicalFor('/senai-airport-car-rental')},
  openGraph:{title:'Senai Airport Car Rental in Johor Bahru | MOK',url:canonicalFor('/senai-airport-car-rental')}

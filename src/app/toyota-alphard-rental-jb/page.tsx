@@ -4,7 +4,7 @@ import { FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
 import { canonicalFor } from '@/lib/seo';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 export const metadata: Metadata = {
- title: 'Toyota Alphard Rental in Johor Bahru | MOK Car Rental',
+ title: 'Toyota Alphard Rental in Johor Bahru',
  description: 'Compare Toyota Alphard and premium MPV rental considerations in JB. Review seating, luggage and current available models through MOK.',
  alternates:{canonical:canonicalFor('/toyota-alphard-rental-jb')},
  openGraph:{title:'Toyota Alphard Rental in Johor Bahru | MOK',url:canonicalFor('/toyota-alphard-rental-jb')}

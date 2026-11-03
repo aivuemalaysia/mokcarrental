@@ -92,7 +92,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-bold mb-1">Our Location</h3>
                     <p className="text-gray-600">
-                      {settings.address}
+                      {settings.address || 'Serving Johor Bahru; confirm your pickup point with the team'}
                     </p>
                   </div>
                 </div>
@@ -104,7 +104,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-bold mb-1">Phone / WhatsApp</h3>
                     {hasVerifiedFormat ? (
-                      <a href={`tel:+${phoneDigits}`} className="text-gold-500 hover:text-gold-600">
+                      <a href={`tel:${settings.whatsappNumber.replace(/\s/g, '')}`} className="text-gold-500 hover:text-gold-600">
                         {settings.whatsappNumber}
                       </a>
                     ) : (
@@ -270,7 +270,7 @@ export default function ContactPage() {
                   />
                 ) : (
                   <div className="bg-gray-100 text-gray-700 p-6 text-sm">
-                    Please contact the team to confirm your vehicle pickup or return location. No physical storefront is implied by this website.
+                    Please contact our team to confirm your pickup or return location.
                   </div>
                 )}
               </div>

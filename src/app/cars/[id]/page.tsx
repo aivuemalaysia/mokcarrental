@@ -76,9 +76,7 @@ export async function generateMetadata(
 
 
 
-    const baseUrl = process.env.SITE_URL ||
-
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+    const baseUrl = 'https://www.mokcarrental.com';
 
 
 
@@ -228,7 +226,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
 
 
-  const baseUrl = process.env.SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");  const car = await fetchCar(id);
+  const baseUrl = 'https://www.mokcarrental.com';  const car = await fetchCar(id);
 
 
 

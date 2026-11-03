@@ -22,7 +22,7 @@ export default function Footer(){
    <div><h2 className="mb-5 font-bold">MOK Car Rental</h2><div className="flex flex-col gap-3 text-sm text-[#C3C8CB]">
     <Link href="/about" className="hover:text-[#FF923F]">About MOK</Link><Link href="/contact" className="hover:text-[#FF923F]">Contact</Link><Link href="/start-business" className="hover:text-[#FF923F]">Business enquiries</Link>
     <span className="mt-2 flex items-center gap-2"><FiMapPin aria-hidden="true" className="text-[#FF923F]"/>{settings.address||'Johor Bahru, Johor, Malaysia'}</span>
-    {validPhone&&<a href={`tel:+${phone}`} className="flex items-center gap-2 hover:text-[#FF923F]"><FiPhone aria-hidden="true"/>{settings.whatsappNumber}</a>}
+    {validPhone&&<a href={`tel:${settings.whatsappNumber.replace(/\s/g,'')}`} className="flex items-center gap-2 hover:text-[#FF923F]"><FiPhone aria-hidden="true"/>{settings.whatsappNumber}</a>}
     {validEmail&&<a href={`mailto:${settings.email}`} className="flex items-center gap-2 hover:text-[#FF923F]"><FiMail aria-hidden="true"/>{settings.email}</a>}
    </div></div>
   </div>
