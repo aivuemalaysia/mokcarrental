@@ -6,8 +6,8 @@ describe('legacy public /api/bookings', () => {
     ['with a phone number', 'http://localhost/api/bookings?whatsapp=%2B60123456789'],
     ['with a different phone number', 'http://localhost/api/bookings?whatsapp=%2B60987654321'],
     ['with a legacy inquiry identifier', 'http://localhost/api/bookings?whatsapp=%2B60123456789&rebook=old-id'],
-  ])('does not expose historical customer data %s', async (_label, _url) => {
-    const response = await GET();
+  ])('does not expose historical customer data %s', async (_label, url) => {
+    const response = GET(new Request(url));
     expect(response.status).toBe(410);
     expect(response.headers.get('Cache-Control')).toContain('no-store');
 

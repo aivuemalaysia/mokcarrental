@@ -8,7 +8,7 @@ import { NextResponse } from 'next/server';
  * Historical inquiries remain available through /api/admin/inquiries,
  * which requires a verified admin session. No records are deleted.
  */
-export function GET() {
+export function GET(_request: Request) {
   return NextResponse.json(
     {
       ok: false,
