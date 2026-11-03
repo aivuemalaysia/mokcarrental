@@ -65,7 +65,7 @@ export default function ContactPage() {
       <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
         <div className="container-custom">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Contact MOK Car Rental — Book Your Car in Johor Bahru
+            Contact MOK Car Rental in Johor Bahru
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl">
             Contact our team about rental options, availability and pickup arrangements in Johor Bahru. Book available vehicles in the MOK app.
@@ -81,7 +81,7 @@ export default function ContactPage() {
               <p className="text-gray-600 mb-8">
                 We&apos;d love to hear from you. Whether you have a question about our services,
                 pricing, availability of Alphard or luxury MPV rentals, or anything else, our team is ready to help.
-                Most Singaporean customers reach us via WhatsApp for the fastest response.
+                You can send us an enquiry below or use WhatsApp to contact our team.
               </p>
 
               <div className="space-y-6 mb-12">
@@ -162,7 +162,7 @@ export default function ContactPage() {
                 <h3 className="text-2xl font-bold mb-6">Send Us a Message</h3>
 
                 {submitted ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-12" role="status">
                     <FiCheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                     <h4 className="text-xl font-bold mb-2">Thank You!</h4>
                     <p className="text-gray-600 mb-6">
@@ -177,14 +177,10 @@ export default function ContactPage() {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                  <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Your Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
+                      <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-2">\n                        Your Name *\n                      </label>
+                      <input\n                        id="contact-name"\n                        name="name"\n                        type="text"\n                        required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="John Doe"
@@ -195,12 +191,8 @@ export default function ContactPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Email Address *
-                        </label>
-                        <input
-                          type="email"
-                          required
+                        <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-2">\n                        Email Address *\n                      </label>
+                        <input\n                        id="contact-email"\n                        name="email"\n                        type="email"\n                        required
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           placeholder="john@example.com"
@@ -210,12 +202,8 @@ export default function ContactPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Phone / WhatsApp *
-                        </label>
-                        <input
-                          type="tel"
-                          required
+                        <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-2">\n                        Phone / WhatsApp *\n                      </label>
+                        <input\n                        id="contact-phone"\n                        name="phone"\n                        type="tel"\n                        required
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="+60 12-345 6789"
@@ -226,11 +214,8 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Your Inquiry *
-                      </label>
-                      <textarea
-                        required
+                      <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-2">\n                        Your Inquiry *\n                      </label>
+                      <textarea\n                        id="contact-message"\n                        name="message"\n                        required
                         rows={5}
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -240,7 +225,7 @@ export default function ContactPage() {
                     </div>
 
                     {error && (
-                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm" role="alert">
                         {error}
                       </div>
                     )}
