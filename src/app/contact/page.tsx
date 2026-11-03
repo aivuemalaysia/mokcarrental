@@ -179,8 +179,14 @@ export default function ContactPage() {
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-2">\n                        Your Name *\n                      </label>
-                      <input\n                        id="contact-name"\n                        name="name"\n                        type="text"\n                        required
+                      <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-2">
+                        Your Name *
+                      </label>
+                      <input
+                        id="contact-name"
+                        name="name"
+                        type="text"
+                        required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="John Doe"
@@ -191,8 +197,14 @@ export default function ContactPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-2">\n                        Email Address *\n                      </label>
-                        <input\n                        id="contact-email"\n                        name="email"\n                        type="email"\n                        required
+                        <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address *
+                      </label>
+                        <input
+                        id="contact-email"
+                        name="email"
+                        type="email"
+                        required
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           placeholder="john@example.com"
@@ -202,8 +214,14 @@ export default function ContactPage() {
                       </div>
 
                       <div>
-                        <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-2">\n                        Phone / WhatsApp *\n                      </label>
-                        <input\n                        id="contact-phone"\n                        name="phone"\n                        type="tel"\n                        required
+                        <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-2">
+                        Phone / WhatsApp *
+                      </label>
+                        <input
+                        id="contact-phone"
+                        name="phone"
+                        type="tel"
+                        required
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="+60 12-345 6789"
@@ -214,8 +232,13 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-2">\n                        Your Inquiry *\n                      </label>
-                      <textarea\n                        id="contact-message"\n                        name="message"\n                        required
+                      <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-2">
+                        Your Inquiry *
+                      </label>
+                      <textarea
+                        id="contact-message"
+                        name="message"
+                        required
                         rows={5}
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
