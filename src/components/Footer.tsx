@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiArrowUpRight, FiMapPin, FiMail, FiPhone } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
@@ -14,7 +15,13 @@ export default function Footer(){
  const validPhone=phone.length>=9&&phone.length<=15,validEmail=settings.email.includes('@');
  return <footer className="bg-[#151719] py-16 text-white"><div className="container-custom">
   <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr]">
-   <div><Link href="/" className="inline-flex items-center gap-3" aria-label="MOK Car Rental homepage"><span className="text-4xl font-black tracking-[-.12em] text-[#FF761A]">MOK</span><span className="border-l border-white/20 pl-3 text-xs font-bold uppercase tracking-widest">Car Rental</span></Link>
+   <div><Link href="/" className="inline-flex items-center gap-3" aria-label="MOK Car Rental homepage"><Image
+      src="/brand/mok-logo-2026-transparent.webp"
+      alt="MOK Car Rental"
+      width={236}
+      height={66}
+      className="h-[58px] w-auto max-w-[225px] object-contain"
+    /></Link>
     <p className="mt-5 max-w-sm leading-relaxed text-[#BBC0C3]">Car rental information and online booking for Johor Bahru, Malaysia. Explore options and plan your journey with MOK.</p>
     <a href={MOK_BOOKING_URL} className="mt-6 inline-flex items-center gap-2 font-bold text-[#FF923F] hover:underline">Check available cars <FiArrowUpRight aria-hidden="true"/></a>
    </div>

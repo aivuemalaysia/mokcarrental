@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiMenu, FiX, FiArrowUpRight } from 'react-icons/fi';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
@@ -17,8 +18,14 @@ export default function Navbar() {
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#191B1D]/95 text-white backdrop-blur-lg" aria-label="Primary navigation">
       <div className="container-custom flex h-20 items-center justify-between gap-5">
         <Link href="/" aria-label="MOK Car Rental homepage" className="flex items-center gap-3">
-          <span className="text-3xl font-black leading-none tracking-[-0.12em] text-[#FF761A]">MOK</span>
-          <span className="border-l border-white/20 pl-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-200">Car<br/>Rental</span>
+          <Image
+            src="/brand/mok-logo-2026-transparent.webp"
+            alt="MOK Car Rental"
+            width={215}
+            height={60}
+            priority
+            className="h-12 w-auto max-w-[192px] object-contain"
+          />
         </Link>
         <div className="hidden min-[1100px]:flex items-center gap-6">
           {links.map(({href,label})=><Link key={href} href={href} className="text-sm font-semibold text-gray-200 hover:text-[#FF923F]">{label}</Link>)}
