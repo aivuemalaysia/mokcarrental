@@ -9,7 +9,7 @@ import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/cars', label: 'Our Fleet' },
-  { href: '/my-bookings', label: 'My Bookings' },
+  { href: '/my-bookings', label: 'Past Website Inquiries' },
   { href: '/start-business', label: 'Start Business' },
   { href: '/about', label: 'About Us' },
   { href: '/faq', label: 'FAQ' },

@@ -4,11 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
-import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
+
 
 export default function ContactPage() {
-  const { settings } = useSiteSettings();
-  const { openInquiry } = useWhatsAppInquiry();
+  const { settings, getWhatsAppLink } = useSiteSettings();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -141,13 +140,14 @@ export default function ContactPage() {
 
               <div>
                 <h3 className="font-bold mb-4">Quick Contact</h3>
-                <button
-                  type="button"
-                  onClick={() => openInquiry()}
+                <a
+                  href={getWhatsAppLink('Hello MOK Car Rental, I have a question about your rental service.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="btn-whatsapp text-lg"
                 >
                   Chat on WhatsApp
-                </button>
+                </a>
               </div>
             </div>
 
