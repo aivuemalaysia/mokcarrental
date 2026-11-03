@@ -70,7 +70,7 @@ export async function generateMetadata(
 
     if (!car) {
 
-      return { title: 'Car Not Found | Mok Car Rental JB' };
+      return { title: 'Car Not Found', robots: { index: false, follow: false } };
 
     }
 
@@ -162,32 +162,18 @@ export async function generateMetadata(
 
 
 
-async function fetchCar(id: string) {
+async function fetchCar(id: string): Promise<Car | null> {
+  // Return 404 only when the vehicle truly does not exist.
+  // A database outage must remain a retryable 5xx, not a soft 404.
+  const { data, error } = await getSupabaseServerClient()
+    .from('cars')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
 
-  try {
-
-    const { data, error } = await getSupabaseServerClient()
-
-      .from('cars')
-
-      .select('*')
-
-      .eq('id', id)
-
-      .single();
-
-    if (error || !data) return null;
-
-    return data as Car;
-
-  } catch {
-
-    return null;
-
-  }
-
+  if (error) throw error;
+  return data as Car | null;
 }
-
 
 
 async function fetchRelatedCars(car: Car, carId: string) {
@@ -230,27 +216,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
 
 
-  if (!car) {
-
-    return (
-
-      <div className="pt-20 min-h-screen flex items-center justify-center">
-
-        <div className="text-center">
-
-          <h1 className="text-3xl font-bold mb-4">Car Not Found</h1>
-
-          <Link href="/cars" className="btn-primary">Back to Cars</Link>
-
-        </div>
-
-      </div>
-
-    );
-
-  }
-
-
+  if (!car) notFound();
 
   const relatedCars = await fetchRelatedCars(car, id);
 
