@@ -16,6 +16,7 @@ import CarCard from '@/components/CarCard';
 
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import { isLegacyVehicleId } from '@/lib/seo';
 
 
 
@@ -53,6 +54,11 @@ export async function generateMetadata(
 ): Promise<Metadata> {
 
   const { id } = await params;
+
+  // Malformed route parameters must not generate UUID database errors.
+  if (!isLegacyVehicleId(id)) {
+    return { title: 'Car Not Found', robots: { index: false, follow: false } };
+  }
 
   try {
 
@@ -212,7 +218,10 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
 
 
-  const baseUrl = 'https://www.mokcarrental.com';  const car = await fetchCar(id);
+  if (!isLegacyVehicleId(id)) notFound();
+
+  const baseUrl = 'https://www.mokcarrental.com';
+  const car = await fetchCar(id);
 
 
 

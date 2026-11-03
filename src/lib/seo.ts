@@ -18,6 +18,11 @@ export const STATIC_INDEXABLE_PATHS = [
   '/toyota-alphard-rental-jb',
 ] as const;
 
+/** Validate legacy website car IDs before sending them to the UUID database column. */
+export function isLegacyVehicleId(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
 export function canonicalFor(path: string): string {
   if (!path.startsWith('/') || path.startsWith('//') || path.includes('?') || path.includes('#')) {
     throw new Error('Canonical must be an absolute pathname without query or hash');

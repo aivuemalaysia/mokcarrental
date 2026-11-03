@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     siteName: 'MOK Car Rental',
     title: 'Car Rental Johor Bahru | MOK Car Rental',
     description: 'Johor Bahru car rental information and online booking. Explore vehicle options, airport rental guidance and trip planning with MOK.',
-    images: [{ url: '/og-home.jpg', width: 1200, height: 630, alt: 'MOK Car Rental in Johor Bahru' }],
+    images: [{ url: SEO_ORIGIN + '/og-home.jpg', width: 1200, height: 630, alt: 'MOK Car Rental in Johor Bahru' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Car Rental Johor Bahru | MOK Car Rental',
     description: 'Explore car rental options in JB and continue to the MOK booking app.',
-    images: ['/og-image.jpg'],
+    images: [SEO_ORIGIN + '/og-image.jpg'],
   },
   robots: {
     index: true,

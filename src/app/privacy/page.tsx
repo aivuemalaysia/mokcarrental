@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/privacy' },
 };
 
-const bookingPrivacyUrl = 'https://app.mokcarrental.com/terms';
+const bookingTermsUrl = 'https://app.mokcarrental.com/terms';
 
 export default function PrivacyPage() {
   return (
@@ -32,9 +32,9 @@ export default function PrivacyPage() {
               rental quotations, identification steps and payments are handled through MOK PWA,
               not through this marketing website.
             </p>
-            <a href={bookingPrivacyUrl}
+            <a href={bookingTermsUrl}
               className="mt-6 inline-flex min-h-12 items-center justify-center rounded-xl bg-[#FF761A] px-6 py-3 font-bold text-[#17191B] hover:bg-[#FF923F]">
-              Review MOK booking terms and privacy information
+              Review MOK PWA booking terms
             </a>
           </div>
 

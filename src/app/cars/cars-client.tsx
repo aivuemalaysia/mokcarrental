@@ -95,11 +95,11 @@ export default function CarsClient({ initialCars }: { initialCars: Car[] }) {
       <section className="py-8 bg-white">
         <div className="container-custom">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-3">
-            Our Car Fleet — Rental Cars in Johor Bahru
+            Rental Vehicle Information in Johor Bahru
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl">
-            Browse our premium selection of well-maintained rental vehicles in Johor Bahru.
-            From economy cars to luxury Alphard MPVs — perfect for Singapore travelers, airport transfers, and city exploration.
+            Explore vehicle profiles and compare the types of cars suitable for journeys in Johor Bahru.
+            Actual models, rental prices, pickup arrangements and booking conditions must be confirmed in MOK PWA.
           </p>
         </div>
       </section>

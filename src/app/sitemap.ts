@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
-import { canonicalFor, STATIC_INDEXABLE_PATHS } from '@/lib/seo';
+import { canonicalFor, STATIC_INDEXABLE_PATHS, isLegacyVehicleId } from '@/lib/seo';
 
 /**
  * Keep canonical, crawlable marketing URLs in the sitemap. Do not claim
@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .eq('available', true);
     if (error) throw error;
     carPages = (data || [])
-      .filter((car: { id: string }) => /^[a-f0-9-]{36}$/i.test(car.id))
+      .filter((car: { id: string }) => isLegacyVehicleId(car.id))
       .map((car: { id: string; updated_at?: string | null }) => {
         const lastModified = car.updated_at ? new Date(car.updated_at) : undefined;
         return {
