@@ -1,7 +1,7 @@
 'use client';
 
-import { FiSearch, FiMessageCircle, FiCheck, FiTruck } from 'react-icons/fi';
-import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
+import { FiSearch, FiCalendar, FiCheck, FiTruck } from 'react-icons/fi';
+import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
 const steps = [
   {
@@ -12,15 +12,15 @@ const steps = [
   },
   {
     number: 2,
-    icon: FiMessageCircle,
-    title: 'Contact via WhatsApp',
-    description: 'Send us a message with your preferred dates and car choice',
+    icon: FiCalendar,
+    title: 'Check Dates Online',
+    description: 'Select your rental dates and check cars in the MOK booking app',
   },
   {
     number: 3,
     icon: FiCheck,
-    title: 'Confirm Booking',
-    description: 'We\'ll confirm availability and provide all the details',
+    title: 'Complete Booking',
+    description: 'Follow the booking and confirmation steps in the MOK app',
   },
   {
     number: 4,
@@ -31,7 +31,6 @@ const steps = [
 ];
 
 export default function RentalProcess() {
-  const { openInquiry } = useWhatsAppInquiry();
 
   return (
     <section className="py-20 bg-gray-900 text-white">
@@ -69,13 +68,9 @@ export default function RentalProcess() {
         </div>
 
         <div className="text-center mt-12">
-          <button
-            type="button"
-            onClick={() => openInquiry()}
-            className="btn-whatsapp text-lg px-8 py-4 inline-flex"
-          >
+          <a href={MOK_BOOKING_URL} className="btn-primary text-lg px-8 py-4 inline-flex">
             Start Your Booking
-          </button>
+          </a>
         </div>
       </div>
     </section>

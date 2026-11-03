@@ -4,11 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/cars', label: 'Our Fleet' },
-  { href: '/my-bookings', label: 'My Bookings' },
+  { href: '/my-bookings', label: 'Past Website Inquiries' },
   { href: '/start-business', label: 'Start Business' },
   { href: '/about', label: 'About Us' },
   { href: '/faq', label: 'FAQ' },
@@ -42,7 +43,7 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:block">
-            <Link href="/booking" className="btn-primary">
+            <Link href={MOK_BOOKING_URL} className="btn-primary">
               Book Now
             </Link>
           </div>
@@ -74,7 +75,7 @@ export default function Navbar() {
                 </Link>
               ))}
               <Link
-                href="/booking"
+                href={MOK_BOOKING_URL}
                 className="btn-primary text-center mt-2"
                 onClick={() => setMobileMenuOpen(false)}
               >

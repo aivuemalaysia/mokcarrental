@@ -1,7 +1,8 @@
 'use client';
 
-import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
+// WhatsApp is for customer support; the website's booking CTAs go to MOK PWA.
 export default function WhatsAppInquiryButton({
   label,
   className,
@@ -11,12 +12,19 @@ export default function WhatsAppInquiryButton({
   className: string;
   prefillCar?: { id?: string; name?: string };
 }) {
-  const { openInquiry } = useWhatsAppInquiry();
-
+  const { getWhatsAppLink } = useSiteSettings();
+  const message = prefillCar?.name
+    ? `Hello MOK Car Rental, I have a question about the ${prefillCar.name}.`
+    : 'Hello MOK Car Rental, I have a question about your rental service.';
+  const url = getWhatsAppLink(message);
   return (
-    <button type="button" onClick={() => openInquiry(prefillCar)} className={className}>
+    <a
+      href={url === '#' ? '/contact' : url}
+      target={url === '#' ? undefined : '_blank'}
+      rel={url === '#' ? undefined : 'noopener noreferrer'}
+      className={className}
+    >
       {label}
-    </button>
+    </a>
   );
 }
-

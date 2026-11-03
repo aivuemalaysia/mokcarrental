@@ -1,55 +1,32 @@
 import { NextResponse } from 'next/server';
-import { jsonError, jsonOk } from '@/lib/apiResponse';
-import { rateLimit } from '@/lib/rateLimit';
-import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const whatsapp = url.searchParams.get('whatsapp')?.trim();
-  if (!whatsapp) return jsonError('whatsapp is required', 400);
-
-  const ip =
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    request.headers.get('x-real-ip') ||
-    'unknown';
-  const limited = await rateLimit({ key: `bookings:${ip}`, limit: 20, windowMs: 60_000 });
-  if (!limited.ok) return jsonError('Too many requests', 429);
-
-  let client;
-  try {
-    client = getSupabaseServerClient();
-  } catch {
-    return jsonError('Server misconfigured', 500);
-  }
-
-  const { data, error } = await client
-    .from('inquiries')
-    .select(
-      'id, car_id, car_name, customer_name, whatsapp_number, email, pickup_date, return_date, pickup_location, status, created_at'
-    )
-    .eq('whatsapp_number', whatsapp)
-    .order('created_at', { ascending: false })
-    .limit(25);
-
-  if (error) return jsonError(error.message, 500);
-
-  const bookings = (data || []).map((row: any) => ({
-    id: row.id,
-    carId: row.car_id ?? '',
-    carName: row.car_name ?? '',
-    customerName: row.customer_name ?? '',
-    whatsapp: row.whatsapp_number ?? '',
-    email: row.email ?? '',
-    pickupDate: row.pickup_date ?? '',
-    returnDate: row.return_date ?? '',
-    pickupLocation: row.pickup_location ?? '',
-    status: row.status ?? 'pending',
-    createdAt: row.created_at ?? '',
-  }));
-
-  return jsonOk({ bookings });
+/**
+ * The legacy WhatsApp-number-only inquiry lookup has been retired.
+ * Knowing a phone number is not proof of ownership; never query or return
+ * historical customer details from this unauthenticated public endpoint.
+ *
+ * Historical inquiries remain available through /api/admin/inquiries,
+ * which requires a verified admin session. No records are deleted.
+ */
+export function GET(_request: Request) {
+  return NextResponse.json(
+    {
+      ok: false,
+      error: 'Public booking lookup is no longer available. Contact MOK support about earlier website inquiries.',
+    },
+    {
+      status: 410,
+      headers: {
+        'Cache-Control': 'private, no-store',
+        Pragma: 'no-cache',
+      },
+    },
+  );
 }
 
 export function POST() {
-  return NextResponse.json({ ok: false, error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json(
+    { ok: false, error: 'Method not allowed' },
+    { status: 405, headers: { 'Cache-Control': 'private, no-store' } },
+  );
 }

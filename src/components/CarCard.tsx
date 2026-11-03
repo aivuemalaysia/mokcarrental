@@ -4,14 +4,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Car } from '@/types';
 import { FiUsers, FiSettings, FiZap, FiImage } from 'react-icons/fi';
-import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
+import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
 interface CarCardProps {
   car: Car;
 }
 
 export default function CarCard({ car }: CarCardProps) {
-  const { openInquiry } = useWhatsAppInquiry();
   const imageSrc = typeof car.image === 'string' ? car.image.trim() : '';
 
   return (
@@ -66,13 +65,9 @@ export default function CarCard({ car }: CarCardProps) {
           >
             View Details
           </Link>
-          <button
-            type="button"
-            onClick={() => openInquiry({ id: car.id, name: car.name })}
-            className="flex-1 btn-whatsapp text-center text-sm"
-          >
-            Book
-          </button>
+          <a href={MOK_BOOKING_URL} className="flex-1 btn-primary text-center text-sm">
+            Book Online
+          </a>
         </div>
       </div>
     </div>
