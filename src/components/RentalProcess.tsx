@@ -68,7 +68,7 @@ export default function RentalProcess() {
         </div>
 
         <div className="text-center mt-12">
-          <a href={MOK_BOOKING_URL} className="btn-whatsapp text-lg px-8 py-4 inline-flex">
+          <a href={MOK_BOOKING_URL} className="btn-primary text-lg px-8 py-4 inline-flex">
             Start Your Booking
           </a>
         </div>

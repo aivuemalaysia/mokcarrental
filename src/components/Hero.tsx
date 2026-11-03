@@ -45,7 +45,7 @@ export default function Hero() {
 
           {/* Booking continues in the MOK PWA; fleet discovery stays on this SEO website. */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href={MOK_BOOKING_URL} className="btn-whatsapp text-lg px-8 py-4">
+            <a href={MOK_BOOKING_URL} className="btn-primary text-lg px-8 py-4">
               <span>Book Online</span>
               <span aria-hidden="true">→</span>
             </a>

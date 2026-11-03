@@ -65,7 +65,7 @@ export default function CarCard({ car }: CarCardProps) {
           >
             View Details
           </Link>
-          <a href={MOK_BOOKING_URL} className="flex-1 btn-whatsapp text-center text-sm">
+          <a href={MOK_BOOKING_URL} className="flex-1 btn-primary text-center text-sm">
             Book Online
           </a>
         </div>
