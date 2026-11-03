@@ -1,13 +1,13 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiArrowRight, FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
 export default function Hero() {
   return <section aria-label="Car rental in Johor Bahru" className="relative isolate overflow-hidden bg-[#191B1D] pb-20 pt-36 text-white md:pb-24 md:pt-44">
     <div className="pointer-events-none absolute inset-0 z-[-1]">
-      <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&h=1080&fit=crop&q=80"
-        alt="" aria-hidden="true" width="1920" height="1080" loading="eager" fetchPriority="high"
-        className="absolute inset-0 h-full w-full object-cover object-center opacity-25 grayscale"/>
+      <Image src="/brand/mok-hero-2026.webp" alt="" fill sizes="100vw" priority
+        className="object-cover object-center opacity-25" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#101214]/95 via-[#191B1D]/90 to-[#17191B]/60"/>
     </div>
     <div className="container-custom relative">
