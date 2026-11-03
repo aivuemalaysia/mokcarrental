@@ -15,6 +15,7 @@ import { Car } from '@/types';
 import CarCard from '@/components/CarCard';
 
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
+import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
 
 
@@ -659,27 +660,18 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                   <div className="space-y-4 mb-8">
 
-                    <WhatsAppInquiryButton
-
-                      label="Book via WhatsApp"
-
-                      className="btn-whatsapp w-full justify-center text-lg"
-
-                      prefillCar={{ id: car.id, name: car.name }}
-
-                    />
-
-                    <Link
-
-                      href={`/booking?car=${car.id}`}
-
+                    <a
+                      href={MOK_BOOKING_URL}
                       className="btn-primary w-full justify-center text-lg block text-center"
-
                     >
+                      Book Online in MOK App
+                    </a>
 
-                      Online Inquiry
-
-                    </Link>
+                    <WhatsAppInquiryButton
+                      label="Ask About This Car on WhatsApp"
+                      className="btn-whatsapp w-full justify-center text-lg"
+                      prefillCar={{ id: car.id, name: car.name }}
+                    />
 
                   </div>
 

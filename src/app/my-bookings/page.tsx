@@ -1,5 +1,6 @@
 'use client';
 
+import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 import { useCallback, useEffect, useState } from 'react';
 
 type BookingRow = {
@@ -80,11 +81,6 @@ export default function MyBookingsPage() {
     void load(normalized);
   };
 
-  const rebookUrl = (b: BookingRow) =>
-    `/booking?rebook=${encodeURIComponent(b.id)}&whatsapp=${encodeURIComponent(b.whatsapp)}&car=${encodeURIComponent(
-      b.carId || ''
-    )}`;
-
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.origin + '/my-bookings?whatsapp=' + encodeURIComponent(whatsapp));
@@ -100,7 +96,7 @@ export default function MyBookingsPage() {
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-3">My Bookings</h1>
           <p className="text-lg text-gray-300 max-w-2xl">
             Enter the WhatsApp number you used when you booked, and we&apos;ll bring up your past
-            bookings so you can rebook in one tap.
+            website inquiries. New bookings are handled in the MOK booking app.
           </p>
         </div>
       </section>
@@ -174,9 +170,9 @@ export default function MyBookingsPage() {
                               {(b.status || 'pending').toUpperCase()}
                             </span>
                             <a
-                              href={rebookUrl(b)}
+                              href={MOK_BOOKING_URL}
                             >
-                              Rebook this
+                              Book Again in MOK App
                             </a>
                           </div>
                         </div>

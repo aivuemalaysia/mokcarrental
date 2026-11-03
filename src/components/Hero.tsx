@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useWhatsAppInquiry } from '@/components/WhatsAppInquiryProvider';
+import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
 export default function Hero() {
-  const { openInquiry } = useWhatsAppInquiry();
 
   return (
     <section
@@ -44,16 +43,12 @@ export default function Hero() {
             Serving Singapore customers crossing the Causeway, tourists at Senai Airport, and locals.
           </p>
 
-          {/* Dual CTA — WhatsApp for conversion, Browse for discovery */}
+          {/* Booking continues in the MOK PWA; fleet discovery stays on this SEO website. */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button
-              type="button"
-              onClick={() => openInquiry()}
-              className="btn-whatsapp text-lg px-8 py-4"
-            >
-              <span>Book via WhatsApp</span>
-              <span>&#128172;</span>
-            </button>
+            <a href={MOK_BOOKING_URL} className="btn-whatsapp text-lg px-8 py-4">
+              <span>Book Online</span>
+              <span aria-hidden="true">→</span>
+            </a>
 
             <Link href="/cars" className="btn-secondary text-lg px-8 py-4">
               Browse Our Fleet
