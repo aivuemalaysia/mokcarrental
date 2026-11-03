@@ -28,8 +28,8 @@ export default function CarCard({ car }: CarCardProps) {
             <FiImage className="h-10 w-10" />
           </div>
         )}
-        <div className="absolute top-4 right-4 bg-gold-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-          RM{car.price}/day
+        <div className="absolute top-4 right-4 rounded-full bg-[#FF761A] px-3 py-1 text-sm font-semibold text-[#17191B]">
+          Vehicle information
         </div>
         {!car.available && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -66,7 +66,7 @@ export default function CarCard({ car }: CarCardProps) {
             View Details
           </Link>
           <a href={MOK_BOOKING_URL} className="flex-1 btn-primary text-center text-sm">
-            Book Online
+            Check Live Cars
           </a>
         </div>
       </div>

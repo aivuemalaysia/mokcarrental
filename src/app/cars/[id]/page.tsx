@@ -82,7 +82,7 @@ export async function generateMetadata(
 
     const name = car.name || `${car.brand} ${car.model}`;
 
-    const price = car.price || 'N/A';
+    // Legacy website prices are not the live booking quotation.
 
     const category = car.category || 'car';
 
@@ -90,9 +90,9 @@ export async function generateMetadata(
 
     return {
 
-      title: `${name} — ${price}/day Rental | Johor Bahru Car Rental`,
+      title: `${name} Rental in Johor Bahru`,
 
-      description: `Rent the ${name} (${category}) in Johor Bahru from RM${price}/day. ${car.description || 'Well-maintained vehicle with premium features.'} Perfect for Singapore travelers, airport transfers, and JB city exploration.`,
+      description: `Explore ${name} (${category}) rental information in Johor Bahru. Check live prices, availability and booking conditions in the MOK booking app.`,
 
       keywords: [
 
@@ -114,9 +114,9 @@ export async function generateMetadata(
 
       openGraph: {
 
-        title: `${name} — RM${price}/day | Mok Car Rental JB`,
+        title: `${name} Rental Johor Bahru | MOK`,
 
-        description: `Rent the ${name} in Johor Bahru from RM${price}/day. Prime vehicle with ${car.seats} seats, ${car.transmission} transmission.`,
+        description: `Compare ${name} vehicle details in Johor Bahru. Current rental options and quotations are available through MOK booking.`,
 
         url: `${baseUrl}/cars/${id}`,
 
@@ -290,39 +290,8 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
     fuelType: car.fuel_type,
 
-    offers: {
+    url: `${baseUrl}/cars/${car.id}`,
 
-      '@type': 'Offer',
-
-      price: String(car.price),
-
-      priceCurrency: 'MYR',
-
-      availability: car.available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-
-      url: `${baseUrl}/cars/${car.id}`,
-
-      seller: {
-
-        '@type': 'LocalBusiness',
-
-        name: 'Mok Car Rental',
-
-        address: {
-
-          '@type': 'PostalAddress',
-
-          addressLocality: 'Johor Bahru',
-
-          addressRegion: 'Johor',
-
-          addressCountry: 'MY',
-
-        },
-
-      },
-
-    },
 
   };
 
@@ -592,7 +561,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       <FiCheck className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
 
-                      <span>Minimum rental period: 1 day</span>
+                      <span>Rental duration is confirmed during booking</span>
 
                     </li>
 
@@ -600,7 +569,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       <FiCheck className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
 
-                      <span>Daily mileage allowance: 200km (RM0.30 per additional km)</span>
+                      <span>Check the current mileage terms in the MOK booking app</span>
 
                     </li>
 
@@ -608,7 +577,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       <FiCheck className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
 
-                      <span>Security deposit: RM200-500 (refundable upon return)</span>
+                      <span>Confirm the security deposit and refund terms before payment</span>
 
                     </li>
 
@@ -616,7 +585,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       <FiCheck className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
 
-                      <span>Fuel policy: Full-to-full</span>
+                      <span>Confirm the fuel and return policy with MOK</span>
 
                     </li>
 
@@ -642,15 +611,8 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                   <div className="mb-6">
 
-                    <div className="text-sm text-gray-600 mb-1">Daily Rate</div>
-
-                    <div className="text-4xl font-bold text-gold-500">
-
-                      RM{car.price}
-
-                      <span className="text-lg text-gray-600 font-normal">/day</span>
-
-                    </div>
+                    <div className="text-lg font-bold text-gray-900 mb-2">Check live rental rates</div>
+                    <p className="text-sm leading-relaxed text-gray-600">Vehicle information on this page is not a live availability or pricing guarantee. Continue to MOK PWA to see the current quotation for your dates.</p>
 
                   </div>
 
@@ -662,7 +624,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
                       href={MOK_BOOKING_URL}
                       className="btn-primary w-full justify-center text-lg block text-center"
                     >
-                      Book Online in MOK App
+                      Check current cars in MOK PWA
                     </a>
 
                     <WhatsAppInquiryButton
