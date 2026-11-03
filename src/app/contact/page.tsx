@@ -8,6 +8,8 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export default function ContactPage() {
   const { settings, getWhatsAppLink } = useSiteSettings();
+  const phoneDigits = settings.whatsappNumber.replace(/[^0-9]/g, '');
+  const hasVerifiedFormat = phoneDigits.length >= 9 && phoneDigits.length <= 15;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -66,7 +68,7 @@ export default function ContactPage() {
             Contact MOK Car Rental — Book Your Car in Johor Bahru
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Get in touch for inquiries, bookings, or any questions — we typically respond within 30 minutes via WhatsApp
+            Contact our team about rental options, availability and pickup arrangements in Johor Bahru. Book available vehicles in the MOK app.
           </p>
         </div>
       </section>
@@ -101,12 +103,13 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Phone / WhatsApp</h3>
-                    <a
-                      href={`tel:${settings.whatsappNumber}`}
-                      className="text-gold-500 hover:text-gold-600"
-                    >
-                      {settings.whatsappNumber || '+60 XX-XXXXXXX'}
-                    </a>
+                    {hasVerifiedFormat ? (
+                      <a href={`tel:+${phoneDigits}`} className="text-gold-500 hover:text-gold-600">
+                        {settings.whatsappNumber}
+                      </a>
+                    ) : (
+                      <p className="text-gray-600">Please use the contact form to request a callback.</p>
+                    )}
                   </div>
                 </div>
 
@@ -116,12 +119,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Email</h3>
-                    <a
-                      href={`mailto:${settings.email}`}
-                      className="text-gold-500 hover:text-gold-600"
-                    >
-                      {settings.email || 'info@mokcarrental.com'}
-                    </a>
+                    {settings.email.includes('@') ? (
+                      <a href={`mailto:${settings.email}`} className="text-gold-500 hover:text-gold-600">
+                        {settings.email}
+                      </a>
+                    ) : <p className="text-gray-600">Use the contact form below.</p>}
                   </div>
                 </div>
 
@@ -132,7 +134,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-bold mb-1">Business Hours</h3>
                     <p className="text-gray-600">
-                      {settings.workingHours || 'Daily 8:00 AM - 10:00 PM'} Support Available
+                      {settings.workingHours || 'Please contact our team for operating hours'}
                     </p>
                   </div>
                 </div>
@@ -140,14 +142,18 @@ export default function ContactPage() {
 
               <div>
                 <h3 className="font-bold mb-4">Quick Contact</h3>
-                <a
-                  href={getWhatsAppLink('Hello MOK Car Rental, I have a question about your rental service.')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-whatsapp text-lg"
-                >
-                  Chat on WhatsApp
-                </a>
+                {hasVerifiedFormat ? (
+                  <a
+                    href={getWhatsAppLink('Hello MOK Car Rental, I have a question about your rental service.')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-whatsapp text-lg"
+                  >
+                    Chat on WhatsApp
+                  </a>
+                ) : (
+                  <p className="text-gray-600">Send us a message using the form below.</p>
+                )}
               </div>
             </div>
 
@@ -160,7 +166,7 @@ export default function ContactPage() {
                     <FiCheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                     <h4 className="text-xl font-bold mb-2">Thank You!</h4>
                     <p className="text-gray-600 mb-6">
-                      Your message has been sent successfully. We&apos;ll get back to you within 30 minutes.
+                      Your message has been sent successfully. Our team will follow up with you.
                     </p>
                     <button
                       type="button"
@@ -264,7 +270,7 @@ export default function ContactPage() {
                   />
                 ) : (
                   <div className="bg-gray-100 text-gray-700 p-6 text-sm">
-                    Map location in Johor Bahru will appear here.
+                    Please contact the team to confirm your vehicle pickup or return location. No physical storefront is implied by this website.
                   </div>
                 )}
               </div>

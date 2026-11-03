@@ -46,7 +46,7 @@ export default function FAQPage() {
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">Still Have Questions?</h2>
             <p className="text-gray-600 mb-8">
-              Can&apos;t find the answer you&apos;re looking for? Our team is available 24/7 via WhatsApp.
+              Can&apos;t find the answer you&apos;re looking for? Contact our team for assistance with your rental questions.
             </p>
             <WhatsAppInquiryButton
               label="Chat with Us on WhatsApp"

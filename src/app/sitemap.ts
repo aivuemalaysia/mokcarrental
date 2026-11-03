@@ -1,86 +1,38 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
+import { canonicalFor, STATIC_INDEXABLE_PATHS } from '@/lib/seo';
 
-const baseUrl = process.env.SITE_URL || 'https://www.mokcarrental.com';
-
+/**
+ * Keep canonical, crawlable marketing URLs in the sitemap. Do not claim
+ * a new modification timestamp for unchanged static content on every build.
+ * Legacy vehicle detail URLs are retained during the SEO migration audit.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static pages — higher priority for key conversion pages
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/cars`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.95,
-    },
-    {
-      url: `${baseUrl}/booking`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-  {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/faq`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/start-business`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-  ];
+  const staticPages: MetadataRoute.Sitemap = STATIC_INDEXABLE_PATHS.map((path) => ({
+    url: canonicalFor(path),
+  }));
 
-  // Dynamic car pages from Supabase — each car is a unique SEO page
   let carPages: MetadataRoute.Sitemap = [];
   try {
-    const client = getSupabaseServerClient(); const { data: cars } = await client
+    const client = getSupabaseServerClient();
+    const { data, error } = await client
       .from('cars')
-      .select('id, updated_at, available, featured')
+      .select('id,updated_at,available')
       .eq('available', true);
-
-    if (cars) {
-      carPages = cars.map((car: any) => ({
-        url: `${baseUrl}/cars/${car.id}`,
-        lastModified: car.updated_at ? new Date(car.updated_at) : new Date(),
-        changeFrequency: car.featured ? 'weekly' : 'monthly',
-        priority: car.featured ? 0.9 : 0.75,
-      }));
-    }
-  } catch (err) {
-    console.error('Sitemap: Error fetching cars:', err);
+    if (error) throw error;
+    carPages = (data || [])
+      .filter((car: { id: string }) => /^[a-f0-9-]{36}$/i.test(car.id))
+      .map((car: { id: string; updated_at?: string | null }) => {
+        const lastModified = car.updated_at ? new Date(car.updated_at) : undefined;
+        return {
+          url: canonicalFor('/cars/' + car.id),
+          ...(lastModified && !Number.isNaN(lastModified.getTime()) ? { lastModified } : {}),
+        };
+      });
+  } catch (error) {
+    // Static SEO routes stay available even when the website's legacy fleet DB
+    // is inaccessible at build time. Preserve URLs until their migration is reviewed.
+    console.error('SEO sitemap: legacy vehicle query failed', error);
   }
-
   return [...staticPages, ...carPages];
 }

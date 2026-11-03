@@ -1,76 +1,32 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import ClientLayout from "@/components/ClientLayout";
-import PwaRegister from "@/components/PwaRegister";
-
-const siteUrl =
-  process.env.SITE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+import type { Metadata } from 'next';
+import './globals.css';
+import ClientLayout from '@/components/ClientLayout';
+import PwaRegister from '@/components/PwaRegister';
+import { SEO_ORIGIN } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SEO_ORIGIN),
   title: {
-    default: "Mok Car Rental — Affordable Car Rental Johor Bahru | Singapore Customers Welcome",
-    template: "%s | Mok Car Rental JB",
+    default: 'Car Rental Johor Bahru (JB) | MOK Car Rental',
+    template: '%s | MOK Car Rental',
   },
-  description:
-    "Affordable, reliable car rental in Johor Bahru, Malaysia. Serving Singapore customers, tourists & locals. Alphard, MPV, luxury cars with airport delivery. Book via WhatsApp or online.",
-  keywords: [
-    "car rental Johor Bahru",
-    "car rental JB",
-    "rental car JB",
-    "car rental Singapore to Johor Bahru",
-    "Singapore to JB car rental",
-    "Alphard rental JB",
-    "MPV rental Johor Bahru",
-    "cheap car rental JB",
-    "luxury car rental Malaysia",
-    "Senai airport car rental",
-    "Johor Bahru car hire",
-    "self drive car rental JB",
-    "car rental with driver JB",
-    "best car rental JB",
-    "car rental near Causeway",
-    "economy car rental JB",
-    "family car rental Johor Bahru",
-  ],
-  authors: [{ name: "Mok Car Rental" }],
-  alternates: {
-    canonical: siteUrl,
-    languages: {
-      en: siteUrl,
-    },
-  },
-  manifest: "/site.webmanifest",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Mok Car Rental",
-  },
+  description: 'Explore car rental in Johor Bahru with MOK. Compare vehicle types, learn about renting in JB and Senai Airport, and book through our online rental app.',
+  authors: [{ name: 'MOK Car Rental' }],
+  manifest: '/site.webmanifest',
   openGraph: {
-    type: "website",
-    locale: "en_MY",
-    url: siteUrl,
-    siteName: "Mok Car Rental",
-    title: "Mok Car Rental — Premium Car Rental Johor Bahru",
-    description:
-      "Affordable car rental in Johor Bahru serving Singapore customers. Alphard, MPV, luxury cars with airport delivery. Book via WhatsApp.",
-    images: [
-      {
-        url: `${siteUrl}/og-home.jpg`,
-        width: 1200,
-        height: 630,
-        alt: "Mok Car Rental - Premium Car Rental Johor Bahru",
-      },
-    ],
+    type: 'website',
+    locale: 'en_MY',
+    url: SEO_ORIGIN,
+    siteName: 'MOK Car Rental',
+    title: 'Car Rental Johor Bahru | MOK Car Rental',
+    description: 'Johor Bahru car rental information and online booking. Explore vehicle options, airport rental guidance and trip planning with MOK.',
+    images: [{ url: '/og-home.jpg', width: 1200, height: 630, alt: 'MOK Car Rental in Johor Bahru' }],
   },
   twitter: {
-    card: "summary_large_image",
-    site: "@mokcarrental",
-    title: "Mok Car Rental — Car Rental Johor Bahru",
-    description:
-      "Affordable, reliable car rental in Johor Bahru. Serving Singapore customers and tourists.",
-    images: [`${siteUrl}/og-image.jpg`],
+    card: 'summary_large_image',
+    title: 'Car Rental Johor Bahru | MOK Car Rental',
+    description: 'Explore car rental options in JB and continue to the MOK booking app.',
+    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
@@ -78,9 +34,9 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
     },
   },
   verification: {
@@ -88,251 +44,48 @@ export const metadata: Metadata = {
   },
 };
 
-// Comprehensive JSON-LD structured data for local SEO
-function getStructuredData() {
-  return JSON.stringify({
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebSite',
-        '@id': `${siteUrl}#website`,
-        url: siteUrl,
-        name: 'Mok Car Rental',
-        description: 'Affordable and reliable car rental services in Johor Bahru, Malaysia. Serving Singapore customers, tourists, and locals.',
-        publisher: {
-          '@id': `${siteUrl}#localbusiness`,
-        },
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: `${siteUrl}/cars?q={search_term_string}`,
-          'query-input': 'required name=search_term_string',
-        },
-      },
-      {
-        '@type': 'SiteNavigationElement',
-        '@container': '@list',
-        position: 1,
-        name: 'Home',
-        url: `${siteUrl}`,
-      },
-      {
-        '@type': 'SiteNavigationElement',
-        position: 2,
-        name: 'Our Fleet',
-        url: `${siteUrl}/cars`,
-      },
-      {
-        '@type': 'SiteNavigationElement',
-        position: 3,
-        name: 'About Us',
-        url: `${siteUrl}/about`,
-      },
-      {
-        '@type': 'SiteNavigationElement',
-        position: 4,
-        name: 'FAQ',
-        url: `${siteUrl}/faq`,
-      },
-      {
-        '@type': 'SiteNavigationElement',
-        position: 5,
-        name: 'Contact',
-        url: `${siteUrl}/contact`,
-      },
-      {
-        '@type': 'CarRental',
-        '@id': `${siteUrl}#business`,
-        name: 'Mok Car Rental',
-        description: 'Affordable and reliable car rental services in Johor Bahru, Malaysia. Serving Singapore customers, tourists, and locals.',
-        url: siteUrl,
-        priceRange: '$$',
-        image: `${siteUrl}/og-home.jpg`,
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: 'Johor Bahru',
-          addressLocality: 'Johor Bahru',
-          addressRegion: 'Johor',
-          postalCode: '80000',
-          addressCountry: 'MY',
-        },
-        geo: {
-          '@type': 'GeoCoordinates',
-          latitude: 1.4927,
-          longitude: 103.7414,
-        },
-        openingHoursSpecification: {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: [
-            'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
-          ],
-          opens: '08:00',
-          closes: '22:00',
-        },
-        areaServed: [
-          {
-            '@type': 'City',
-            name: 'Johor Bahru',
-            description: 'Johor Bahru, Johor, Malaysia',
-          },
-          {
-            '@type': 'City',
-            name: 'Singapore',
-            description: 'Singapore',
-          },
-        ],
-        servesCarMakes: [
-          { '@type': 'Vehicle', name: 'Toyota Alphard' },
-          { '@type': 'Vehicle', name: 'Honda Odyssey' },
-          { '@type': 'Vehicle', name: 'Perodua Bezza' },
-          { '@type': 'Vehicle', name: 'Toyota Vellfire' },
-          { '@type': 'Vehicle', name: 'Honda City' },
-          { '@type': 'Vehicle', name: 'Mercedes-Benz' },
-        ],
-        paymentAccepted: 'Cash, Bank Transfer, GrabPay, Touch ' + "'n' Go'",
-        currencyAccepted: ['MYR', 'SGD'],
-        hasOfferCatalog: {
-          '@type': 'OfferCatalog',
-          name: 'Car Rental Fleet',
-          itemListElement: [
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'CarRental',
-                name: 'Economy Sedan',
-                description: 'Perodua Bezza, Honda City - from RM150/day',
-              },
-              price: '150',
-              priceCurrency: 'MYR',
-              unitCode: 'DAY',
-            },
-            {
-              '@type': 'Offer',
-              itemOffered: {
-                '@type': 'CarRental',
-                name: 'Premium MPV',
-                description: 'Toyota Alphard, Honda Odyssey - from RM400/day',
-              },
-              price: '400',
-              priceCurrency: 'MYR',
-              unitCode: 'DAY',
-            },
-          ],
-        },
-      },
-      {
-        '@type': 'LocalBusiness',
-        '@id': `${siteUrl}#localbusiness`,
-        name: 'Mok Car Rental Johor Bahru',
-        description:
-          'Best affordable car rental service in Johor Bahru, Malaysia. Specializing in Alphard rentals, MPV hire, and luxury cars for Singapore travelers and tourists.',
-        url: siteUrl,
-        image: `${siteUrl}/og-home.jpg`,
-        priceRange: 'RM150 - RM600/day',
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: 'Johor Bahru',
-          addressLocality: 'Johor Bahru',
-          addressRegion: 'Johor',
-          postalCode: '80000',
-          addressCountry: 'MY',
-        },
-        geo: {
-          '@type': 'GeoCoordinates',
-          latitude: 1.4927,
-          longitude: 103.7414,
-        },
-        openingHoursSpecification: {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: [
-            'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
-          ],
-          opens: '08:00',
-          closes: '22:00',
-        },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.9',
-          reviewCount: '200',
-          bestRating: '5',
-          worstRating: '1',
-        },
-        sameAs: [],
-      },
-      {
-        '@type': 'BreadcrumbList',
-        '@id': `${siteUrl}#breadcrumb`,
-        itemListElement: [
-          {
-            '@type': 'ListItem',
-            position: 1,
-            name: 'Home',
-            item: siteUrl,
-          },
-          {
-            '@type': 'ListItem',
-            position: 2,
-            name: 'Cars',
-            item: `${siteUrl}/cars`,
-          },
-          {
-            '@type': 'ListItem',
-            position: 3,
-            name: 'About',
-            item: `${siteUrl}/about`,
-          },
-          {
-            '@type': 'ListItem',
-            position: 4,
-            name: 'FAQ',
-            item: `${siteUrl}/faq`,
-          },
-          {
-            '@type': 'ListItem',
-            position: 5,
-            name: 'Contact',
-            item: `${siteUrl}/contact`,
-          },
-        ],
-      },
-    ],
-  });
-}
+// Avoid publishing unverifiable street addresses, coordinates, review totals,
+// rates or opening hours as structured data. Business facts must be verified
+// before they are added to either schema or visible page copy.
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': SEO_ORIGIN + '/#website',
+      url: SEO_ORIGIN + '/',
+      name: 'MOK Car Rental',
+      inLanguage: 'en-MY',
+      publisher: { '@id': SEO_ORIGIN + '/#business' },
+    },
+    {
+      '@type': 'AutoRental',
+      '@id': SEO_ORIGIN + '/#business',
+      name: 'MOK Car Rental',
+      url: SEO_ORIGIN + '/',
+      areaServed: [{ '@type': 'City', name: 'Johor Bahru' }],
+    },
+  ],
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr">
-    <head>
-      <meta name="theme-color" content="#D4AF37" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      {/* JSON-LD Structured Data for LocalBusiness, CarRental & Website SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: getStructuredData() }}
-      />
-          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-      <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-      <link rel="icon" type="image/png" sizes="any" href="/favicon.png" />
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-      <link rel="android-chrome-192x192" href="/android-chrome-192x192.png" />
-      <link rel="android-chrome-512x512" href="/android-chrome-512x512.png" />
-      <link rel="manifest" href="/site.webmanifest" />
-    </head>
+    <html lang="en-MY" dir="ltr">
+      <head>
+        <meta name="theme-color" content="#FF761A" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      </head>
       <body className="antialiased">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-gold-500 focus:text-white focus:rounded-lg"
-      >
-        Skip to main content
-      </a>
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-[#FF761A] focus:px-4 focus:py-2 focus:text-[#17191B]">
+          Skip to main content
+        </a>
         <ClientLayout>
-        <main id="main-content">{children}</main>
-      </ClientLayout>
+          <main id="main-content">{children}</main>
+        </ClientLayout>
         <PwaRegister />
       </body>
     </html>

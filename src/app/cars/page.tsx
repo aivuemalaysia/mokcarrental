@@ -6,7 +6,7 @@ const baseUrl = process.env.SITE_URL || 'https://www.mokcarrental.com';
 
 export const metadata: Metadata = {
   title: 'Our Car Fleet \u2014 Rental Cars in Johor Bahru | Alphard, MPV, Sedan & Luxury',
-  description: 'Browse our premium car rental fleet in Johor Bahru. Economy sedans, luxury vehicles, Alphard MPVs, and SUVs available for daily rental. Perfect for Singapore travelers and tourists. Prices from RM150/day.',
+  description: 'Browse our premium car rental fleet in Johor Bahru. Economy sedans, luxury vehicles, Alphard MPVs, and SUVs available for daily rental. Perfect for Singapore travelers and tourists. Check current pricing and availability in the MOK booking app.',
   keywords: [
     'car rental johor bahru fleet',
     'rental cars jb',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   ].join(', '),
   openGraph: {
     title: 'Our Car Fleet \u2014 MOK Car Rental JB',
-    description: 'Browse our premium car rental fleet in Johor Bahru. From RM150/day.',
+    description: 'Browse vehicle information in Johor Bahru and check live availability in MOK PWA.',
     url: `${baseUrl}/cars`,
     type: 'website',
     locale: 'en_MY',

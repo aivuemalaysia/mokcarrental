@@ -47,7 +47,7 @@ export default function AboutPage() {
                   MOK Car Rental was founded with a simple mission: to provide affordable, reliable, and hassle-free car rental services in Johor Bahru, Malaysia.
                 </p>
                 <p>
-                  Starting as a small family business, we have grown to become one of the most trusted car rental companies in JB, serving thousands of customers from Singapore, tourists, and local Malaysians every year.
+                  Starting as a small family business, we have grown to become one of the most trusted car rental companies in JB, serving customers from Singapore, tourists, and local Malaysians.
                 </p>
                 <p>
                   Whether you are crossing the Causeway from Singapore, visiting Johor Bahru for shopping or business, or exploring the state — we have the perfect vehicle for your trip. Our fleet includes the popular Toyota Alphard MPV, economy sedans, SUVs, and luxury cars, all meticulously maintained and sanitized between each rental.
@@ -95,7 +95,7 @@ export default function AboutPage() {
                   <div>
                     <h4 className="font-bold mb-1">Airport Delivery Available</h4>
                     <p className="text-gray-600 text-sm">
-                      Convenient pickup and drop-off at Senai Airport, CIQ, and your hotel anywhere in JB.
+                      Ask our team about available pickup and return arrangements in Johor Bahru.
                     </p>
                   </div>
                 </div>
@@ -105,9 +105,9 @@ export default function AboutPage() {
                     <FiHeadphones className="w-6 h-6 text-gold-500" />
                   </div>
                   <div>
-                    <h4 className="font-bold mb-1">24/7 WhatsApp Support</h4>
+                    <h4 className="font-bold mb-1">Customer Support</h4>
                     <p className="text-gray-600 text-sm">
-                      Round-the-clock assistance via WhatsApp. Most responses within 30 minutes.
+                      Contact our team for assistance with rental questions and bookings.
                     </p>
                   </div>
                 </div>
@@ -141,7 +141,7 @@ export default function AboutPage() {
               <div className="text-5xl mb-4">😊</div>
               <h3 className="text-xl font-bold mb-3">Customer First</h3>
               <p className="text-gray-600">
-                Your satisfaction is our top priority. We&apos;re here to help around the clock with WhatsApp support in English, Malay, and Mandarin.
+                Your satisfaction is our top priority. Contact our team for help with rental questions and arrangements.
               </p>
             </div>
           </div>
