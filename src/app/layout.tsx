@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import ClientLayout from '@/components/ClientLayout';
 
-import { SEO_ORIGIN } from '@/lib/seo';
+import { SEO_ORIGIN, MOK_SOCIAL_IMAGE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SEO_ORIGIN),
@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     siteName: 'MOK Car Rental',
     title: 'Car Rental Johor Bahru | MOK Car Rental',
     description: 'Johor Bahru car rental information and online booking. Explore vehicle options, airport rental guidance and trip planning with MOK.',
-    images: [{ url: SEO_ORIGIN + '/og-home.jpg', width: 1200, height: 630, alt: 'MOK Car Rental in Johor Bahru' }],
+    images: [MOK_SOCIAL_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Car Rental Johor Bahru | MOK Car Rental',
     description: 'Explore car rental options in JB and continue to the MOK booking app.',
-    images: [SEO_ORIGIN + '/og-image.jpg'],
+    images: [MOK_SOCIAL_IMAGE.url],
   },
   robots: {
     index: true,

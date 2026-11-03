@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
-import { canonicalFor } from '@/lib/seo';
+import { canonicalFor, MOK_SOCIAL_IMAGE } from '@/lib/seo';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 export const metadata: Metadata = {
  title: 'Toyota Alphard Rental in Johor Bahru',
  description: 'Compare Toyota Alphard and premium MPV rental considerations in JB. Review seating, luggage and current available models through MOK.',
  alternates:{canonical:canonicalFor('/toyota-alphard-rental-jb')},
- openGraph:{title:'Toyota Alphard Rental in Johor Bahru | MOK',url:canonicalFor('/toyota-alphard-rental-jb')}
+ openGraph:{title:'Toyota Alphard Rental in Johor Bahru | MOK',url:canonicalFor('/toyota-alphard-rental-jb'),images:[MOK_SOCIAL_IMAGE]}
 };
 const items=[{"title":"Passenger comfort","text":"Compare the actual seating layout and passenger count for your group."},{"title":"Luggage capacity","text":"Consider suitcases, child seats and the space remaining with every seat occupied."},{"title":"Prices and availability","text":"Model availability, rental rates and deposit requirements depend on the current booking quotation."}];
 export default function LandingPage(){

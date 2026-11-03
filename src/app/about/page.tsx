@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { MOK_SOCIAL_IMAGE } from '@/lib/seo';
 import { FiCheckCircle, FiSmile, FiTruck, FiHeadphones } from 'react-icons/fi';
 import CTASection from '@/components/CTASection';
 
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     title: 'About MOK Car Rental in Johor Bahru',
     description: 'Information about MOK Car Rental, rental options in JB and our online booking process.',
     url: 'https://www.mokcarrental.com/about',
+    images: [MOK_SOCIAL_IMAGE],
     type: 'website',
     locale: 'en_MY',
   },

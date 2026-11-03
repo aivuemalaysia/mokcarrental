@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { isLegacyVehicleId, SEO_ORIGIN } from '@/lib/seo';
+import { isLegacyVehicleId, SEO_ORIGIN, MOK_SOCIAL_IMAGE } from '@/lib/seo';
 
 describe('MOK SEO rendered-route risk regression', () => {
   it('rejects malformed vehicle IDs before the database query', () => {
@@ -13,8 +13,14 @@ describe('MOK SEO rendered-route risk regression', () => {
 
   it('does not use Vercel Preview hostnames for share-card images', () => {
     const layout = fs.readFileSync(path.join(process.cwd(), 'src/app/layout.tsx'), 'utf8');
-    expect(layout).toContain("SEO_ORIGIN + '/og-home.jpg'");
-    expect(layout).toContain("SEO_ORIGIN + '/og-image.jpg'");
+    expect(layout).toContain('images: [MOK_SOCIAL_IMAGE]');
+    expect(layout).toContain('images: [MOK_SOCIAL_IMAGE.url]');
+    expect(MOK_SOCIAL_IMAGE.url).toBe('https://www.mokcarrental.com/brand/mok-hero-2026.webp');
+    for (const file of ['src/app/page.tsx', 'src/app/senai-airport-car-rental/page.tsx', 'src/app/toyota-alphard-rental-jb/page.tsx', 'src/app/cars/page.tsx']) {
+      const source = fs.readFileSync(path.join(process.cwd(), file), 'utf8');
+      expect(source).toContain('images:');
+      expect(source).toContain('MOK_SOCIAL_IMAGE');
+    }
     expect(SEO_ORIGIN).toBe('https://www.mokcarrental.com');
   });
 

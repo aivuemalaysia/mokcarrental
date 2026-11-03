@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import CarsClient from './cars-client';
+import { MOK_SOCIAL_IMAGE } from '@/lib/seo';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 const baseUrl = 'https://www.mokcarrental.com';
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     url: `${baseUrl}/cars`,
     type: 'website',
     locale: 'en_MY',
-    images: [{ url: `${baseUrl}/og-home.jpg`, width: 1200, height: 630, alt: 'Mok Car Rental Fleet' }],
+    images: [MOK_SOCIAL_IMAGE],
   },
   alternates: {
     canonical: `${baseUrl}/cars`,

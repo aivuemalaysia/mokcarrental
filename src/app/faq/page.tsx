@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { MOK_SOCIAL_IMAGE } from '@/lib/seo';
 import FAQ from '@/components/FAQ';
 import CTASection from '@/components/CTASection';
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
     title: 'FAQ — MOK Car Rental Johor Bahru',
     description: 'Common questions about renting a car in Johor Bahru for Singapore travelers and tourists.',
     url: 'https://www.mokcarrental.com/faq',
+    images: [MOK_SOCIAL_IMAGE],
     type: 'website',
     locale: 'en_MY',
   },

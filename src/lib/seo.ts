@@ -4,6 +4,15 @@
  */
 export const SEO_ORIGIN = 'https://www.mokcarrental.com';
 
+/** Source-controlled MOK PWA vehicle artwork. No stale pricing/airport claims. */
+export const MOK_SOCIAL_IMAGE = {
+  url: SEO_ORIGIN + '/brand/mok-hero-2026.webp',
+  width: 1536,
+  height: 1024,
+  alt: 'MOK Car Rental official vehicle artwork',
+};
+
+
 export const STATIC_INDEXABLE_PATHS = [
   '/',
   '/cars',

@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
-import { canonicalFor } from '@/lib/seo';
+import { canonicalFor, MOK_SOCIAL_IMAGE } from '@/lib/seo';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 export const metadata: Metadata = {
  title: 'Senai Airport Car Rental in Johor Bahru',
  description: 'Arriving at Senai International Airport (JHB)? Learn about rental handover, trip planning and how to check current available cars with MOK.',
  alternates:{canonical:canonicalFor('/senai-airport-car-rental')},
- openGraph:{title:'Senai Airport Car Rental in Johor Bahru | MOK',url:canonicalFor('/senai-airport-car-rental')}
+ openGraph:{title:'Senai Airport Car Rental in Johor Bahru | MOK',url:canonicalFor('/senai-airport-car-rental'),images:[MOK_SOCIAL_IMAGE]}
 };
 const items=[{"title":"Arrival timing","text":"Allow time after landing for bags, immigration if applicable and any onward connection."},{"title":"Handover point","text":"Confirm where and when the car is collected. Airport delivery must not be assumed."},{"title":"Documents and terms","text":"Check driver licence, ID, deposit, insurance and cancellation conditions during booking."}];
 export default function LandingPage(){
