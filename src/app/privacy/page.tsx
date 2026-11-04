@@ -70,7 +70,7 @@ const privacySections = {
     {
       "title": "10. Updates",
       "paragraphs": [
-        "This notice may be updated as the website's practices or legal requirements change. The version shown on this page was prepared on 4 November 2026 and requires owner/legal review before Production publication."
+        "This notice may be updated as the website's practices or legal requirements change. Version date: 4 November 2026."
       ]
     }
   ],
@@ -139,7 +139,7 @@ const privacySections = {
     {
       "title": "10. Perubahan notis",
       "paragraphs": [
-        "Notis ini mungkin dikemas kini apabila amalan laman web atau keperluan undang-undang berubah. Versi pada halaman ini disediakan pada 4 November 2026 dan memerlukan semakan pemilik/undang-undang sebelum diterbitkan ke Production."
+        "Notis ini mungkin dikemas kini apabila amalan laman web atau keperluan undang-undang berubah. Tarikh versi: 4 November 2026."
       ]
     }
   ]

@@ -39,6 +39,14 @@ describe('Website bilingual privacy notice and company identity', () => {
     expect(contact).toContain("fetch('/api/contact'");
   });
 
+  it('does not display internal Production/legal workflow notes to customers', () => {
+    expect(privacy).toContain('Version date: 4 November 2026.');
+    expect(privacy).toContain('Tarikh versi: 4 November 2026.');
+    expect(privacy).not.toContain('before Production publication');
+    expect(privacy).not.toContain('requires owner/legal review');
+    expect(privacy).not.toContain('sebelum diterbitkan ke Production');
+  });
+
   it('retains separate MOK PWA policy handoff without inventing rental rules', () => {
     expect(privacy).toContain('https://app.mokcarrental.com/terms');
     expect(privacy).not.toContain('January 2024');

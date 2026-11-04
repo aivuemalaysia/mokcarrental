@@ -28,7 +28,8 @@ Date: 2026-11-04. Website **aivuemalaysia/mokcarrental** only, Draft PR #2, stag
 ## Non-waivable release decisions
 1. Owner supplies/approves SSM certificate name spelling, entity number (if required to display), legal data controller and business trading relationship. **Do not claim registry verification** based on bank account alone.
 2. Owner/legal confirms the privacy contact channel, official business address and any DPO applicability; do not assume registered hours are 24/7.
-3. Set actual operational **retention and deletion** rules, document processors, international data transfer basis, notice-update/change process and requests/complaints workflow, and approve the exact English and Malay text. The staging notice explicitly marks these unknowns; do not remove without evidence.
+3. Set actual operational **retention and deletion** rules, document processors, international data transfer basis, notice-update/change process and requests/complaints workflow, and approve the exact English and Malay text. The staging notice retains the unresolved retention disclaimer; do not treat it as a finalized schedule.
+4. Removed an internal 'requires owner/legal review before Production publication' sentence from both public-language notices at the next staging commit. Its removal does NOT certify legal approval; release gates remain in this private review file.
 4. Verify PWA booking Terms version `2026-10-v1` against live rental operations; these separate terms are still marked OWNER/LEGAL COPY REVIEW REQUIRED.
 5. Interactive browser/mobile visual QA at 390/768/1440 remains unverified. CEO agreed to move to next gate, not to falsely mark it done.
 6. A separate CEO Production approval is required AFTER these release gates close. Until then Draft PR #2 remains unmerged.
