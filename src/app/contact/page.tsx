@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { MOK_REGISTERED_COMPANY_NAME } from '@/lib/legalIdentity';
 
 
 export default function ContactPage() {
@@ -178,6 +179,20 @@ export default function ContactPage() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 text-sm leading-relaxed text-gray-700">
+                      <p>
+                        {MOK_REGISTERED_COMPANY_NAME} uses the details you provide to respond to your enquiry.
+                        Please read our{' '}
+                        <Link href="/privacy" className="font-semibold text-orange-800 underline">Privacy Notice</Link>
+                        {' '}before submitting.
+                      </p>
+                      <p lang="ms" className="mt-2">
+                        {MOK_REGISTERED_COMPANY_NAME} menggunakan maklumat yang diberikan untuk menjawab pertanyaan anda.
+                        Sila baca{' '}
+                        <Link href="/privacy#notis-privasi" className="font-semibold text-orange-800 underline">Notis Privasi</Link>
+                        {' '}sebelum menghantar.
+                      </p>
+                    </div>
                     <div>
                       <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-2">
                         Your Name *

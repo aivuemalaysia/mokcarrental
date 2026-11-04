@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { FiArrowUpRight, FiMapPin, FiMail, FiPhone } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import { MOK_REGISTERED_COMPANY_NAME } from '@/lib/legalIdentity';
 const guides=[
  {href:'/cars',label:'Vehicles & rental types'},
  {href:'/toyota-alphard-rental-jb',label:'Toyota Alphard in JB'},
@@ -34,7 +35,7 @@ export default function Footer(){
    </div></div>
   </div>
   <div className="mt-12 flex flex-col gap-4 border-t border-white/15 pt-8 text-xs text-[#9FA7AB] md:flex-row md:justify-between">
-   <p>© {new Date().getFullYear()} MOK Car Rental. All rights reserved.</p>
+   <div className="space-y-1"><p>© {new Date().getFullYear()} MOK Car Rental. All rights reserved.</p><p>Registered company / Syarikat berdaftar: {MOK_REGISTERED_COMPANY_NAME}</p></div>
    <div className="flex flex-wrap gap-6"><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/my-bookings">Past website enquiries</Link></div>
   </div>
  </div></footer>;
