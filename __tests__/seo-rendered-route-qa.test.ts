@@ -38,7 +38,8 @@ describe('MOK SEO rendered-route risk regression', () => {
 
   it('does not mislabel the PWA terms page as a privacy policy', () => {
     const privacy = fs.readFileSync(path.join(process.cwd(), 'src/app/privacy/page.tsx'), 'utf8');
-    expect(privacy).toContain('Review MOK PWA booking terms');
+    expect(privacy).toContain('MOK PWA booking terms / Syarat tempahan');
+    expect(privacy).toContain("const bookingTermsUrl = 'https://app.mokcarrental.com/terms';");
     expect(privacy).not.toContain('Review MOK booking terms and privacy information');
   });
 });
