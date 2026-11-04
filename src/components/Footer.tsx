@@ -1,129 +1,42 @@
 'use client';
-
 import Link from 'next/link';
-import { FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi';
+import Image from 'next/image';
+import { FiArrowUpRight, FiMapPin, FiMail, FiPhone } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
-
-export default function Footer() {
-  const { settings } = useSiteSettings();
-  
-  return (
-    <footer className="bg-gray-900 text-white">
-      <div className="container-custom py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          <div>
-            <div className="text-2xl font-display font-bold mb-4">
-              {settings.businessName}
-            </div>
-            <p className="text-gray-400 mb-6">
-              Your trusted partner for premium car rentals in Johor Bahru,
-              Malaysia. Serving Singapore customers and tourists since 2020.
-            </p>
-            <div className="flex gap-4">
-              {settings.facebookUrl && (
-                <a
-                  href={settings.facebookUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-gold-500/20 flex items-center justify-center hover:bg-gold-500 transition-colors"
-                >
-                  <span className="text-gold-500 hover:text-white">FB</span>
-                </a>
-              )}
-              {settings.instagramUrl && (
-                <a
-                  href={settings.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-gold-500/20 flex items-center justify-center hover:bg-gold-500 transition-colors"
-                >
-                  <span className="text-gold-500 hover:text-white">IG</span>
-                </a>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/" className="text-gray-400 hover:text-gold-500 transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/cars" className="text-gray-400 hover:text-gold-500 transition-colors">
-                  Our Fleet
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-gray-400 hover:text-gold-500 transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-400 hover:text-gold-500 transition-colors">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Services</h3>
-            <ul className="space-y-3">
-<li><Link href="/contact" className="text-gray-400 hover:text-gold-500 transition-colors">Airport Delivery at Senai</Link></li>
-<li><Link href="/cars" className="text-gray-400 hover:text-gold-500 transition-colors">Self Drive Car Rental JB</Link></li>
-<li><Link href="/booking" className="text-gray-400 hover:text-gold-500 transition-colors">Corporate Car Rental Johor Bahru</Link></li>
-<li><Link href="/faq" className="text-gray-400 hover:text-gold-500 transition-colors">Singapore to JB Car Rental</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <FiMapPin className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
-                <span className="text-gray-400">
-                  {settings.address}
-                </span>
-              </li>
-              <li className="flex items-center gap-3">
-                <FiPhone className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                <a href={`tel:${settings.whatsappNumber}`} className="text-gray-400 hover:text-gold-500 transition-colors">
-                  {settings.whatsappNumber}
-                </a>
-              </li>
-              <li className="flex items-center gap-3">
-                <FiMail className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                <a href={`mailto:${settings.email}`} className="text-gray-400 hover:text-gold-500 transition-colors">
-                  {settings.email}
-                </a>
-              </li>
-              <li className="flex items-center gap-3">
-                <FiClock className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                <span className="text-gray-400">{settings.workingHours} Support</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="mt-12 pt-8 border-t border-gray-800">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} {settings.businessName}. All rights reserved.
-            </p>
-            <div className="flex gap-6">
-              <Link href="/terms" className="text-gray-400 hover:text-gold-500 text-sm transition-colors">
-                Terms & Conditions
-              </Link>
-              <Link href="/privacy" className="text-gray-400 hover:text-gold-500 text-sm transition-colors">
-                Privacy Policy
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
+import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import { MOK_REGISTERED_COMPANY_NAME } from '@/lib/legalIdentity';
+const guides=[
+ {href:'/cars',label:'Vehicles & rental types'},
+ {href:'/toyota-alphard-rental-jb',label:'Toyota Alphard in JB'},
+ {href:'/senai-airport-car-rental',label:'Senai Airport rental'},
+ {href:'/faq',label:'Rental FAQ'}
+];
+export default function Footer(){
+ const {settings}=useSiteSettings(),phone=settings.whatsappNumber.replace(/[^0-9]/g,'');
+ const validPhone=phone.length>=9&&phone.length<=15,validEmail=settings.email.includes('@');
+ return <footer className="bg-[#151719] py-16 text-white"><div className="container-custom">
+  <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr]">
+   <div><Link href="/" className="inline-flex items-center gap-3" aria-label="MOK Car Rental homepage"><Image
+      src="/brand/mok-logo-2026-transparent.webp"
+      alt="MOK Car Rental"
+      width={236}
+      height={66}
+      className="h-[58px] w-auto max-w-[225px] object-contain"
+    /></Link>
+    <p className="mt-5 max-w-sm leading-relaxed text-[#BBC0C3]">Car rental information and online booking for Johor Bahru, Malaysia. Explore options and plan your journey with MOK.</p>
+    <a href={MOK_BOOKING_URL} className="mt-6 inline-flex items-center gap-2 font-bold text-[#FF923F] hover:underline">Check available cars <FiArrowUpRight aria-hidden="true"/></a>
+   </div>
+   <div><h2 className="mb-5 font-bold">Rental information</h2><div className="flex flex-col gap-3 text-sm text-[#C3C8CB]">{guides.map(x=><Link key={x.href} href={x.href} className="hover:text-[#FF923F]">{x.label}</Link>)}</div></div>
+   <div><h2 className="mb-5 font-bold">MOK Car Rental</h2><div className="flex flex-col gap-3 text-sm text-[#C3C8CB]">
+    <Link href="/about" className="hover:text-[#FF923F]">About MOK</Link><Link href="/contact" className="hover:text-[#FF923F]">Contact</Link><Link href="/start-business" className="hover:text-[#FF923F]">Business enquiries</Link>
+    <span className="mt-2 flex items-center gap-2"><FiMapPin aria-hidden="true" className="text-[#FF923F]"/>{settings.address||'Johor Bahru, Johor, Malaysia'}</span>
+    {validPhone&&<a href={`tel:${settings.whatsappNumber.replace(/\s/g,'')}`} className="flex items-center gap-2 hover:text-[#FF923F]"><FiPhone aria-hidden="true"/>{settings.whatsappNumber}</a>}
+    {validEmail&&<a href={`mailto:${settings.email}`} className="flex items-center gap-2 hover:text-[#FF923F]"><FiMail aria-hidden="true"/>{settings.email}</a>}
+   </div></div>
+  </div>
+  <div className="mt-12 flex flex-col gap-4 border-t border-white/15 pt-8 text-xs text-[#9FA7AB] md:flex-row md:justify-between">
+   <div className="space-y-1"><p>© {new Date().getFullYear()} MOK Car Rental. All rights reserved.</p><p>Registered company / Syarikat berdaftar: {MOK_REGISTERED_COMPANY_NAME}</p></div>
+   <div className="flex flex-wrap gap-6"><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/my-bookings">Past website enquiries</Link></div>
+  </div>
+ </div></footer>;
 }

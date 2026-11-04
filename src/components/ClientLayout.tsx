@@ -1,5 +1,4 @@
 'use client';
-
 import { SettingsProvider } from '@/hooks/useSiteSettings';
 import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
@@ -10,18 +9,20 @@ import WhatsAppInquiryProvider from '@/components/WhatsAppInquiryProvider';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const isAdmin = pathname.startsWith('/admin');
-
+  const isAdmin = usePathname().startsWith('/admin');
   return (
     <SettingsProvider>
       <WhatsAppInquiryProvider>
         <ClientErrorMonitor />
         <ErrorBoundary>
-          {!isAdmin && <Navbar />}
-          {children}
-          {!isAdmin && <Footer />}
-          {!isAdmin && <WhatsAppFloat />}
+          {isAdmin ? children : (
+            <div className="mok-marketing min-h-screen">
+              <Navbar />
+              {children}
+              <Footer />
+              <WhatsAppFloat />
+            </div>
+          )}
         </ErrorBoundary>
       </WhatsAppInquiryProvider>
     </SettingsProvider>

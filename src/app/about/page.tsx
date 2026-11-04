@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
+import { MOK_SOCIAL_IMAGE } from '@/lib/seo';
 import { FiCheckCircle, FiSmile, FiTruck, FiHeadphones } from 'react-icons/fi';
 import CTASection from '@/components/CTASection';
 
 export const metadata: Metadata = {
-  title: 'About Us — Trusted Car Rental Service in Johor Bahru Since 2020',
-  description: 'Learn about MOK Car Rental — your trusted car rental partner in Johor Bahru since 2020. Serving Singapore travelers, tourists, and locals with affordable Alphard, MPV, and luxury car rentals.',
+  title: 'About MOK Car Rental in Johor Bahru',
+  description: 'Learn about MOK Car Rental in Johor Bahru. Explore vehicle types, rental guidance and how to check live options in our online booking app.',
   keywords: [
     'about mok car rental',
     'car rental company johor bahru',
@@ -12,9 +13,10 @@ export const metadata: Metadata = {
     'car rental singapore johor bahru',
   ].join(', '),
   openGraph: {
-    title: 'About MOK Car Rental — Trusted Since 2020',
-    description: 'Your trusted car rental partner in Johor Bahru serving Singapore travelers and tourists since 2020.',
+    title: 'About MOK Car Rental in Johor Bahru',
+    description: 'Information about MOK Car Rental, rental options in JB and our online booking process.',
     url: 'https://www.mokcarrental.com/about',
+    images: [MOK_SOCIAL_IMAGE],
     type: 'website',
     locale: 'en_MY',
   },
@@ -25,14 +27,14 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="pt-20">
+    <main className="pt-20">
       <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
         <div className="container-custom">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
             About MOK Car Rental — Your JB Car Rental Partner
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Trusted car rental service in Johor Bahru since 2020, specializing in affordable rentals for Singapore travelers, tourists, and locals.
+            Information about MOK Car Rental, vehicle options, booking and travel in Johor Bahru.
           </p>
         </div>
       </section>
@@ -47,16 +49,16 @@ export default function AboutPage() {
                   MOK Car Rental was founded with a simple mission: to provide affordable, reliable, and hassle-free car rental services in Johor Bahru, Malaysia.
                 </p>
                 <p>
-                  Starting as a small family business, we have grown to become one of the most trusted car rental companies in JB, serving thousands of customers from Singapore, tourists, and local Malaysians every year.
+                  Our website helps visitors explore car rental options in JB, and the MOK booking app handles live vehicle availability and reservations.
                 </p>
                 <p>
-                  Whether you are crossing the Causeway from Singapore, visiting Johor Bahru for shopping or business, or exploring the state — we have the perfect vehicle for your trip. Our fleet includes the popular Toyota Alphard MPV, economy sedans, SUVs, and luxury cars, all meticulously maintained and sanitized between each rental.
+                  Whether you are travelling from Singapore, visiting Johor Bahru for shopping or business, or exploring Johor, your travel dates, passenger count and luggage determine which vehicle types to compare. Check available options in the MOK booking app.
                 </p>
                 <p>
-                  We take pride in our well-maintained fleet of vehicles, professional service, and commitment to customer satisfaction. Our goal is to make every rental experience smooth and enjoyable.
+                  Our aim is to make it straightforward to compare rental options, understand the booking process and get assistance with travel arrangements.
                 </p>
                 <p>
-                  Whether you need a compact car for city driving, a spacious MPV for family trips, or a luxury vehicle for special occasions, we have the perfect car for you. Many of our regular customers are Singaporeans who rent from us for weekend trips to JB, business visits, or cross-border travel.
+                  If you are visiting JB for a family holiday or business trip, compare passenger capacity, luggage needs and rental conditions before booking. For international travel, confirm any border-crossing restrictions directly with the team.
                 </p>
               </div>
             </div>
@@ -83,7 +85,7 @@ export default function AboutPage() {
                   <div>
                     <h4 className="font-bold mb-1">Well-Maintained Vehicles</h4>
                     <p className="text-gray-600 text-sm">
-                      All cars regularly serviced, sanitized, and thoroughly cleaned before each rental.
+                      Ask our team about the condition and preparation of the vehicle offered for your booking.
                     </p>
                   </div>
                 </div>
@@ -93,9 +95,9 @@ export default function AboutPage() {
                     <FiTruck className="w-6 h-6 text-gold-500" />
                   </div>
                   <div>
-                    <h4 className="font-bold mb-1">Airport Delivery Available</h4>
+                    <h4 className="font-bold mb-1">Pickup &amp; Return Arrangements</h4>
                     <p className="text-gray-600 text-sm">
-                      Convenient pickup and drop-off at Senai Airport, CIQ, and your hotel anywhere in JB.
+                      Ask our team about available pickup and return arrangements in Johor Bahru.
                     </p>
                   </div>
                 </div>
@@ -105,9 +107,9 @@ export default function AboutPage() {
                     <FiHeadphones className="w-6 h-6 text-gold-500" />
                   </div>
                   <div>
-                    <h4 className="font-bold mb-1">24/7 WhatsApp Support</h4>
+                    <h4 className="font-bold mb-1">Customer Support</h4>
                     <p className="text-gray-600 text-sm">
-                      Round-the-clock assistance via WhatsApp. Most responses within 30 minutes.
+                      Contact our team for assistance with rental questions and bookings.
                     </p>
                   </div>
                 </div>
@@ -125,7 +127,7 @@ export default function AboutPage() {
               <div className="text-5xl mb-4">🎯</div>
               <h3 className="text-xl font-bold mb-3">Reliability</h3>
               <p className="text-gray-600">
-                Count on us for dependable vehicles and dependable service, every single time. Our cars are always ready and professionally maintained.
+                Review vehicle details, booking terms and handover information before confirming your rental.
               </p>
             </div>
 
@@ -133,7 +135,7 @@ export default function AboutPage() {
               <div className="text-5xl mb-4">💰</div>
               <h3 className="text-xl font-bold mb-3">Affordability</h3>
               <p className="text-gray-600">
-                Premium cars at competitive prices with no hidden charges. Transparent pricing so you know exactly what you pay upfront.
+                Review the current booking quotation, deposit and applicable fees in MOK PWA before confirming a rental.
               </p>
             </div>
 
@@ -141,7 +143,7 @@ export default function AboutPage() {
               <div className="text-5xl mb-4">😊</div>
               <h3 className="text-xl font-bold mb-3">Customer First</h3>
               <p className="text-gray-600">
-                Your satisfaction is our top priority. We&apos;re here to help around the clock with WhatsApp support in English, Malay, and Mandarin.
+                Contact our team with questions about vehicle selection, rental requirements and arrangements.
               </p>
             </div>
           </div>
@@ -149,6 +151,6 @@ export default function AboutPage() {
       </section>
 
       <CTASection />
-    </div>
+    </main>
   );
 }

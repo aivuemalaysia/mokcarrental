@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
+import { MOK_SOCIAL_IMAGE } from '@/lib/seo';
 import FAQ from '@/components/FAQ';
 import CTASection from '@/components/CTASection';
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 
 export const metadata: Metadata = {
-  title: 'FAQ — Car Rental Questions Johor Bahru | MOK Car Rental',
+  title: 'Car Rental FAQ in Johor Bahru',
   description: 'Frequently asked questions about car rental in Johor Bahru. Learn about booking, documents needed, driving in Malaysia, Singapore to JB tips, pickup/drop-off, and our rental terms.',
   keywords: [
     'car rental faq johor bahru',
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
     title: 'FAQ — MOK Car Rental Johor Bahru',
     description: 'Common questions about renting a car in Johor Bahru for Singapore travelers and tourists.',
     url: 'https://www.mokcarrental.com/faq',
+    images: [MOK_SOCIAL_IMAGE],
     type: 'website',
     locale: 'en_MY',
   },
@@ -27,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function FAQPage() {
   return (
-    <div className="pt-20">
+    <main className="pt-20">
       <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
         <div className="container-custom">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
@@ -46,7 +48,7 @@ export default function FAQPage() {
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">Still Have Questions?</h2>
             <p className="text-gray-600 mb-8">
-              Can&apos;t find the answer you&apos;re looking for? Our team is available 24/7 via WhatsApp.
+              Can&apos;t find the answer you&apos;re looking for? Contact our team for assistance with your rental questions.
             </p>
             <WhatsAppInquiryButton
               label="Chat with Us on WhatsApp"
@@ -57,6 +59,6 @@ export default function FAQPage() {
       </section>
 
       <CTASection />
-    </div>
+    </main>
   );
 }

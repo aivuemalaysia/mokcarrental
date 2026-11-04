@@ -1,113 +1,29 @@
-'use client';
-
 import Link from 'next/link';
-
-/**
- * SEO Content Block — Provides keyword-rich text content below the fold
- * on the homepage for Google to crawl and rank.
- * This is critical for a car rental business targeting "car rental Johor Bahru" keywords.
- */
-export default function SEODynamicContent() {
-  return (
-    <section className="py-16 bg-white">
-      <div className="container-custom max-w-4xl">
-        <h2 className="text-3xl font-bold mb-8 text-gray-900">
-          Affordable Car Rental in Johor Bahru — Mok Car Rental JB
-        </h2>
-
-        <div className="space-y-6 text-gray-700 leading-relaxed">
-          <p>
-            Looking for <strong>affordable car rental in Johor Bahru</strong>? Mok Car Rental offers
-            a premium fleet of vehicles including Toyota Alphard, MPV rentals, economy sedans like the Perodua Bezza,
-            and luxury cars for every budget. Whether you're a{' '}
-            <strong>Singaporean crossing the Causeway</strong>, a tourist arriving at Senai International Airport,
-            or a local resident needing a reliable ride, our self-drive and chauffeur-driven options are designed for you.
-          </p>
-
-          <p>
-            Our <strong>car rental JB prices start from just RM150/day</strong> for economy sedans, making us
-            one of the most competitive car rental services in Johor Bahru. Every vehicle comes with comprehensive
-            insurance, free cancellation, and 24/7 WhatsApp support. We accept both MYR and SGD payments
-            for your convenience.
-          </p>
-
-          <h3 className="text-xl font-bold mt-10 mb-4 text-gray-900">
-            Why Choose Mok Car Rental for Your JB Car Hire?
-          </h3>
-
-          <ul className="list-disc pl-6 space-y-2">
-            <li><strong>No hidden fees</strong> — transparent pricing from RM150 to RM600/day</li>
-            <li><strong>Free airport delivery</strong> at Senai International Airport (JHB)</li>
-            <li><strong>Singapore driving license accepted</strong> — no IDP required for Singapore residents</li>
-            <li><strong>Wide fleet</strong> — economy sedans, family MPVs, and luxury vehicles</li>
-            <li><strong>Flexible pickup locations</strong> — airport, city center, border crossings</li>
-            <li><strong>24/7 WhatsApp support</strong> — book in minutes via WhatsApp</li>
-          </ul>
-
-          <h3 className="text-xl font-bold mt-10 mb-4 text-gray-900">
-            Popular Car Rental Services in Johor Bahru
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-            <div className="border-l-4 border-gold-500 pl-4">
-              <h4 className="font-semibold text-gray-900 mb-1">Toyota Alphard Rental</h4>
-              <p className="text-sm text-gray-600">
-                The premium choice for families and groups. Luxury MPV from RM500/day with leather seats,
-                captain chairs, and panoramic sunroof. Perfect for Singapore-to-JB trips and airport transfers.
-              </p>
-              <Link href="/cars" className="text-gold-600 hover:text-gold-700 text-sm font-medium">
-                View Alphard Rentals →
-              </Link>
-            </div>
-
-            <div className="border-l-4 border-gold-500 pl-4">
-              <h4 className="font-semibold text-gray-900 mb-1">Economy Car Rental JB</h4>
-              <p className="text-sm text-gray-600">
-                Budget-friendly sedans starting at RM150/day. Ideal for city driving, airport pickups,
-                and solo travelers exploring Johor Bahru on a budget.
-              </p>
-              <Link href="/cars" className="text-gold-600 hover:text-gold-700 text-sm font-medium">
-                Browse Economy Cars →
-              </Link>
-            </div>
-
-            <div className="border-l-4 border-gold-500 pl-4">
-              <h4 className="font-semibold text-gray-900 mb-1">Senai Airport Car Delivery</h4>
-              <p className="text-sm text-gray-600">
-                Land at Senai Airport and drive away in your pre-booked rental car. We deliver directly
-                to the terminal for hassle-free airport pick-up.
-              </p>
-              <Link href="/contact" className="text-gold-600 hover:text-gold-700 text-sm font-medium">
-                Arrange Airport Pickup →
-              </Link>
-            </div>
-
-            <div className="border-l-4 border-gold-500 pl-4">
-              <h4 className="font-semibold text-gray-900 mb-1">Singapore to JB Car Rental</h4>
-              <p className="text-sm text-gray-600">
-                Cross the Causeway or Tuas Checkpoint and pick up your car near the border. No need
-                to arrange transport from Singapore — we bring the car to you.
-              </p>
-              <Link href="/booking" className="text-gold-600 hover:text-gold-700 text-sm font-medium">
-                Book Your Cross-Border Rental →
-              </Link>
-            </div>
-          </div>
-
-          <p className="mt-10">
-            Ready to book?{' '}
-            <Link href="/cars" className="text-gold-600 hover:text-gold-700 font-medium">
-              Browse our full fleet
-            </Link>{' '}
-            or{' '}
-            <Link href="/contact" className="text-gold-600 hover:text-gold-700 font-medium">
-              contact us via WhatsApp
-            </Link>{' '}
-            for instant booking support. Serving Johor Bahru, Senai, Skudai, Masai, and the entire
-            Johor region since 2020.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
+export default function SEODynamicContent(){
+ return <section className="bg-white py-20 md:py-24" aria-labelledby="jb-rental-guide">
+ <div className="container-custom grid gap-12 lg:grid-cols-[minmax(0,1fr)_300px]">
+  <article className="max-w-3xl space-y-6 leading-[1.8] text-[#51585C]">
+   <p className="text-xs font-extrabold uppercase tracking-[.2em] text-[#C45109]">Local rental information</p>
+   <h2 id="jb-rental-guide" className="text-3xl font-extrabold tracking-tight text-[#17191B] md:text-4xl">Planning car rental in Johor Bahru?</h2>
+   <p>Johor Bahru is a starting point for city visits, family trips and journeys across Johor. Renting a car can give your group flexibility, but the best vehicle depends on passenger count, luggage, intended route and rental duration. MOK provides vehicle information and an online booking app for checking current options.</p>
+   <h3 className="text-2xl font-bold text-[#1B1D1F]">Choosing a car for your trip</h3>
+   <p>Economy cars can suit shorter city visits, while multi-purpose vehicles (MPVs) may be useful for groups with more passengers and bags. For premium MPV considerations, read the <Link href="/toyota-alphard-rental-jb" className="font-semibold text-[#B94B06] underline">Toyota Alphard rental guide</Link>. Compare <Link href="/cars" className="font-semibold text-[#B94B06] underline">vehicle types</Link> before moving to MOK PWA for actual availability and rental quotations.</p>
+   <h3 className="text-2xl font-bold text-[#1B1D1F]">Travelling through Senai Airport</h3>
+   <p>For flights arriving at Senai International Airport (JHB), plan time for luggage collection and travel to your confirmed vehicle handover point. Read our <Link href="/senai-airport-car-rental" className="font-semibold text-[#B94B06] underline">Senai Airport rental guide</Link> and ask the team to confirm whether airport delivery can be arranged and any fee that applies.</p>
+   <h3 className="text-2xl font-bold text-[#1B1D1F]">Coming from Singapore?</h3>
+   <p>Visitors arriving via the Causeway or Second Link should confirm the pickup location, identification, licence requirements and intended travel route. Do not assume a rental car may cross the international border. Rental policies, deposits and cancellations should be confirmed before you travel.</p>
+   <p>Explore our <Link href="/faq" className="font-semibold text-[#B94B06] underline">rental FAQs</Link> or <Link href="/contact" className="font-semibold text-[#B94B06] underline">contact MOK</Link> with a question about your trip.</p>
+  </article>
+  <aside className="h-fit rounded-3xl border border-[#E0E3E4] bg-[#F7F7F5] p-7">
+   <h3 className="text-xl font-extrabold text-[#191B1D]">Explore MOK guides</h3>
+   <div className="mt-5 flex flex-col gap-3 text-sm font-semibold text-[#B94B06]">
+    <Link href="/cars">Vehicle information</Link>
+    <Link href="/toyota-alphard-rental-jb">Alphard rental in JB</Link>
+    <Link href="/senai-airport-car-rental">Senai Airport rental</Link>
+    <Link href="/faq">Rental FAQs</Link>
+    <Link href="/contact">Ask our team</Link>
+   </div>
+   <p className="mt-6 border-t border-[#DEE1E2] pt-5 text-sm leading-relaxed text-[#596166]">This website provides general information. Confirm live availability, prices and booking conditions in MOK PWA.</p>
+  </aside>
+ </div></section>;
 }

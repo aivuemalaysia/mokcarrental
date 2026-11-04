@@ -1,50 +1,37 @@
 {
-  "name": "Mok Car Rental JB",
-  "short_name": "Mok Rental",
-  "description": "Affordable car rental in Johor Bahru. Rebook in one tap.",
+  "name": "MOK Car Rental | Johor Bahru",
+  "short_name": "MOK Car Rental",
+  "description": "Car rental guides and booking links for Johor Bahru. For live availability, continue to the MOK booking app.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#D4AF37",
+  "background_color": "#1B1D1F",
+  "theme_color": "#FF761A",
   "icons": [
     {
-      "src": "/favicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "/favicon-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    },
-    {
-      "src": "/android-chrome-192x192.png",
+      "src": "/brand/mok-icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/android-chrome-512x512.png",
+      "src": "/brand/mok-icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
     {
-      "name": "Book a Car",
+      "name": "Check Available Cars",
       "url": "/booking"
     },
     {
-      "name": "My Bookings",
-      "url": "/my-bookings"
+      "name": "Vehicle Information",
+      "url": "/cars"
     },
     {
-      "name": "Our Fleet",
-      "url": "/cars"
+      "name": "Rental FAQs",
+      "url": "/faq"
     }
   ]
 }

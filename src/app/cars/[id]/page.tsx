@@ -16,6 +16,7 @@ import CarCard from '@/components/CarCard';
 
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import { isLegacyVehicleId } from '@/lib/seo';
 
 
 
@@ -54,6 +55,11 @@ export async function generateMetadata(
 
   const { id } = await params;
 
+  // Malformed route parameters must not generate UUID database errors.
+  if (!isLegacyVehicleId(id)) {
+    return { title: 'Car Not Found', robots: { index: false, follow: false } };
+  }
+
   try {
 
     const { data: car } = await getSupabaseServerClient()
@@ -70,21 +76,19 @@ export async function generateMetadata(
 
     if (!car) {
 
-      return { title: 'Car Not Found | Mok Car Rental JB' };
+      return { title: 'Car Not Found', robots: { index: false, follow: false } };
 
     }
 
 
 
-    const baseUrl = process.env.SITE_URL ||
-
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+    const baseUrl = 'https://www.mokcarrental.com';
 
 
 
     const name = car.name || `${car.brand} ${car.model}`;
 
-    const price = car.price || 'N/A';
+    // Legacy website prices are not the live booking quotation.
 
     const category = car.category || 'car';
 
@@ -92,9 +96,9 @@ export async function generateMetadata(
 
     return {
 
-      title: `${name} — ${price}/day Rental | Johor Bahru Car Rental`,
+      title: `${name} Rental in Johor Bahru`,
 
-      description: `Rent the ${name} (${category}) in Johor Bahru from RM${price}/day. ${car.description || 'Well-maintained vehicle with premium features.'} Perfect for Singapore travelers, airport transfers, and JB city exploration.`,
+      description: `Explore ${name} (${category}) rental information in Johor Bahru. Check live prices, availability and booking conditions in the MOK booking app.`,
 
       keywords: [
 
@@ -116,9 +120,9 @@ export async function generateMetadata(
 
       openGraph: {
 
-        title: `${name} — RM${price}/day | Mok Car Rental JB`,
+        title: `${name} Rental Johor Bahru | MOK`,
 
-        description: `Rent the ${name} in Johor Bahru from RM${price}/day. Prime vehicle with ${car.seats} seats, ${car.transmission} transmission.`,
+        description: `Compare ${name} vehicle details in Johor Bahru. Current rental options and quotations are available through MOK booking.`,
 
         url: `${baseUrl}/cars/${id}`,
 
@@ -164,32 +168,18 @@ export async function generateMetadata(
 
 
 
-async function fetchCar(id: string) {
+async function fetchCar(id: string): Promise<Car | null> {
+  // Return 404 only when the vehicle truly does not exist.
+  // A database outage must remain a retryable 5xx, not a soft 404.
+  const { data, error } = await getSupabaseServerClient()
+    .from('cars')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
 
-  try {
-
-    const { data, error } = await getSupabaseServerClient()
-
-      .from('cars')
-
-      .select('*')
-
-      .eq('id', id)
-
-      .single();
-
-    if (error || !data) return null;
-
-    return data as Car;
-
-  } catch {
-
-    return null;
-
-  }
-
+  if (error) throw error;
+  return data as Car | null;
 }
-
 
 
 async function fetchRelatedCars(car: Car, carId: string) {
@@ -228,31 +218,14 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
 
 
-  const baseUrl = process.env.SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");  const car = await fetchCar(id);
+  if (!isLegacyVehicleId(id)) notFound();
+
+  const baseUrl = 'https://www.mokcarrental.com';
+  const car = await fetchCar(id);
 
 
 
-  if (!car) {
-
-    return (
-
-      <div className="pt-20 min-h-screen flex items-center justify-center">
-
-        <div className="text-center">
-
-          <h1 className="text-3xl font-bold mb-4">Car Not Found</h1>
-
-          <Link href="/cars" className="btn-primary">Back to Cars</Link>
-
-        </div>
-
-      </div>
-
-    );
-
-  }
-
-
+  if (!car) notFound();
 
   const relatedCars = await fetchRelatedCars(car, id);
 
@@ -292,39 +265,8 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
     fuelType: car.fuel_type,
 
-    offers: {
+    url: `${baseUrl}/cars/${car.id}`,
 
-      '@type': 'Offer',
-
-      price: String(car.price),
-
-      priceCurrency: 'MYR',
-
-      availability: car.available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-
-      url: `${baseUrl}/cars/${car.id}`,
-
-      seller: {
-
-        '@type': 'LocalBusiness',
-
-        name: 'Mok Car Rental',
-
-        address: {
-
-          '@type': 'PostalAddress',
-
-          addressLocality: 'Johor Bahru',
-
-          addressRegion: 'Johor',
-
-          addressCountry: 'MY',
-
-        },
-
-      },
-
-    },
 
   };
 
@@ -354,7 +296,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
   return (
 
-    <>
+    <main>
 
       {/* Structured Data Scripts */}
 
@@ -594,7 +536,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       <FiCheck className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
 
-                      <span>Minimum rental period: 1 day</span>
+                      <span>Rental duration is confirmed during booking</span>
 
                     </li>
 
@@ -602,7 +544,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       <FiCheck className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
 
-                      <span>Daily mileage allowance: 200km (RM0.30 per additional km)</span>
+                      <span>Check the current mileage terms in the MOK booking app</span>
 
                     </li>
 
@@ -610,7 +552,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       <FiCheck className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
 
-                      <span>Security deposit: RM200-500 (refundable upon return)</span>
+                      <span>Confirm the security deposit and refund terms before payment</span>
 
                     </li>
 
@@ -618,7 +560,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       <FiCheck className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
 
-                      <span>Fuel policy: Full-to-full</span>
+                      <span>Confirm the fuel and return policy with MOK</span>
 
                     </li>
 
@@ -644,15 +586,8 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                   <div className="mb-6">
 
-                    <div className="text-sm text-gray-600 mb-1">Daily Rate</div>
-
-                    <div className="text-4xl font-bold text-gold-500">
-
-                      RM{car.price}
-
-                      <span className="text-lg text-gray-600 font-normal">/day</span>
-
-                    </div>
+                    <div className="text-lg font-bold text-gray-900 mb-2">Check live rental rates</div>
+                    <p className="text-sm leading-relaxed text-gray-600">Vehicle information on this page is not a live availability or pricing guarantee. Continue to MOK PWA to see the current quotation for your dates.</p>
 
                   </div>
 
@@ -664,7 +599,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
                       href={MOK_BOOKING_URL}
                       className="btn-primary w-full justify-center text-lg block text-center"
                     >
-                      Book Online in MOK App
+                      Check current cars in MOK PWA
                     </a>
 
                     <WhatsAppInquiryButton
@@ -723,7 +658,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
       </div>
 
-    </>
+    </main>
 
   );
 

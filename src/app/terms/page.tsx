@@ -1,124 +1,78 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
 import LegalContactInfo from '@/components/LegalContactInfo';
 
-export const metadata = {
-  title: 'Terms & Conditions',
-  description: 'Read the terms and conditions for renting a car from Mok Car Rental in Johor Bahru.',
+const pwaTermsUrl = 'https://app.mokcarrental.com/terms';
+
+export const metadata: Metadata = {
+  title: 'Rental Terms & Conditions',
+  description: 'Understand where to review current MOK rental terms, eligibility, deposit, payment and cancellation details before completing a Johor Bahru car rental booking.',
   alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {
   return (
-    <div className="pt-20">
-      <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
-        <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Terms & Conditions
-          </h1>
-          <p className="text-xl text-gray-300">
-            Please read our rental terms and conditions carefully
+    <main className="pt-20">
+      <section className="bg-[#1B1D1F] py-20 text-white">
+        <div className="container-custom max-w-5xl">
+          <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-[#FF923F]">Rental information</p>
+          <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl">Rental Terms &amp; Conditions</h1>
+          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-[#CFD4D6]">
+            Please review the current rental requirements and booking conditions before confirming a car in Johor Bahru.
           </p>
         </div>
       </section>
 
-      <section className="py-20">
-        <div className="container-custom">
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 md:p-12 shadow-xl">
-            <div className="prose prose-lg max-w-none">
-              <p className="text-gray-600 mb-8">Last updated: January 2024</p>
+      <section className="bg-white py-16 md:py-20">
+        <div className="container-custom max-w-4xl">
+          <div className="rounded-3xl border border-[#F7C5A1] bg-[#FFF6EF] p-7 md:p-9">
+            <h2 className="text-2xl font-bold text-[#1B1D1F]">Online bookings are handled in MOK PWA</h2>
+            <p className="mt-4 leading-relaxed text-[#565D62]">
+              This website provides car rental information, but does not accept or process new bookings.
+              Before confirming a reservation, read the terms presented in the MOK booking app and the
+              conditions applicable to your chosen vehicle, dates and rental quotation.
+            </p>
+            <a
+              href={pwaTermsUrl}
+              className="mt-7 inline-flex min-h-12 items-center justify-center rounded-xl bg-[#FF761A] px-6 py-3 font-bold text-[#17191B] hover:bg-[#FF923F]"
+            >
+              Review MOK booking terms
+            </a>
+          </div>
 
-              <h2 className="text-2xl font-bold mb-4">1. Rental Agreement</h2>
-              <p className="text-gray-700 mb-6">
-                By renting a vehicle from Mok Car Rental, you agree to these terms and conditions.
-                The rental agreement begins when you take possession of the vehicle and ends when
-                the vehicle is returned to us.
+          <div className="mt-12 space-y-8 leading-relaxed text-[#4D565C]">
+            <div>
+              <h2 className="text-2xl font-bold text-[#1B1D1F]">Check the conditions for your booking</h2>
+              <p className="mt-3">
+                Requirements and charges may depend on the vehicle and booking details. Please review the
+                following before confirming a rental: driver eligibility and documentation, rental duration,
+                pickup and return arrangements, mileage and fuel conditions, security deposit, payment,
+                cancellation or refund arrangements, and possible damage or late-return charges.
               </p>
-
-              <h2 className="text-2xl font-bold mb-4">2. Driver Requirements</h2>
-              <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                <li>Minimum age of 21 years old</li>
-                <li>Valid driving license held for at least 1 year</li>
-                <li>Singapore driving licenses are accepted</li>
-                <li>International driving permits are accepted</li>
-                <li>Additional documentation may be required</li>
-              </ul>
-
-              <h2 className="text-2xl font-bold mb-4">3. Rental Rates & Payments</h2>
-              <p className="text-gray-700 mb-4">
-                Our rental rates include:
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-[#1B1D1F]">Prices, deposits and optional services</h2>
+              <p className="mt-3">
+                Information and historic vehicle profiles on this marketing site are not a guarantee of
+                availability or a final rental quotation. Use MOK PWA to check current options and
+                review the price breakdown and applicable conditions before proceeding with payment.
               </p>
-              <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                <li>Basic insurance coverage</li>
-                <li>Unlimited passengers (up to vehicle capacity)</li>
-                <li>24/7 roadside assistance</li>
-                <li>200km daily mileage allowance</li>
-              </ul>
-              <p className="text-gray-700 mb-6">
-                Additional charges apply for: extra mileage (RM0.30-0.50/km), fuel, tolls,
-                traffic violations, and vehicle damage.
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-[#1B1D1F]">Questions or an older website inquiry?</h2>
+              <p className="mt-3">
+                For questions about rental requirements, a booking or an inquiry submitted through the previous
+                website, contact MOK support. The marketing website no longer offers a public booking lookup.
               </p>
-
-              <h2 className="text-2xl font-bold mb-4">4. Security Deposit</h2>
-              <p className="text-gray-700 mb-6">
-                A security deposit of RM200-500 is required at pickup, depending on the vehicle
-                type. The deposit is fully refundable within 7 business days upon return of the
-                vehicle in good condition.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">5. Fuel Policy</h2>
-              <p className="text-gray-700 mb-6">
-                We operate on a full-to-full policy. You will receive the vehicle with a full
-                tank and must return it with a full tank. If returned empty, refueling charges
-                will apply at RM2.50 per liter.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">6. Vehicle Condition & Inspection</h2>
-              <p className="text-gray-700 mb-6">
-                A thorough vehicle inspection is conducted before and after each rental. Any
-                existing damage will be documented. You are responsible for reporting any new
-                damage during your rental period.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">7. Prohibited Uses</h2>
-              <p className="text-gray-700 mb-4">
-                The vehicle must not be used for:
-              </p>
-              <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                <li>Any illegal activities</li>
-                <li>Racing or speed tests</li>
-                <li>Towing or pushing other vehicles</li>
-                <li>Off-road driving (unless specifically permitted)</li>
-                <li>Transporting hazardous materials</li>
-                <li>Sub-letting or unauthorized use</li>
-              </ul>
-
-              <h2 className="text-2xl font-bold mb-4">8. Insurance & Liability</h2>
-              <p className="text-gray-700 mb-6">
-                Basic insurance is included in the rental rate. You are liable for any damage
-                not covered by insurance, including damage caused by negligence, intoxication,
-                or unauthorized drivers.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">9. Cancellations & Refunds</h2>
-              <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                <li>Free cancellation up to 48 hours before pickup</li>
-                <li>50% charge for cancellations within 24-48 hours</li>
-                <li>Full day's rate for no-shows or same-day cancellations</li>
-              </ul>
-
-              <h2 className="text-2xl font-bold mb-4">10. Late Returns</h2>
-              <p className="text-gray-700 mb-6">
-                A grace period of 1 hour is allowed. Returns more than 1 hour late will incur
-                additional rental charges. Returns more than 24 hours late may be reported to
-                authorities.
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4">11. Contact Information</h2>
-              <p className="text-gray-700 mb-6">For any questions about these terms, please contact us:</p>
-              <LegalContactInfo />
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Link className="btn-secondary" href="/contact">Contact MOK</Link>
+                <Link className="btn-secondary" href="/booking">Go to online booking</Link>
+              </div>
             </div>
           </div>
+          <LegalContactInfo />
         </div>
       </section>
-    </div>
+    </main>
   );
 }

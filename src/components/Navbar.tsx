@@ -1,90 +1,47 @@
 'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
-import { FiMenu, FiX } from 'react-icons/fi';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
+import Image from 'next/image';
+import { FiMenu, FiX, FiArrowUpRight } from 'react-icons/fi';
 import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/cars', label: 'Our Fleet' },
-  { href: '/my-bookings', label: 'Past Website Inquiries' },
-  { href: '/start-business', label: 'Start Business' },
-  { href: '/about', label: 'About Us' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/contact', label: 'Contact' },
+const links = [
+  { href:'/', label:'Home' }, { href:'/cars', label:'Vehicles' },
+  { href:'/senai-airport-car-rental', label:'Senai Airport' },
+  { href:'/toyota-alphard-rental-jb', label:'Alphard' },
+  { href:'/faq', label:'FAQ' }, { href:'/contact', label:'Contact' }
 ];
 
 export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { settings } = useSiteSettings();
-
+  const [open,setOpen] = useState(false);
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="text-2xl font-display font-bold text-gray-900">
-              <span>{settings.businessName.split(' ')[0]}</span> <span className="text-gradient">{settings.businessName.split(' ').slice(1).join(' ')}</span>
-            </div>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-gray-700 hover:text-gold-500 font-medium transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="hidden md:block">
-            <Link href={MOK_BOOKING_URL} className="btn-primary">
-              Book Now
-            </Link>
-          </div>
-
-          <button
-            className="md:hidden p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <FiX className="w-6 h-6" />
-            ) : (
-              <FiMenu className="w-6 h-6" />
-            )}
-          </button>
+    <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#191B1D]/95 text-white backdrop-blur-lg" aria-label="Primary navigation">
+      <div className="container-custom flex h-20 items-center justify-between gap-5">
+        <Link href="/" aria-label="MOK Car Rental homepage" className="flex items-center gap-3">
+          <Image
+            src="/brand/mok-logo-2026-transparent.webp"
+            alt="MOK Car Rental"
+            width={215}
+            height={60}
+            priority
+            className="h-12 w-auto max-w-[192px] object-contain"
+          />
+        </Link>
+        <div className="hidden min-[1100px]:flex items-center gap-6">
+          {links.map(({href,label})=><Link key={href} href={href} className="text-sm font-semibold text-gray-200 hover:text-[#FF923F]">{label}</Link>)}
         </div>
-
-        {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <div className="flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-gray-700 hover:text-gold-500 font-medium transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                href={MOK_BOOKING_URL}
-                className="btn-primary text-center mt-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Book Now
-              </Link>
-            </div>
-          </div>
-        )}
+        <a href={MOK_BOOKING_URL} className="btn-primary hidden min-[1100px]:inline-flex text-sm">Check Available Cars <FiArrowUpRight aria-hidden="true"/></a>
+        <button type="button" className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/20 min-[1100px]:hidden"
+          aria-label={open?'Close menu':'Open menu'} aria-expanded={open} aria-controls="mok-mobile-navigation" onClick={()=>setOpen(x=>!x)}>
+          {open?<FiX className="h-6 w-6" aria-hidden="true"/>:<FiMenu className="h-6 w-6" aria-hidden="true"/>}
+        </button>
       </div>
+      {open&&<div id="mok-mobile-navigation" className="border-t border-white/10 bg-[#191B1D] min-[1100px]:hidden">
+        <div className="container-custom flex flex-col gap-1 py-4">
+          {links.map(({href,label})=><Link key={href} href={href} onClick={()=>setOpen(false)} className="rounded-lg px-3 py-3 text-sm font-semibold text-gray-100 hover:bg-white/10">{label}</Link>)}
+          <a href={MOK_BOOKING_URL} onClick={()=>setOpen(false)} className="btn-primary mt-2">Check Available Cars <FiArrowUpRight aria-hidden="true"/></a>
+        </div>
+      </div>}
     </nav>
   );
 }

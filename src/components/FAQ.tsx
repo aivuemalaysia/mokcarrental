@@ -2,107 +2,68 @@
 
 import { useState } from 'react';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
-import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
+import Link from 'next/link';
+import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
 
+// Only publish policies that can be backed by the active booking flow.
+// Pricing, age, insurance, deposit and delivery fees require Owner verification.
 const faqs = [
   {
-    question: 'How much does it cost to rent a car in Johor Bahru?',
-    answer:
-      'Car rental in Johor Bahru starts from RM150/day for economy sedans (Perodua Bezza, Honda City) up to RM600+/day for premium MPVs like the Toyota Alphard. We offer competitive rates with no hidden charges — prices include insurance and basic breakdown coverage.',
+    question: 'Where do I book a rental car in Johor Bahru?',
+    answer: 'Vehicle availability, rental dates and booking steps are handled in the MOK booking app. The website provides vehicle information and guidance about renting in Johor Bahru.',
   },
   {
-    question: 'Do Singapore drivers need an international driving permit in Malaysia?',
-    answer:
-      'No. A valid Singapore driving license is fully accepted in Malaysia. You can legally drive your rented car with your Singapore license. International Driving Permits (IDP) are also welcome. Minimum age requirement is 21 years old.',
+    question: 'How can I check current rental prices and deposits?',
+    answer: 'Open the MOK booking app to see available vehicle options and the current booking quotation. Review all displayed charges and terms before confirming.',
   },
   {
-    question: 'Can I pick up my rental car at Senai Airport or the Malaysia-Singapore Causeway?',
-    answer:
-      'Yes! We offer airport delivery at Senai International Airport (JHB) and can arrange pickup near the Causeway (Woodlands/Tuas checkpoints). Airport delivery incurs a small additional fee. Contact us via WhatsApp to arrange convenient pickup.',
+    question: 'Can I arrange a rental around Senai Airport?',
+    answer: 'Please contact the MOK team to confirm whether an airport handover is available for your dates and whether a delivery charge applies. Do not assume airport pickup is included in every booking.',
   },
   {
-    question: 'What documents do I need to rent a car in Johor Bahru?',
-    answer:
-      'You need: a valid driving license (Singapore or international), passport or IC for identification, and a security deposit of RM200-500 depending on vehicle category. The deposit is fully refundable upon safe return of the vehicle.',
+    question: 'What documents will I need to rent a car?',
+    answer: 'Prepare a valid driving licence and identification. The precise driver eligibility, supporting documents and verification requirements are confirmed during booking.',
   },
   {
-    question: 'Is there a mileage limit on rentals? What is the fuel policy?',
-    answer:
-      'Standard rental includes 200km per day. Additional distance is charged at RM0.30/km. Our fuel policy is full-to-full — you receive the car with a full tank and return it the same way. Unlimited mileage packages available for long-term rentals.',
+    question: 'What car types can I choose?',
+    answer: 'You can explore economy cars, family-oriented MPVs and larger vehicles on our website. The MOK booking app is the source of truth for currently available models.',
   },
   {
-    question: 'Do you offer long-term car rental and corporate rental packages in JB?',
-    answer:
-      'Yes, we offer flexible weekly and monthly rental packages at discounted rates. Perfect for business travelers between Singapore and Johor Bahru. Contact us for custom corporate rates and fleet arrangements for your company.',
-  },
-  {
-    question: 'What car types are available for rent in Johor Bahru?',
-    answer:
-      'We offer economy sedans (Perodua Bezza, Honda City), MPVs (Toyota Alphard, Honda Odyssey, Toyota Vellfire), SUVs, and luxury vehicles. All cars are well-maintained, fully air-conditioned, sanitized before each rental, and come with comprehensive insurance.',
-  },
-  {
-    question: 'Can I drive from Johor Bahru back to Singapore with the rental car?',
-    answer:
-      'Please note that our standard rentals are for use within Malaysia. For cross-border travel between JB and Singapore, please contact us in advance to arrange permissions and any additional documentation required.',
+    question: 'Can a rental car be taken into Singapore?',
+    answer: 'Do not assume a Johor Bahru rental may cross an international border. Contact MOK before booking to check the vehicle-specific policy and any required permissions.',
   },
 ];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const toggle = (index: number) => setOpenIndex(openIndex === index ? null : index);
-
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
   return (
-    <section id="faq" className="py-20 bg-white">
+    <section id="faq" className="py-20 bg-white" aria-labelledby="rental-faq-title">
       <div className="container-custom">
-        <div className="text-center mb-12">
-          <h2 className="section-title">
-            Frequently Asked Questions — Car Rental in Johor Bahru
-          </h2>
-          <p className="section-subtitle text-lg text-gray-500 max-w-2xl mx-auto">
-            Everything you need to know about renting a car in JB. Can&apos;t find what you&apos;re
-            looking for? Chat with us on WhatsApp.
-          </p>
-        </div>
-
-        <div className="max-w-3xl mx-auto space-y-3">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className={`border rounded-xl overflow-hidden transition-colors ${
-                openIndex === index
-                  ? 'border-gold-500 bg-gold-50/50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <button
-                className="w-full px-6 py-5 text-left flex items-center justify-between bg-transparent"
-                onClick={() => toggle(index)}
-                aria-expanded={openIndex === index}
-              >
-                <span className="font-semibold text-gray-900 pr-4 text-base">
-                  {faq.question}
-                </span>
-                {openIndex === index ? (
-                  <FiChevronUp className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                ) : (
-                  <FiChevronDown className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                )}
-              </button>
-              {openIndex === index && (
-                <div className="px-6 pb-5">
-                  <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <p className="text-gray-600 mb-4 text-lg">Still have questions about car rental in JB?</p>
-          <WhatsAppInquiryButton
-            label="Chat with Us on WhatsApp"
-            className="btn-whatsapp inline-flex text-lg px-8 py-3"
-          />
+        <div className="max-w-3xl mx-auto">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#D95706] mb-3">Plan with confidence</p>
+          <h2 id="rental-faq-title" className="section-title">Car Rental FAQs in Johor Bahru</h2>
+          <p className="text-gray-600 mb-10">Useful information before you continue to the MOK booking app.</p>
+          <div className="space-y-3">
+            {faqs.map((faq, index) => (
+              <div key={faq.question} className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
+                <button
+                  type="button"
+                  className="w-full px-6 py-5 text-left flex items-center justify-between gap-4"
+                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                  aria-expanded={openIndex === index}
+                  aria-controls={`faq-answer-${index}`}
+                >
+                  <span className="font-semibold text-[#17191B]">{faq.question}</span>
+                  {openIndex === index ? <FiChevronUp aria-hidden="true" className="flex-shrink-0 text-[#E45E08]" /> : <FiChevronDown aria-hidden="true" className="flex-shrink-0 text-[#E45E08]" />}
+                </button>
+                {openIndex === index ? <p id={`faq-answer-${index}`} className="px-6 pb-5 text-gray-700 leading-relaxed">{faq.answer}</p> : null}
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-3 mt-9">
+            <a className="btn-primary" href={MOK_BOOKING_URL}>Check live availability</a>
+            <Link href="/contact" className="btn-secondary">Ask our team</Link>
+          </div>
         </div>
       </div>
     </section>

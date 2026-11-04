@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import CarsClient from './cars-client';
+import { MOK_SOCIAL_IMAGE } from '@/lib/seo';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
-const baseUrl = process.env.SITE_URL || 'https://www.mokcarrental.com';
+const baseUrl = 'https://www.mokcarrental.com';
 
 export const metadata: Metadata = {
-  title: 'Our Car Fleet \u2014 Rental Cars in Johor Bahru | Alphard, MPV, Sedan & Luxury',
-  description: 'Browse our premium car rental fleet in Johor Bahru. Economy sedans, luxury vehicles, Alphard MPVs, and SUVs available for daily rental. Perfect for Singapore travelers and tourists. Prices from RM150/day.',
+  title: 'Car Rental Vehicle Options in Johor Bahru',
+  description: 'Explore vehicle information for Johor Bahru rental, including economy cars, family MPVs and premium options. Check live cars, pricing and booking terms in MOK PWA.',
   keywords: [
     'car rental johor bahru fleet',
     'rental cars jb',
@@ -17,12 +18,12 @@ export const metadata: Metadata = {
     'affordable car rental jb',
   ].join(', '),
   openGraph: {
-    title: 'Our Car Fleet \u2014 MOK Car Rental JB',
-    description: 'Browse our premium car rental fleet in Johor Bahru. From RM150/day.',
+    title: 'Car Rental Vehicle Options in Johor Bahru | MOK',
+    description: 'Browse vehicle information in Johor Bahru and check live availability in MOK PWA.',
     url: `${baseUrl}/cars`,
     type: 'website',
     locale: 'en_MY',
-    images: [{ url: `${baseUrl}/og-home.jpg`, width: 1200, height: 630, alt: 'Mok Car Rental Fleet' }],
+    images: [MOK_SOCIAL_IMAGE],
   },
   alternates: {
     canonical: `${baseUrl}/cars`,

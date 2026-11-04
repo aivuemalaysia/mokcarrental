@@ -4,10 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { MOK_REGISTERED_COMPANY_NAME } from '@/lib/legalIdentity';
 
 
 export default function ContactPage() {
   const { settings, getWhatsAppLink } = useSiteSettings();
+  const phoneDigits = settings.whatsappNumber.replace(/[^0-9]/g, '');
+  const hasVerifiedFormat = phoneDigits.length >= 9 && phoneDigits.length <= 15;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -49,7 +52,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="pt-20">
+    <main className="pt-20">
       <nav aria-label="Breadcrumb" className="bg-gray-50 py-3">
         <div className="container-custom">
           <ol className="flex items-center gap-2 text-sm text-gray-600">
@@ -63,10 +66,10 @@ export default function ContactPage() {
       <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
         <div className="container-custom">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Contact MOK Car Rental — Book Your Car in Johor Bahru
+            Contact MOK Car Rental in Johor Bahru
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Get in touch for inquiries, bookings, or any questions — we typically respond within 30 minutes via WhatsApp
+            Contact our team about rental options, availability and pickup arrangements in Johor Bahru. Book available vehicles in the MOK app.
           </p>
         </div>
       </section>
@@ -79,7 +82,7 @@ export default function ContactPage() {
               <p className="text-gray-600 mb-8">
                 We&apos;d love to hear from you. Whether you have a question about our services,
                 pricing, availability of Alphard or luxury MPV rentals, or anything else, our team is ready to help.
-                Most Singaporean customers reach us via WhatsApp for the fastest response.
+                You can send us an enquiry below or use WhatsApp to contact our team.
               </p>
 
               <div className="space-y-6 mb-12">
@@ -90,7 +93,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-bold mb-1">Our Location</h3>
                     <p className="text-gray-600">
-                      {settings.address}
+                      {settings.address || 'Serving Johor Bahru; confirm your pickup point with the team'}
                     </p>
                   </div>
                 </div>
@@ -101,12 +104,13 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Phone / WhatsApp</h3>
-                    <a
-                      href={`tel:${settings.whatsappNumber}`}
-                      className="text-gold-500 hover:text-gold-600"
-                    >
-                      {settings.whatsappNumber || '+60 XX-XXXXXXX'}
-                    </a>
+                    {hasVerifiedFormat ? (
+                      <a href={`tel:${settings.whatsappNumber.replace(/\s/g, '')}`} className="text-gold-500 hover:text-gold-600">
+                        {settings.whatsappNumber}
+                      </a>
+                    ) : (
+                      <p className="text-gray-600">Please use the contact form to request a callback.</p>
+                    )}
                   </div>
                 </div>
 
@@ -116,12 +120,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Email</h3>
-                    <a
-                      href={`mailto:${settings.email}`}
-                      className="text-gold-500 hover:text-gold-600"
-                    >
-                      {settings.email || 'info@mokcarrental.com'}
-                    </a>
+                    {settings.email.includes('@') ? (
+                      <a href={`mailto:${settings.email}`} className="text-gold-500 hover:text-gold-600">
+                        {settings.email}
+                      </a>
+                    ) : <p className="text-gray-600">Use the contact form below.</p>}
                   </div>
                 </div>
 
@@ -132,7 +135,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-bold mb-1">Business Hours</h3>
                     <p className="text-gray-600">
-                      {settings.workingHours || 'Daily 8:00 AM - 10:00 PM'} Support Available
+                      {settings.workingHours || 'Please contact our team for operating hours'}
                     </p>
                   </div>
                 </div>
@@ -140,14 +143,18 @@ export default function ContactPage() {
 
               <div>
                 <h3 className="font-bold mb-4">Quick Contact</h3>
-                <a
-                  href={getWhatsAppLink('Hello MOK Car Rental, I have a question about your rental service.')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-whatsapp text-lg"
-                >
-                  Chat on WhatsApp
-                </a>
+                {hasVerifiedFormat ? (
+                  <a
+                    href={getWhatsAppLink('Hello MOK Car Rental, I have a question about your rental service.')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-whatsapp text-lg"
+                  >
+                    Chat on WhatsApp
+                  </a>
+                ) : (
+                  <p className="text-gray-600">Send us a message using the form below.</p>
+                )}
               </div>
             </div>
 
@@ -156,11 +163,11 @@ export default function ContactPage() {
                 <h3 className="text-2xl font-bold mb-6">Send Us a Message</h3>
 
                 {submitted ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-12" role="status">
                     <FiCheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                     <h4 className="text-xl font-bold mb-2">Thank You!</h4>
                     <p className="text-gray-600 mb-6">
-                      Your message has been sent successfully. We&apos;ll get back to you within 30 minutes.
+                      Your message has been sent successfully. Our team will follow up with you.
                     </p>
                     <button
                       type="button"
@@ -171,12 +178,28 @@ export default function ContactPage() {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 text-sm leading-relaxed text-gray-700">
+                      <p>
+                        {MOK_REGISTERED_COMPANY_NAME} uses the details you provide to respond to your enquiry.
+                        Please read our{' '}
+                        <Link href="/privacy" className="font-semibold text-orange-800 underline">Privacy Notice</Link>
+                        {' '}before submitting.
+                      </p>
+                      <p lang="ms" className="mt-2">
+                        {MOK_REGISTERED_COMPANY_NAME} menggunakan maklumat yang diberikan untuk menjawab pertanyaan anda.
+                        Sila baca{' '}
+                        <Link href="/privacy#notis-privasi" className="font-semibold text-orange-800 underline">Notis Privasi</Link>
+                        {' '}sebelum menghantar.
+                      </p>
+                    </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-2">
                         Your Name *
                       </label>
                       <input
+                        id="contact-name"
+                        name="name"
                         type="text"
                         required
                         value={formData.name}
@@ -189,12 +212,14 @@ export default function ContactPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Email Address *
-                        </label>
+                        <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address *
+                      </label>
                         <input
-                          type="email"
-                          required
+                        id="contact-email"
+                        name="email"
+                        type="email"
+                        required
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           placeholder="john@example.com"
@@ -204,12 +229,14 @@ export default function ContactPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Phone / WhatsApp *
-                        </label>
+                        <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-2">
+                        Phone / WhatsApp *
+                      </label>
                         <input
-                          type="tel"
-                          required
+                        id="contact-phone"
+                        name="phone"
+                        type="tel"
+                        required
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="+60 12-345 6789"
@@ -220,10 +247,12 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-2">
                         Your Inquiry *
                       </label>
                       <textarea
+                        id="contact-message"
+                        name="message"
                         required
                         rows={5}
                         value={formData.message}
@@ -234,7 +263,7 @@ export default function ContactPage() {
                     </div>
 
                     {error && (
-                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm" role="alert">
                         {error}
                       </div>
                     )}
@@ -264,7 +293,7 @@ export default function ContactPage() {
                   />
                 ) : (
                   <div className="bg-gray-100 text-gray-700 p-6 text-sm">
-                    Map location in Johor Bahru will appear here.
+                    Please contact our team to confirm your pickup or return location.
                   </div>
                 )}
               </div>
@@ -272,6 +301,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
