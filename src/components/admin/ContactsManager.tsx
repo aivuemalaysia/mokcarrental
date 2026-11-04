@@ -87,24 +87,9 @@ export default function ContactsManager() {
                 contacts table not found in database
               </p>
               <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-                Run the migration SQL in your Supabase dashboard:
+                Ask the website administrator to check the database schema and approved access policies.
+                Do not run unreviewed SQL or relax customer-contact permissions from this page.
               </p>
-              <pre className="mt-3 text-xs bg-red-100 dark:bg-red-950 p-3 rounded-lg overflow-x-auto">
-                {`CREATE TABLE IF NOT EXISTS contacts (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT NOT NULL,
-  message TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Service can insert contacts" ON contacts
-  FOR INSERT WITH CHECK (true);
-CREATE POLICY "Admin can view contacts" ON contacts
-  FOR SELECT USING (auth.role() = 'authenticated');
-CREATE INDEX IF NOT EXISTS contacts_created_at_idx ON contacts (created_at DESC);`}
-              </pre>
             </div>
           </div>
         </div>
