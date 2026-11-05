@@ -6,7 +6,7 @@ import BookingHandoffLink from '@/components/BookingHandoffLink';
 export default function Hero() {
   return <section aria-label="Car rental in Johor Bahru" className="relative isolate overflow-hidden bg-[#191B1D] pb-20 pt-36 text-white md:pb-24 md:pt-44">
     <div className="pointer-events-none absolute inset-0 z-[-1]">
-      <Image src="/brand/mok-hero-2026.webp" alt="" fill sizes="100vw" priority
+      <Image src="/brand/mok-hero-2026.webp" alt="" aria-hidden="true" fill sizes="100vw" priority
         className="object-cover object-center opacity-25" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#101214]/95 via-[#191B1D]/90 to-[#17191B]/60"/>
     </div>
