@@ -1,11 +1,14 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import BookingHandoffLink from '@/components/BookingHandoffLink';
 
 /**
  * Keep the existing /my-bookings URL for bookmarks and navigation, but do
  * not accept or render a phone number from the URL, browser storage or form.
  * Legacy records are available only in the authenticated website admin area.
  */
+export const metadata: Metadata = { robots: { index: false, follow: true } };
+
 export default function MyBookingsPage() {
   return (
     <main className="pt-20 min-h-screen bg-gray-50">
@@ -30,9 +33,9 @@ export default function MyBookingsPage() {
               <a href="https://app.mokcarrental.com" className="btn-primary text-center">
                 Open MOK App
               </a>
-              <a href={MOK_BOOKING_URL} className="btn-secondary text-center">
+              <BookingHandoffLink  className="btn-secondary text-center">
                 Start a New Booking
-              </a>
+              </BookingHandoffLink>
             </div>
           </div>
 
