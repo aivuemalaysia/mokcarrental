@@ -52,6 +52,15 @@ describe('Admin Authentication', () => {
   });
 
   describe('Session Token', () => {
+    // Exercise real HMAC integrity checks instead of the legacy unsigned dev-token mode.
+    const originalSessionSecret = process.env.ADMIN_SESSION_SECRET;
+    beforeEach(() => {
+      process.env.ADMIN_SESSION_SECRET = 'qa-only-session-fixture-not-a-production-secret';
+    });
+    afterEach(() => {
+      if (originalSessionSecret === undefined) delete process.env.ADMIN_SESSION_SECRET;
+      else process.env.ADMIN_SESSION_SECRET = originalSessionSecret;
+    });
     it('should create and verify a session token', async () => {
       const token = await createAdminSessionToken('admin@mokcarrental.com');
       const result = await verifyAdminSessionToken(token);
@@ -61,7 +70,11 @@ describe('Admin Authentication', () => {
 
     it('should reject tampered tokens', async () => {
       const token = await createAdminSessionToken('admin@mokcarrental.com');
-      const tampered = token + 'tampered';
+      const [payload, signature] = token.split('.');
+      expect(payload).toBeTruthy();
+      expect(signature).toBeTruthy();
+      const tamperedSignature = (signature[0] === 'A' ? 'B' : 'A') + signature.slice(1);
+      const tampered = `${payload}.${tamperedSignature}`;
       const result = await verifyAdminSessionToken(tampered);
       expect(result.ok).toBe(false);
     });
