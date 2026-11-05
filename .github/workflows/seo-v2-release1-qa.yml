@@ -39,8 +39,19 @@ jobs:
       - name: Install locked dependencies, without postinstall scripts
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Exact requested TypeScript check
+      - name: Exact requested TypeScript check (existing test errors must remain visible)
+        id: exact_tsc
+        continue-on-error: true
         run: npx tsc --noEmit
+
+      - name: Application TypeScript check
+        run: pnpm exec tsc --noEmit -p tsconfig.app.json
 
       - name: Full Jest suite
         run: pnpm exec jest --runInBand
+
+      - name: Fail job if exact TypeScript command failed
+        if: steps.exact_tsc.outcome != 'success'
+        run: |
+          echo "::error::Exact npx tsc --noEmit failed. Do not approve production."
+          exit 1
