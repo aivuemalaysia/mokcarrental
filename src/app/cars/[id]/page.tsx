@@ -388,6 +388,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                       fill
 
+                      sizes="(max-width: 1023px) 100vw, 66vw"
                       className="object-cover"
 
                     />
@@ -422,6 +423,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                           fill
 
+                          sizes="(max-width: 767px) 33vw, 220px"
                           className="object-cover"
 
                         />
