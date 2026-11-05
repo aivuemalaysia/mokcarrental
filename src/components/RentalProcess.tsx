@@ -1,5 +1,5 @@
 import { FiSearch, FiCalendar, FiCheckCircle } from 'react-icons/fi';
-import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import BookingHandoffLink from '@/components/BookingHandoffLink';
 const steps=[
  {icon:FiSearch,title:'Explore rental options',desc:'Find vehicle information and rental guidance on this website.'},
  {icon:FiCalendar,title:'Choose dates in MOK',desc:'Check available models, dates and the booking quotation in MOK PWA.'},
@@ -16,6 +16,6 @@ export default function RentalProcess(){
     <h3 className="text-xl font-bold">{step.title}</h3><p className="mt-3 leading-relaxed text-[#BBC0C3]">{step.desc}</p>
    </div>;})}
   </div>
-  <div className="mt-10 text-center"><a href={MOK_BOOKING_URL} className="btn-primary">Continue to MOK Booking</a></div>
+  <div className="mt-10 text-center"><BookingHandoffLink  className="btn-primary">Continue to MOK Booking</BookingHandoffLink></div>
  </div></section>;
 }
