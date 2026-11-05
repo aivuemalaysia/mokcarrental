@@ -15,7 +15,7 @@ import { Car } from '@/types';
 import CarCard from '@/components/CarCard';
 
 import WhatsAppInquiryButton from '@/components/WhatsAppInquiryButton';
-import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import BookingHandoffLink from '@/components/BookingHandoffLink';
 import { isLegacyVehicleId } from '@/lib/seo';
 
 
@@ -595,12 +595,12 @@ export default async function CarDetailPage({ params }: { params: Promise<{ id: 
 
                   <div className="space-y-4 mb-8">
 
-                    <a
-                      href={MOK_BOOKING_URL}
+                    <BookingHandoffLink
+                      
                       className="btn-primary w-full justify-center text-lg block text-center"
                     >
                       Check current cars in MOK PWA
-                    </a>
+                    </BookingHandoffLink>
 
                     <WhatsAppInquiryButton
                       label="Ask About This Car on WhatsApp"
