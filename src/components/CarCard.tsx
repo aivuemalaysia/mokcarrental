@@ -21,6 +21,7 @@ export default function CarCard({ car }: CarCardProps) {
             src={imageSrc}
             alt={car.name}
             fill
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
             className="object-cover group-hover:scale-110 transition-transform duration-500"
           />
         ) : (
