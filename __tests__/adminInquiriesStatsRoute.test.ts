@@ -1,5 +1,7 @@
+export {};
+
 const mockFrom = jest.fn();
-const mockCreateClient = jest.fn(() => ({ from: mockFrom }));
+const mockCreateClient = jest.fn((..._args: unknown[]) => ({ from: mockFrom }));
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: (...args: any[]) => mockCreateClient(...args),

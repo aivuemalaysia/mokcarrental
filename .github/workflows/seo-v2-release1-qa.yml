@@ -1,0 +1,117 @@
+name: SEO v2 Release 1 read-only QA
+
+on:
+  push:
+    branches:
+      - cto/seo-v2-release1-preview-20261105
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-v2-release1-qa
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CI: 'true'
+    steps:
+      - name: Checkout reviewed branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+
+      - name: Enable pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.13.1 --activate
+
+      - name: Install locked dependencies, without postinstall scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Exact requested TypeScript check (existing test errors must remain visible)
+        id: exact_tsc
+        continue-on-error: true
+        run: npx tsc --noEmit
+
+      - name: Application TypeScript check
+        run: pnpm exec tsc --noEmit -p tsconfig.app.json
+
+      - name: Full Jest suite
+        run: pnpm exec jest --runInBand --forceExit --testTimeout=10000
+
+      - name: Fail job if exact TypeScript command failed
+        if: steps.exact_tsc.outcome != 'success'
+        run: |
+          echo "::error::Exact npx tsc --noEmit failed. Do not approve production."
+          exit 1
+
+  lighthouse:
+    # Protected previews require an authenticated browser; avoid repeating invalid login-page audits on every push.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Set up Node for pinned official Lighthouse
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+
+      - name: Audit mobile Production and Preview pages
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p lighthouse-results
+          lighthouse_cli=(npx --yes lighthouse@13.6.0)
+          for page in home cars senai; do
+            case "$page" in
+              home) route="/" ;;
+              cars) route="/cars" ;;
+              senai) route="/senai-airport-car-rental" ;;
+            esac
+            for env in production preview; do
+              if [ "$env" = production ]; then
+                url="https://www.mokcarrental.com${route}"
+              else
+                url="https://mok-car-rentals-28705mqxx-vuebies-projects.vercel.app${route}"
+              fi
+              report="lighthouse-results/${env}-${page}.json"
+              echo "::group::Lighthouse mobile ${env} ${route}"
+              if "${lighthouse_cli[@]}" "$url" --quiet --only-categories=performance --form-factor=mobile --throttling-method=simulate --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --output=json --output-path="$report"; then
+                REPORT="$report" REQUESTED_URL="$url" node - <<'NODE'
+          const fs = require('fs');
+          const r = JSON.parse(fs.readFileSync(process.env.REPORT, 'utf8'));
+          const metric = id => r.audits?.[id]?.numericValue ?? null;
+          const finalUrl = r.finalDisplayedUrl || r.finalUrl || '';
+          const expected = new URL(process.env.REQUESTED_URL);
+          const actual = new URL(finalUrl);
+          const valid = actual.hostname === expected.hostname && actual.pathname.replace(/\/$/, '') === expected.pathname.replace(/\/$/, '') && (r.runtimeError === undefined);
+          console.log(JSON.stringify({requested:process.env.REQUESTED_URL,finalUrl,valid,version:r.lighthouseVersion,score:r.categories?.performance?.score,lcp_ms:metric('largest-contentful-paint'),cls:metric('cumulative-layout-shift'),tbt_ms:metric('total-blocking-time'),fcp_ms:metric('first-contentful-paint')}));
+          if (!valid) console.log('WARNING: Lighthouse did not reach the intended page. Do not compare this score.');
+          NODE
+              else
+                echo "::warning::Lighthouse could not audit ${env} ${route}"
+              fi
+              echo "::endgroup::"
+            done
+          done
+
+      - name: Attach mobile Lighthouse raw JSON reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: seo-v2-release1-lighthouse-mobile
+          path: lighthouse-results/*.json
+          if-no-files-found: warn
+          retention-days: 7

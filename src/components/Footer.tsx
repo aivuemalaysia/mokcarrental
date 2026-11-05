@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FiArrowUpRight, FiMapPin, FiMail, FiPhone } from 'react-icons/fi';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
-import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import BookingHandoffLink from '@/components/BookingHandoffLink';
 import { MOK_REGISTERED_COMPANY_NAME } from '@/lib/legalIdentity';
 const guides=[
  {href:'/cars',label:'Vehicles & rental types'},
@@ -24,7 +24,7 @@ export default function Footer(){
       className="h-[58px] w-auto max-w-[225px] object-contain"
     /></Link>
     <p className="mt-5 max-w-sm leading-relaxed text-[#BBC0C3]">Car rental information and online booking for Johor Bahru, Malaysia. Explore options and plan your journey with MOK.</p>
-    <a href={MOK_BOOKING_URL} className="mt-6 inline-flex items-center gap-2 font-bold text-[#FF923F] hover:underline">Check available cars <FiArrowUpRight aria-hidden="true"/></a>
+    <BookingHandoffLink  className="mt-6 inline-flex items-center gap-2 font-bold text-[#FF923F] hover:underline">Check available cars <FiArrowUpRight aria-hidden="true"/></BookingHandoffLink>
    </div>
    <div><h2 className="mb-5 font-bold">Rental information</h2><div className="flex flex-col gap-3 text-sm text-[#C3C8CB]">{guides.map(x=><Link key={x.href} href={x.href} className="hover:text-[#FF923F]">{x.label}</Link>)}</div></div>
    <div><h2 className="mb-5 font-bold">MOK Car Rental</h2><div className="flex flex-col gap-3 text-sm text-[#C3C8CB]">

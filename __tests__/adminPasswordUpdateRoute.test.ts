@@ -1,14 +1,24 @@
+export {};
+
+// A real CSRF token must still match between cookie and header; never stub validation.
+jest.mock('next/headers', () => ({
+  cookies: () => ({
+    get: (name: string) => name === 'csrf_token' ? { value: 'qa-csrf-test' } : undefined,
+  }),
+}));
+
 const mockMaybeSingle = jest.fn();
 const mockSelect = jest.fn(() => ({ eq: () => ({ maybeSingle: mockMaybeSingle }) }));
 const mockUpsert = jest.fn();
 const mockFrom = jest.fn(() => ({ select: mockSelect, upsert: mockUpsert }));
-const mockCreateClient = jest.fn(() => ({ from: mockFrom }));
+const mockCreateClient = jest.fn((..._args: unknown[]) => ({ from: mockFrom }));
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: (...args: any[]) => mockCreateClient(...args),
 }));
 
 describe('/api/admin/password', () => {
+  const initialPassword = process.env.ADMIN_PASSWORD;
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -18,10 +28,13 @@ describe('/api/admin/password', () => {
     delete process.env.ADMIN_PASSWORD_HASH;
     delete process.env.ADMIN_PASSWORD_SALT;
     delete process.env.ADMIN_PASSWORD_ITERATIONS;
+    process.env.ADMIN_PASSWORD = 'admin123';
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
+    if (initialPassword === undefined) delete process.env.ADMIN_PASSWORD;
+    else process.env.ADMIN_PASSWORD = initialPassword;
   });
 
   test('returns 401 when not authenticated', async () => {
@@ -43,7 +56,7 @@ describe('/api/admin/password', () => {
 
     const req = new Request('http://localhost/api/admin/password', {
       method: 'POST',
-      headers: { cookie: 'admin_token=admin-token-test', 'Content-Type': 'application/json' },
+      headers: { cookie: 'admin_token=admin-token-test', 'x-csrf-token': 'qa-csrf-test', 'Content-Type': 'application/json' },
       body: JSON.stringify({ currentPassword: 'admin123', newPassword: 'mok8092', confirmPassword: 'mok8092' }),
     });
     const res = await POST(req);
@@ -58,7 +71,7 @@ describe('/api/admin/password', () => {
 
     const req = new Request('http://localhost/api/admin/password', {
       method: 'POST',
-      headers: { cookie: 'admin_token=admin-token-test', 'Content-Type': 'application/json' },
+      headers: { cookie: 'admin_token=admin-token-test', 'x-csrf-token': 'qa-csrf-test', 'Content-Type': 'application/json' },
       body: JSON.stringify({ currentPassword: 'wrong123', newPassword: 'mok8092', confirmPassword: 'mok8092' }),
     });
     const res = await POST(req);

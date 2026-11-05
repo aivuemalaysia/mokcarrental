@@ -1,5 +1,14 @@
+export {};
+
+// A real CSRF token must still match between cookie and header; never stub validation.
+jest.mock('next/headers', () => ({
+  cookies: () => ({
+    get: (name: string) => name === 'csrf_token' ? { value: 'qa-csrf-test' } : undefined,
+  }),
+}));
+
 const mockFrom = jest.fn();
-const mockCreateClient = jest.fn(() => ({ from: mockFrom }));
+const mockCreateClient = jest.fn((..._args: unknown[]) => ({ from: mockFrom }));
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: (...args: any[]) => mockCreateClient(...args),
@@ -17,7 +26,7 @@ describe('/api/admin/content/why-choose', () => {
 
     const req = new Request('http://localhost/api/admin/content/why-choose', {
       method: 'PUT',
-      headers: { cookie: 'admin_token=admin-token-test', 'Content-Type': 'application/json' },
+      headers: { cookie: 'admin_token=admin-token-test', 'x-csrf-token': 'qa-csrf-test', 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: '', content_html: '<p>Hi</p>' }),
     });
     const res = await PUT(req);
@@ -29,7 +38,7 @@ describe('/api/admin/content/why-choose', () => {
 
     const singleMock = jest.fn(async () => ({ data: { key: 'why_choose_us' }, error: null }));
     const selectMock = jest.fn(() => ({ single: singleMock }));
-    const upsertMock = jest.fn(() => ({ select: selectMock }));
+    const upsertMock = jest.fn((_payload: {key: string; items: unknown[]; content_html: string | null}) => ({ select: selectMock }));
 
     mockFrom.mockImplementation((table: string) => {
       if (table === 'content_sections') return { upsert: upsertMock };
@@ -39,7 +48,7 @@ describe('/api/admin/content/why-choose', () => {
 
     const req = new Request('http://localhost/api/admin/content/why-choose', {
       method: 'PUT',
-      headers: { cookie: 'admin_token=admin-token-test', 'Content-Type': 'application/json' },
+      headers: { cookie: 'admin_token=admin-token-test', 'x-csrf-token': 'qa-csrf-test', 'Content-Type': 'application/json' },
       body: JSON.stringify({
         title: 'Why Choose',
         content_html: '<p>Hello</p><script>alert(1)</script>',
@@ -60,7 +69,7 @@ describe('/api/admin/content/why-choose', () => {
 
     const singleMock = jest.fn(async () => ({ data: { key: 'why_choose_us' }, error: null }));
     const selectMock = jest.fn(() => ({ single: singleMock }));
-    const upsertMock = jest.fn(() => ({ select: selectMock }));
+    const upsertMock = jest.fn((_payload: {key: string; items: unknown[]; content_html: string | null}) => ({ select: selectMock }));
 
     mockFrom.mockImplementation((table: string) => {
       if (table === 'content_sections') return { upsert: upsertMock };
@@ -70,7 +79,7 @@ describe('/api/admin/content/why-choose', () => {
 
     const req = new Request('http://localhost/api/admin/content/why-choose', {
       method: 'PUT',
-      headers: { cookie: 'admin_token=admin-token-test', 'Content-Type': 'application/json' },
+      headers: { cookie: 'admin_token=admin-token-test', 'x-csrf-token': 'qa-csrf-test', 'Content-Type': 'application/json' },
       body: JSON.stringify({
         title: 'Why Choose',
         items: [

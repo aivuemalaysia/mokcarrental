@@ -1,5 +1,14 @@
+export {};
+
+// A real CSRF token must still match between cookie and header; never stub validation.
+jest.mock('next/headers', () => ({
+  cookies: () => ({
+    get: (name: string) => name === 'csrf_token' ? { value: 'qa-csrf-test' } : undefined,
+  }),
+}));
+
 const mockFrom = jest.fn();
-const mockCreateClient = jest.fn(() => ({ from: mockFrom }));
+const mockCreateClient = jest.fn((..._args: unknown[]) => ({ from: mockFrom }));
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: (...args: any[]) => mockCreateClient(...args),
@@ -43,7 +52,7 @@ describe('/api/admin/cars/[id] DELETE', () => {
 
     const req = new Request('http://localhost/api/admin/cars/1', {
       method: 'DELETE',
-      headers: { cookie: 'admin_token=admin-token-test' },
+      headers: { cookie: 'admin_token=admin-token-test', 'x-csrf-token': 'qa-csrf-test' },
     });
     const res = await DELETE(req, { params: { id: '1' } });
     expect(res.status).toBe(200);

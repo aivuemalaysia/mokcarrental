@@ -1,5 +1,14 @@
+export {};
+
+// A real CSRF token must still match between cookie and header; never stub validation.
+jest.mock('next/headers', () => ({
+  cookies: () => ({
+    get: (name: string) => name === 'csrf_token' ? { value: 'qa-csrf-test' } : undefined,
+  }),
+}));
+
 const mockFrom = jest.fn();
-const mockCreateClient = jest.fn(() => ({ from: mockFrom }));
+const mockCreateClient = jest.fn((..._args: unknown[]) => ({ from: mockFrom }));
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: (...args: any[]) => mockCreateClient(...args),
@@ -31,7 +40,7 @@ describe('/api/admin/inquiries', () => {
 
     const req = new Request('http://localhost/api/admin/inquiries', {
       method: 'GET',
-      headers: { cookie: 'admin_token=admin-token-test' },
+      headers: { cookie: 'admin_token=admin-token-test', 'x-csrf-token': 'qa-csrf-test' },
     });
     const res = await GET(req);
     expect(res.status).toBe(200);
@@ -68,7 +77,7 @@ describe('/api/admin/inquiries/[id] PUT', () => {
 
     const req = new Request('http://localhost/api/admin/inquiries/1', {
       method: 'PUT',
-      headers: { cookie: 'admin_token=admin-token-test', 'Content-Type': 'application/json' },
+      headers: { cookie: 'admin_token=admin-token-test', 'x-csrf-token': 'qa-csrf-test', 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'confirmed' }),
     });
 

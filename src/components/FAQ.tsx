@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import Link from 'next/link';
-import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import BookingHandoffLink from '@/components/BookingHandoffLink';
 
 // Only publish policies that can be backed by the active booking flow.
 // Pricing, age, insurance, deposit and delivery fees require Owner verification.
@@ -61,7 +61,7 @@ export default function FAQ() {
             ))}
           </div>
           <div className="flex flex-wrap gap-3 mt-9">
-            <a className="btn-primary" href={MOK_BOOKING_URL}>Check live availability</a>
+            <BookingHandoffLink className="btn-primary" >Check live availability</BookingHandoffLink>
             <Link href="/contact" className="btn-secondary">Ask our team</Link>
           </div>
         </div>

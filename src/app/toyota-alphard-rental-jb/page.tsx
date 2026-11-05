@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FiArrowUpRight, FiCheckCircle } from 'react-icons/fi';
 import { canonicalFor, MOK_SOCIAL_IMAGE } from '@/lib/seo';
-import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import BookingHandoffLink from '@/components/BookingHandoffLink';
 export const metadata: Metadata = {
  title: 'Toyota Alphard Rental in Johor Bahru',
  description: 'Compare Toyota Alphard and premium MPV rental considerations in JB. Review seating, luggage and current available models through MOK.',
@@ -18,7 +18,7 @@ export default function LandingPage(){
     <p className="mt-12 text-xs font-extrabold uppercase tracking-[.2em] text-[#FF923F]">Premium MPV rental guide</p>
     <h1 className="mt-4 max-w-4xl text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">Toyota Alphard Rental in Johor Bahru</h1>
     <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#CFD4D6]">The Toyota Alphard is a premium multi-purpose vehicle often considered for group, family and business travel. Compare the exact vehicle generation, seating configuration and luggage needs before choosing a rental in Johor Bahru.</p>
-    <a href={MOK_BOOKING_URL} className="btn-primary mt-8">Check Available Cars <FiArrowUpRight aria-hidden="true"/></a>
+    <BookingHandoffLink  className="btn-primary mt-8">Check Available Cars <FiArrowUpRight aria-hidden="true"/></BookingHandoffLink>
    </div>
   </section>
   <section className="bg-white py-20"><div className="container-custom max-w-5xl">
@@ -28,7 +28,7 @@ export default function LandingPage(){
     <FiCheckCircle aria-hidden="true" className="h-7 w-7 text-[#D95706]"/><h3 className="mt-5 text-xl font-bold">{item.title}</h3><p className="mt-3 leading-relaxed text-gray-600">{item.text}</p></article>)}</div>
    <h2 className="mt-16 text-2xl font-bold">Next steps for your Johor Bahru rental</h2>
    <p className="mt-4 max-w-3xl leading-relaxed text-gray-700">Use your travel dates and group requirements to compare current options. Request confirmation of pickup location, optional services and final charges before relying on an arrangement.</p>
-   <div className="mt-8 flex flex-wrap gap-3"><a href={MOK_BOOKING_URL} className="btn-primary">Check live rental options</a><Link href="/cars" className="btn-secondary">Compare vehicle types</Link></div>
+   <div className="mt-8 flex flex-wrap gap-3"><BookingHandoffLink  className="btn-primary">Check live rental options</BookingHandoffLink><Link href="/cars" className="btn-secondary">Compare vehicle types</Link></div>
   </div></section>
  </main>;
 }

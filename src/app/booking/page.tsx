@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import BookingHandoffLink from '@/components/BookingHandoffLink';
 
 // Keep the existing website URL and canonical so existing SEO links stay valid.
 // Booking forms and availability are now handled exclusively by MOK PWA.
@@ -21,9 +21,9 @@ export default function BookingPage() {
             Continue to the MOK booking app to select available cars, choose
             your pickup and return dates, and complete your booking.
           </p>
-          <a href={MOK_BOOKING_URL} className="btn-primary inline-flex px-8 py-4 text-lg">
+          <BookingHandoffLink  className="btn-primary inline-flex px-8 py-4 text-lg">
             Continue to MOK Booking
-          </a>
+          </BookingHandoffLink>
           <p className="mt-7 text-sm text-gray-600">
             Want to explore car details first?{' '}
             <Link href="/cars" className="underline text-gold-600">Browse our fleet</Link>.
