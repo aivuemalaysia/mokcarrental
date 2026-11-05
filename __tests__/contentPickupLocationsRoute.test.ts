@@ -1,5 +1,7 @@
+export {};
+
 const mockFrom = jest.fn();
-const mockCreateClient = jest.fn(() => ({ from: mockFrom }));
+const mockCreateClient = jest.fn((..._args: unknown[]) => ({ from: mockFrom }));
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: (...args: any[]) => mockCreateClient(...args),
@@ -10,6 +12,8 @@ describe('/api/content/pickup-locations', () => {
     jest.clearAllMocks();
     process.env.NEXT_PUBLIC_SUPABASE_URL = 'http://example.supabase.co';
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'anon';
+    // Public content GET now uses a server-only client; this is a mocked test key.
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'qa-service-role';
   });
 
   test('GET returns ok:true with null data when table is missing', async () => {

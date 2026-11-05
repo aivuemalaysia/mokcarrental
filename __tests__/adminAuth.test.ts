@@ -2,11 +2,17 @@ import { isValidAdminCredentials, getAdminAuthDebugInfo } from '@/lib/adminAuth'
 import { createAdminSessionToken, verifyAdminSessionToken } from '@/lib/adminSession';
 
 describe('Admin Authentication', () => {
+  const initialPassword = process.env.ADMIN_PASSWORD;
+  afterAll(() => {
+    if (initialPassword === undefined) delete process.env.ADMIN_PASSWORD;
+    else process.env.ADMIN_PASSWORD = initialPassword;
+  });
   beforeEach(() => {
     // Reset environment variables
     delete process.env.ADMIN_PASSWORD_HASH;
     delete process.env.ADMIN_PASSWORD_SALT;
     delete process.env.ADMIN_PASSWORD_ITERATIONS;
+    delete process.env.ADMIN_PASSWORD;
   });
 
   describe('isValidAdminCredentials', () => {

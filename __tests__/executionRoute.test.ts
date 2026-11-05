@@ -1,8 +1,10 @@
+export {};
+
 const mockFrom = jest.fn();
 const mockRpc = jest.fn();
 const mockAuthGetUser = jest.fn();
 
-const mockCreateClient = jest.fn(() => ({
+const mockCreateClient = jest.fn((..._args: unknown[]) => ({
   from: mockFrom,
   rpc: mockRpc,
   auth: { getUser: mockAuthGetUser },

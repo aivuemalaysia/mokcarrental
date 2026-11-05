@@ -29,7 +29,6 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
-          package-manager-cache: false
 
       - name: Enable pinned pnpm
         run: |
@@ -57,6 +56,8 @@ jobs:
           exit 1
 
   lighthouse:
+    # Protected previews require an authenticated browser; avoid repeating invalid login-page audits on every push.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -66,7 +67,6 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
-          package-manager-cache: false
 
       - name: Audit mobile Production and Preview pages
         shell: bash

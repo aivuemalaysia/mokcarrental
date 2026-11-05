@@ -1,10 +1,24 @@
+// Retain real CSRF validation; only emulate Next.js's per-request cookie context.
+jest.mock('next/headers', () => ({
+  cookies: () => ({
+    get: (name: string) => name === 'csrf_token' ? { value: 'qa-csrf-test' } : undefined,
+  }),
+}));
+
 import { POST } from '@/app/api/admin/login/route';
 import { ADMIN_TOKEN_COOKIE } from '@/lib/adminAuth';
+
+const initialPassword = process.env.ADMIN_PASSWORD;
 
 beforeAll(() => {
   // Set a test admin password so we don't rely on hardcoded defaults
   process.env.ADMIN_PASSWORD = 'AdminTest123';
-  process.env.NODE_ENV = 'test';
+  // Jest sets NODE_ENV=test; do not assign to TypeScript's readonly property.
+});
+
+afterAll(() => {
+  if (initialPassword === undefined) delete process.env.ADMIN_PASSWORD;
+  else process.env.ADMIN_PASSWORD = initialPassword;
 });
 
 describe('/api/admin/login', () => {
@@ -20,7 +34,7 @@ describe('/api/admin/login', () => {
   test('returns 401 for invalid credentials', async () => {
     const request = new Request('http://localhost/api/admin/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-csrf-token': 'qa-csrf-test' },
       body: JSON.stringify({ email: 'x@y.com', password: 'nope123' }),
     });
 
@@ -31,7 +45,7 @@ describe('/api/admin/login', () => {
   test('sets auth cookie for valid credentials', async () => {
     const request = new Request('http://localhost/api/admin/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-csrf-token': 'qa-csrf-test' },
       body: JSON.stringify({ email: 'admin@mokcarrental.com', password: 'AdminTest123' }),
     });
 
