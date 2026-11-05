@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Car } from '@/types';
 import { FiUsers, FiSettings, FiZap, FiImage } from 'react-icons/fi';
-import { MOK_BOOKING_URL } from '@/lib/bookingHandoff';
+import BookingHandoffLink from '@/components/BookingHandoffLink';
 
 interface CarCardProps {
   car: Car;
@@ -65,9 +65,9 @@ export default function CarCard({ car }: CarCardProps) {
           >
             View Details
           </Link>
-          <a href={MOK_BOOKING_URL} className="flex-1 btn-primary text-center text-sm">
+          <BookingHandoffLink  className="flex-1 btn-primary text-center text-sm">
             Check Live Cars
-          </a>
+          </BookingHandoffLink>
         </div>
       </div>
     </div>
